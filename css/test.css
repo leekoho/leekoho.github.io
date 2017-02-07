@@ -1,8 +1,0 @@
-.triangle {
-  border-width: 10px;
-  border-style: dashed solid dashed dashed;
-  border-color: transparent #ccc transparent transparent;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-}
