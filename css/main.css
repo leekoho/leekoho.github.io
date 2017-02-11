@@ -951,7 +951,7 @@ pre .javascript .function {
   right: 50px;
   z-index: 1050;
   padding: 0 6px;
-  width: 25px;
+  width: 35px;
   background: #222;
   font-size: 12px;
   opacity: 1;
@@ -1568,7 +1568,7 @@ pre .javascript .function {
   bottom: 45px;
   width: 15px;
   height: 15px;
-  padding: 5px;
+  padding: 10px;
   background: #222;
   line-height: 0;
   z-index: 1050;
@@ -1604,6 +1604,7 @@ pre .javascript .function {
   max-width: 96px;
   height: auto;
   border: 2px solid #333;
+  border-radius: 50%;
 }
 .site-author-name {
   margin: 5px 0 0;
@@ -1685,7 +1686,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #ebff62;
+  background: #45a786;
 }
 .links-of-blogroll {
   font-size: 13px;
