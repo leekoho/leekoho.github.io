@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://leekoho.com/"/>
-  <updated>2017-02-27T17:19:24.591Z</updated>
+  <updated>2017-02-28T13:27:21.337Z</updated>
   <id>http://leekoho.com/</id>
   
   <author>
@@ -20,9 +20,9 @@
     <link href="http://leekoho.com/2017/02/27/CSS%E5%86%85%E7%BD%AE%E7%9A%84%E8%AE%A1%E6%95%B0%E5%99%A8/"/>
     <id>http://leekoho.com/2017/02/27/CSS内置的计数器/</id>
     <published>2017-02-27T12:55:33.000Z</published>
-    <updated>2017-02-27T17:19:24.591Z</updated>
+    <updated>2017-02-28T13:27:21.337Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="写作背景"><a href="#写作背景" class="headerlink" title="写作背景"></a>写作背景</h2><p>今天看某公司主页时，发现他们<code>li</code>的编号貌似是是通过下图红框中的CSS代码来实现的。然后在 <a href="http://www.w3school.com.cn/cssref/pr_gen_counter-increment.asp" target="_blank" rel="external">W3Scholl</a> 上查了一下关于<code>counter-increment</code>属性的的资料，才知道原来CSS有内置的计数器功能……这里记录一下计数器的使用方法，以防忘记。</p>
+    <content type="html"><![CDATA[<h2 id="写作背景"><a href="#写作背景" class="headerlink" title="写作背景"></a>写作背景</h2><p>今天看某公司主页时，发现他们<code>&lt;li&gt;</code>的编号貌似是是通过下图红框中的CSS代码来实现的。然后在 <a href="http://www.w3school.com.cn/cssref/pr_gen_counter-increment.asp" target="_blank" rel="external">W3Scholl</a> 上查了一下关于<code>counter-increment</code>属性的的资料，才知道原来CSS有内置的计数器功能……这里记录一下计数器的使用方法，以防忘记。</p>
 <p><img src="/upload/20170227212223.png" alt=""></p>
 <a id="more"></a>
 <h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><h3 id="初始化计数器"><a href="#初始化计数器" class="headerlink" title="初始化计数器"></a>初始化计数器</h3><p>为了好理解，我们使用<code>&lt;ol&gt;</code> 和 <code>&lt;li&gt;</code> 元素来做演示。首先，给这个计数器起一个名字，然后使用<code>counter-reset</code>在你需要开始计数的地方来重置计数器：</p>
@@ -45,11 +45,17 @@
     
     <summary type="html">
     
-      &lt;h2 id=&quot;写作背景&quot;&gt;&lt;a href=&quot;#写作背景&quot; class=&quot;headerlink&quot; title=&quot;写作背景&quot;&gt;&lt;/a&gt;写作背景&lt;/h2&gt;&lt;p&gt;今天看某公司主页时，发现他们&lt;code&gt;li&lt;/code&gt;的编号貌似是是通过下图红框中的CSS代码来实现的。然后在 &lt;a href=&quot;http://www.w3school.com.cn/cssref/pr_gen_counter-increment.asp&quot;&gt;W3Scholl&lt;/a&gt; 上查了一下关于&lt;code&gt;counter-increment&lt;/code&gt;属性的的资料，才知道原来CSS有内置的计数器功能……这里记录一下计数器的使用方法，以防忘记。&lt;/p&gt;
+      &lt;h2 id=&quot;写作背景&quot;&gt;&lt;a href=&quot;#写作背景&quot; class=&quot;headerlink&quot; title=&quot;写作背景&quot;&gt;&lt;/a&gt;写作背景&lt;/h2&gt;&lt;p&gt;今天看某公司主页时，发现他们&lt;code&gt;&amp;lt;li&amp;gt;&lt;/code&gt;的编号貌似是是通过下图红框中的CSS代码来实现的。然后在 &lt;a href=&quot;http://www.w3school.com.cn/cssref/pr_gen_counter-increment.asp&quot;&gt;W3Scholl&lt;/a&gt; 上查了一下关于&lt;code&gt;counter-increment&lt;/code&gt;属性的的资料，才知道原来CSS有内置的计数器功能……这里记录一下计数器的使用方法，以防忘记。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;/upload/20170227212223.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
     
     </summary>
     
+      <category term="前端开发" scheme="http://leekoho.com/categories/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
+    
+    
+      <category term="CSS" scheme="http://leekoho.com/tags/CSS/"/>
+    
+      <category term="前端开发" scheme="http://leekoho.com/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
     
   </entry>
   
@@ -92,9 +98,9 @@
       <category term="前端开发" scheme="http://leekoho.com/categories/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
     
     
-      <category term="前端开发" scheme="http://leekoho.com/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
-    
       <category term="CSS" scheme="http://leekoho.com/tags/CSS/"/>
+    
+      <category term="前端开发" scheme="http://leekoho.com/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
     
   </entry>
   
