@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://leekoho.com/"/>
-  <updated>2017-03-01T17:57:04.346Z</updated>
+  <updated>2017-02-28T13:27:21.337Z</updated>
   <id>http://leekoho.com/</id>
   
   <author>
@@ -14,41 +14,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>vue-cli报错处理</title>
-    <link href="http://leekoho.com/2017/03/02/vue-cli%E6%8A%A5%E9%94%99%E5%A4%84%E7%90%86/"/>
-    <id>http://leekoho.com/2017/03/02/vue-cli报错处理/</id>
-    <published>2017-03-01T17:19:40.000Z</published>
-    <updated>2017-03-01T17:57:04.346Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="报错信息："><a href="#报错信息：" class="headerlink" title="报错信息："></a>报错信息：</h2><p>今天按着Vue的官网提示使用vue-cli时，到了最后一步运行<code>npm run dev</code>，报了一个错误提示：</p>
-<p><img src="/upload/20170302013931.png" alt="error"></p>
-<a id="more"></a>
-<p>第一反应肯定是升级npm：<code>npm install -g npm@3.0.0</code>，查看版本：</p>
-<p><img src="/upload/20170302013339.png" alt="npm-v"></p>
-<p>这时，再运行<code>npm run dev</code>时，结果照样报了这个错误！！！还是叫我升级npm到3.0.0版本：</p>
-<p><img src="/upload/20170302013931.png" alt="error"></p>
-<h2 id="解决方法："><a href="#解决方法：" class="headerlink" title="解决方法："></a>解决方法：</h2><p><strong>复制C:\Users\ {你的Windows用户名}\AppData\Roaming\npm\node_modules\npm下的文件到你的 NodeJS安装目录\node_modules\npm 中，覆盖掉原有的全部文件</strong></p>
-<p>最后运行<code>npm rum dev</code>，DONE!</p>
-<p><img src="/upload/20170302015645.png" alt="done"></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;报错信息：&quot;&gt;&lt;a href=&quot;#报错信息：&quot; class=&quot;headerlink&quot; title=&quot;报错信息：&quot;&gt;&lt;/a&gt;报错信息：&lt;/h2&gt;&lt;p&gt;今天按着Vue的官网提示使用vue-cli时，到了最后一步运行&lt;code&gt;npm run dev&lt;/code&gt;，报了一个错误提示：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/upload/20170302013931.png&quot; alt=&quot;error&quot;&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="前端开发" scheme="http://leekoho.com/categories/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
-    
-    
-      <category term="前端开发" scheme="http://leekoho.com/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
-    
-      <category term="Vue" scheme="http://leekoho.com/tags/Vue/"/>
-    
-  </entry>
   
   <entry>
     <title>CSS内置的计数器</title>
@@ -88,9 +53,9 @@
       <category term="前端开发" scheme="http://leekoho.com/categories/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
     
     
-      <category term="前端开发" scheme="http://leekoho.com/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
-    
       <category term="CSS" scheme="http://leekoho.com/tags/CSS/"/>
+    
+      <category term="前端开发" scheme="http://leekoho.com/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
     
   </entry>
   
@@ -133,9 +98,9 @@
       <category term="前端开发" scheme="http://leekoho.com/categories/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
     
     
-      <category term="前端开发" scheme="http://leekoho.com/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
-    
       <category term="CSS" scheme="http://leekoho.com/tags/CSS/"/>
+    
+      <category term="前端开发" scheme="http://leekoho.com/tags/%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91/"/>
     
   </entry>
   
