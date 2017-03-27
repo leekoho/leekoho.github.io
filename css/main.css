@@ -950,7 +950,7 @@ pre .javascript .function {
   bottom: -100px;
   right: 50px;
   z-index: 1050;
-  padding: 0 6px;
+  padding: 6px;
   width: 35px;
   background: #222;
   font-size: 12px;
@@ -975,7 +975,7 @@ pre .javascript .function {
   }
 }
 .back-to-top.back-to-top-on {
-  bottom: 19px;
+  bottom: 6px;
 }
 .header {
   background: #fff;
@@ -1686,7 +1686,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #ffcdff;
+  background: #bf7760;
 }
 .links-of-blogroll {
   font-size: 13px;
