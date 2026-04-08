@@ -1,0 +1,28 @@
+@plugin "@tailwindcss/typography";
+
+@layer utilities {
+  .prose :where(:not(pre) > code) {
+    @apply rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono font-medium text-zinc-800;
+  }
+
+  .dark .prose :where(:not(pre) > code) {
+    @apply bg-zinc-800/80 text-zinc-100 ring-1 ring-white/10;
+  }
+
+  .prose :where(:not(pre) > code)::before,
+  .prose :where(:not(pre) > code)::after {
+    content: none;
+  }
+
+  .prose pre {
+    @apply rounded-2xl border border-zinc-200/80 bg-zinc-950 shadow-[0_20px_50px_rgba(15,23,42,0.12)];
+  }
+
+  .dark .prose pre {
+    @apply border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.35)];
+  }
+
+  .prose pre code {
+    @apply bg-transparent p-0 text-inherit;
+  }
+}

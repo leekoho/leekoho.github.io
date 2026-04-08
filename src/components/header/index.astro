@@ -1,0 +1,147 @@
+---
+import { Image } from "astro:assets"
+import ModeToggle from "./ModeToggle.astro"
+import SonGokuImage from "@/assets/SonGoku.jpeg"
+
+// const { href } = Astro.props
+
+// console.log("href", href)
+const { pathname } = Astro.url
+
+const normalizePath = (value: string) => {
+  if (value === "/") {
+    return value
+  }
+
+  return value.replace(/\/$/, "")
+}
+
+const isActive = (href: string) => {
+  const normalizedHref = normalizePath(href)
+  const normalizedPathname = normalizePath(pathname)
+
+  if (normalizedHref === "/") {
+    return normalizedPathname === "/"
+  }
+
+  return (
+    normalizedHref === normalizedPathname || normalizedPathname.startsWith(`${normalizedHref}/`)
+  )
+}
+---
+
+<header class="header">
+  <a href="/">
+    <Image src={SonGokuImage} alt="SonGoku" class="avatar" />
+  </a>
+
+  <nav class="nav">
+    {
+      [
+        ["Blog", "/posts", "_self"],
+        // ["Tools", "/tools", "_self"],
+        ["About", "/about", "_self"],
+        // ['Github', GITHUB_URL, '_blank'],
+        ["Feed", "/feed", "_blank"],
+      ].map(([title, url, target]) => (
+        <a href={url} class:list={["nav-link", { active: isActive(url) }]} target={target}>
+          {title}
+        </a>
+      ))
+    }
+  </nav>
+
+  <ModeToggle />
+</header>
+
+<script is:inline>
+  const storageKey = "theme-preference"
+  const resolveTheme = (preference) => {
+    if (preference === "system") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+    }
+
+    return preference
+  }
+
+  const themeController = {
+    getPreference() {
+      if (typeof localStorage === "undefined") {
+        return "system"
+      }
+
+      return localStorage.getItem(storageKey) ?? "system"
+    },
+
+    apply(preference) {
+      const resolvedTheme = resolveTheme(preference)
+      document.documentElement.dataset.themePreference = preference
+      document.documentElement.classList.toggle("dark", resolvedTheme === "dark")
+
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem(storageKey, preference)
+      }
+
+      window.dispatchEvent(new CustomEvent("theme-change", { detail: { preference } }))
+    },
+  }
+
+  window.__themeController = themeController
+  themeController.apply(themeController.getPreference())
+
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+  const handleSystemThemeChange = () => {
+    if (themeController.getPreference() === "system") {
+      themeController.apply("system")
+    }
+  }
+
+  mediaQuery.addEventListener?.("change", handleSystemThemeChange)
+</script>
+
+<style>
+  @reference "@/styles/tailwind.css";
+
+  .header {
+    @apply relative isolate z-20 flex items-center justify-between p-4 sm:px-6 lg:px-10;
+  }
+
+  .header::before {
+    content: "";
+    @apply pointer-events-none absolute inset-x-4 -top-14 h-56 rounded-[2.5rem] blur-3xl sm:inset-x-6;
+    @apply bg-[radial-gradient(circle_at_18%_18%,theme(colors.teal.200/.42),transparent_34%),radial-gradient(circle_at_78%_12%,theme(colors.zinc.300/.7),transparent_32%),linear-gradient(180deg,theme(colors.white/.82),transparent_78%)];
+    @apply dark:bg-[radial-gradient(circle_at_18%_18%,theme(colors.teal.400/.16),transparent_34%),radial-gradient(circle_at_78%_12%,theme(colors.cyan.400/.1),transparent_28%),linear-gradient(180deg,theme(colors.zinc.900/.12),transparent_82%)];
+    z-index: 0;
+  }
+
+  .header > * {
+    @apply relative z-10;
+  }
+
+  @media (min-width: 1024px) {
+    .header::before {
+      @apply h-64;
+      top: -4.5rem;
+    }
+  }
+
+  .avatar {
+    @apply size-10 rounded-full bg-white/90 p-0.5 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/90 dark:shadow-[0_10px_24px_rgba(0,0,0,0.35)] dark:ring-white/10;
+  }
+
+  .nav {
+    @apply flex rounded-full bg-white/90 px-3 text-sm font-medium text-zinc-800 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur dark:bg-zinc-800/80 dark:text-zinc-200 dark:shadow-[0_12px_32px_rgba(0,0,0,0.28)] dark:ring-white/10;
+  }
+
+  .nav-link {
+    @apply relative block px-3 py-2 text-zinc-800 no-underline transition hover:text-teal-500 dark:text-zinc-300 dark:hover:text-teal-300;
+  }
+
+  .nav-link.active {
+    @apply text-teal-500 dark:text-teal-300;
+  }
+
+  .nav-link.active::after {
+    @apply absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-teal-500/0 via-teal-500/40 to-teal-500/0 content-[''] dark:from-teal-400/0 dark:via-teal-400/40 dark:to-teal-400/0;
+  }
+</style>

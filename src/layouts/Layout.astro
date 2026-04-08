@@ -1,29 +1,60 @@
 ---
-import '../styles/global.css';
-import Header from '@/components/Header.astro';
+import "../styles/global.css"
+import Header from "@/components/header/index.astro"
+
+interface Props {
+  title?: string
+  description?: string
+}
+
+const { title = "leekoho | Blog", description = "记录开发中的经验、问题拆解和一些可复用的实践。" } =
+  Astro.props
+
+const currentYear = new Date().getFullYear()
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-    <Header />
-		<slot />
-	</body>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body class="bg-zinc-100 dark:bg-zinc-950">
+    <div
+      class="mx-auto flex min-h-screen max-w-4xl flex-col bg-white ring-1 ring-zinc-300/40 2xl:max-w-5xl dark:bg-zinc-900/95 dark:shadow-[0_0_0_1px_rgba(255,255,255,0.02),0_30px_80px_rgba(0,0,0,0.45)] dark:ring-white/10"
+    >
+      <Header />
+      <main class="flex-1">
+        <slot />
+      </main>
+      <footer class="site-footer">
+        <a href="https://astro.build" class="footer-powered-by" target="_blank" rel="noreferrer">
+          Powered by Astro
+        </a>
+
+        <p class="footer-copyright">© {currentYear} leekoho</p>
+      </footer>
+    </div>
+  </body>
 </html>
 
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+  @reference "@/styles/tailwind.css";
+
+  .site-footer {
+    @apply mbs-8 flex items-center justify-center gap-x-2 border-t border-zinc-200/80 px-4 py-6 sm:px-6 lg:px-10 dark:border-white/10 dark:bg-[linear-gradient(180deg,transparent,rgba(255,255,255,0.02))];
+  }
+
+  .footer-powered-by {
+    @apply text-sm text-zinc-500 no-underline transition hover:text-teal-600 dark:text-zinc-400 dark:hover:text-teal-200;
+  }
+
+  .footer-copyright {
+    @apply text-sm text-zinc-400 dark:text-zinc-500;
+  }
 </style>

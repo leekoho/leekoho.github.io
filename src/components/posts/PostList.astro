@@ -1,0 +1,170 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content"
+
+type Post = CollectionEntry<"posts">
+
+const allPosts = (
+  await getCollection("posts", ({ data }) => (import.meta.env.PROD ? data.draft !== true : true))
+).sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+
+const groups = new Map<number, Post[]>()
+
+allPosts.forEach((post) => {
+  const year = post.data.pubDate.getFullYear()
+  if (!groups.has(year)) {
+    groups.set(year, [])
+  }
+  groups.get(year)!.push(post)
+})
+---
+
+<main class="relative overflow-hidden px-4 pbs-6 pbe-14 sm:px-6 lg:px-10 lg:pbs-10 lg:pbe-24">
+  {
+    allPosts.length === 0 ? (
+      <p class="py-8 text-zinc-500 dark:text-zinc-500">No posts yet.</p>
+    ) : (
+      <>
+        <section class="relative z-10 mbe-10 space-y-4 lg:mbe-14" aria-label="Archive overview">
+          <p class="text-xs font-semibold tracking-[0.24em] text-teal-600 uppercase dark:text-teal-300">
+            Blog
+          </p>
+
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <h1 class="text-4xl leading-none font-semibold tracking-tighter text-zinc-950 sm:text-5xl dark:text-white">
+              Posts
+            </h1>
+          </div>
+
+          <p class="max-w-2xl text-sm leading-7 text-zinc-600 dark:text-zinc-300">
+            这里主要记录开发中的经验、问题拆解和一些可复用的实践。
+          </p>
+        </section>
+
+        <div class="relative z-10 space-y-14">
+          {Array.from(groups).map(([year, yearPosts]) => (
+            <section
+              class="space-y-3 lg:flex lg:space-y-0 lg:gap-x-4"
+              aria-labelledby={`post-year-${year}`}
+            >
+              <div class="flex items-center gap-3 lg:w-24 lg:flex-none lg:self-start lg:pbs-2">
+                <h2
+                  class="text-2xl font-semibold text-zinc-300 lg:self-start lg:pbs-2 dark:text-zinc-600"
+                  id={`post-year-${year}`}
+                >
+                  {year}
+                </h2>
+              </div>
+
+              <ul class="relative lg:flex-1">
+                {yearPosts.map((post) => (
+                  <li class="post-item">
+                    <a href={`/posts/${post.id}`} class="post-link group">
+                      <span class="post-title">{post.data.title}</span>
+                      <time
+                        class="post-date"
+                        data-post-date="short"
+                        datetime={post.data.pubDate.toISOString()}
+                      >
+                        {post.data.pubDate.toISOString().slice(5, 10)}
+                      </time>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </>
+    )
+  }
+</main>
+
+<script is:inline>
+  const formatPostDates = () => {
+    const shortFormatter = new Intl.DateTimeFormat(undefined, {
+      month: "short",
+      day: "numeric",
+    })
+    const longFormatter = new Intl.DateTimeFormat(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    })
+
+    document.querySelectorAll("[data-post-date]").forEach((element) => {
+      const datetime = element.getAttribute("datetime")
+      if (!datetime) {
+        return
+      }
+
+      const date = new Date(datetime)
+      if (Number.isNaN(date.getTime())) {
+        return
+      }
+
+      element.textContent =
+        element.getAttribute("data-post-date") === "long"
+          ? longFormatter.format(date)
+          : shortFormatter.format(date)
+    })
+  }
+
+  formatPostDates()
+</script>
+
+<style>
+  @reference "@/styles/tailwind.css";
+
+  .post-item {
+    /* 这里 dark:after:via-zinc-200/20 写到下面.post-item::after 会不生效 */
+    @apply relative list-none dark:after:via-zinc-200/20;
+  }
+
+  .post-item::after {
+    content: "";
+    @apply absolute right-0 bottom-0 left-0 h-px bg-gradient-to-r from-transparent via-zinc-200/80 to-transparent;
+  }
+
+  .post-link {
+    @apply relative flex flex-col gap-1.5 py-4.5 no-underline transition duration-300 sm:flex-row sm:items-center sm:justify-between;
+  }
+
+  .post-link::before {
+    content: "";
+    @apply pointer-events-none absolute -inset-x-3 inset-y-1 rounded-2xl opacity-0 transition duration-300;
+    @apply bg-[linear-gradient(90deg,rgba(20,184,166,0.05),rgba(255,255,255,0.18)_38%,rgba(228,228,231,0.32))];
+    @apply dark:bg-[linear-gradient(90deg,rgba(45,212,191,0.08),rgba(39,39,42,0.2)_38%,rgba(24,24,27,0.34))];
+  }
+
+  .post-link:hover,
+  .post-link:focus-visible {
+    @apply -translate-y-px;
+  }
+
+  .post-link:hover::before,
+  .post-link:focus-visible::before {
+    @apply opacity-100;
+  }
+
+  .post-link:focus-visible {
+    @apply outline-none;
+  }
+
+  .post-title {
+    @apply relative z-10 text-base leading-6 font-medium tracking-tight text-zinc-800 transition duration-300 sm:ps-5 dark:text-zinc-200;
+  }
+
+  .post-link:hover .post-title,
+  .post-link:focus-visible .post-title {
+    @apply translate-x-0.5 text-teal-700 dark:text-teal-200;
+  }
+
+  .post-date {
+    @apply relative z-10 text-xs font-medium tracking-widest text-zinc-400 tabular-nums transition duration-300 sm:ms-8 sm:text-right dark:text-zinc-500;
+  }
+
+  .post-link:hover .post-date,
+  .post-link:focus-visible .post-date {
+    @apply text-zinc-600 dark:text-zinc-300;
+  }
+</style>

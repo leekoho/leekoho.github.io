@@ -1,0 +1,23 @@
+@import "tailwindcss";
+@import "@fontsource-variable/noto-sans";
+
+@custom-variant dark (&:is(.dark *));
+
+/*@theme inline {*/
+/*  --font-heading: var(--font-sans);*/
+/*  --font-sans: "Noto Sans Variable", sans-serif;*/
+/*}*/
+
+@layer base {
+  * {
+    @apply border-zinc-200 outline-teal-500/50 dark:border-white/10;
+  }
+
+  body {
+    @apply bg-zinc-100 text-zinc-900 dark:bg-black dark:text-zinc-100;
+  }
+
+  html {
+    @apply font-sans antialiased;
+  }
+}
