@@ -10,7 +10,7 @@ export async function GET(context: APIContext) {
 
   const posts = await getCollection("posts")
 
-  return rss({
+  const response = await rss({
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
     site,
@@ -27,4 +27,9 @@ export async function GET(context: APIContext) {
       link: `/posts/${post.id}/`,
     })),
   })
+
+  response.headers.set("Content-Type", "text/xml; charset=utf-8")
+  response.headers.delete("Content-Disposition")
+
+  return response
 }
