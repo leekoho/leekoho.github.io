@@ -1,0 +1,13 @@
+{
+  "headers": [
+    {
+      "source": "/feed",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/rss+xml; charset=utf-8"
+        }
+      ]
+    }
+  ]
+}

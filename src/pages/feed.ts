@@ -6,11 +6,11 @@ import { PROFILE, SITE_DESCRIPTION, SITE_TITLE } from "@/consts"
 
 export async function GET(context: APIContext) {
   const site = context.site ?? ""
-  const feedUrl = new URL(context.url.pathname, site).toString()
+  const feedUrl = new URL("/feed", site).toString()
 
   const posts = await getCollection("posts")
 
-  return rss({
+  const response = await rss({
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
     site,
@@ -27,4 +27,9 @@ export async function GET(context: APIContext) {
       link: `/posts/${post.id}/`,
     })),
   })
+
+  response.headers.set("Content-Type", "application/rss+xml; charset=utf-8")
+  response.headers.delete("Content-Disposition")
+
+  return response
 }
