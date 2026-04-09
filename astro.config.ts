@@ -11,6 +11,10 @@ export default defineConfig({
 
   prefetch: true,
 
+  redirects: {
+    "/": "/posts",
+  },
+
   integrations: [sitemap()],
 
   vite: {
