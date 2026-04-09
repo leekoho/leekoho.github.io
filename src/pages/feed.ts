@@ -28,8 +28,5 @@ export async function GET(context: APIContext) {
     })),
   })
 
-  response.headers.set("Content-Type", "text/xml; charset=utf-8")
-  response.headers.delete("Content-Disposition")
-
   return response
 }
