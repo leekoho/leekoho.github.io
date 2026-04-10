@@ -88,7 +88,8 @@ const options = [
   }
 
   .theme-trigger {
-    @apply flex cursor-pointer list-none items-center justify-center rounded-full bg-white/90 p-2 text-zinc-700 shadow-lg ring-1 ring-zinc-900/5 backdrop-blur transition hover:text-teal-500 dark:bg-zinc-800/82 dark:text-zinc-200 dark:shadow-[0_12px_32px_rgba(0,0,0,0.3)] dark:ring-white/10 dark:hover:text-teal-300;
+    @apply bg-surface/90 border-border text-foreground-soft flex cursor-pointer list-none items-center justify-center rounded-full border p-2 backdrop-blur-md transition;
+    box-shadow: var(--shadow-button);
   }
 
   .theme-trigger::-webkit-details-marker {
@@ -96,15 +97,16 @@ const options = [
   }
 
   .theme-menu {
-    @apply absolute top-full right-0 z-20 mbs-2 grid min-w-32 gap-1 rounded-2xl bg-white/95 p-1.5 shadow-xl ring-1 ring-zinc-900/10 backdrop-blur dark:bg-zinc-900/92 dark:shadow-[0_22px_60px_rgba(0,0,0,0.45)] dark:ring-white/10;
+    @apply bg-surface/95 border-border absolute top-full right-0 z-20 mbs-2 grid min-w-32 gap-1 rounded-2xl border p-1.5 backdrop-blur-lg;
+    box-shadow: var(--shadow-card);
   }
 
   .theme-option {
-    @apply flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm text-zinc-700 transition hover:bg-teal-500/10 hover:text-teal-600 dark:text-zinc-200 dark:hover:bg-teal-400/12 dark:hover:text-teal-200;
+    @apply text-foreground-soft flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm transition;
   }
 
   .theme-option[data-active="true"] {
-    @apply bg-teal-500/10 text-teal-600 dark:bg-teal-400/14 dark:text-teal-200;
+    @apply bg-accent/10 text-foreground;
   }
 
   .theme-check {
@@ -113,5 +115,22 @@ const options = [
 
   .theme-option[data-active="true"] .theme-check {
     @apply opacity-100;
+  }
+
+  .theme-trigger:hover,
+  .theme-option:hover {
+    @apply text-accent-strong;
+  }
+
+  :global(.dark) .theme-trigger {
+    @apply bg-surface;
+  }
+
+  :global(.dark) .theme-menu {
+    @apply bg-surface;
+  }
+
+  :global(.dark) .theme-option[data-active="true"] {
+    @apply bg-accent/10;
   }
 </style>

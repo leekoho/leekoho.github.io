@@ -11,41 +11,48 @@ function getFavicon(url: string) {
 <Layout title="About | leekoho" description="关于 leekoho 的个人介绍、居住城市与 GitHub 信息。">
   <section class="about-shell">
     <div class="about-hero">
-      <p class="about-kicker">About</p>
-      <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <h1 class="about-title">About Me</h1>
+      <p class="section-kicker">About</p>
+      <div class="about-hero-row">
+        <h1 class="section-title">About Me</h1>
       </div>
-      <p class="about-summary">这里放一些关于我自己的信息，也作为博客之外的一点补充。</p>
+      <p class="section-summary">这里放一些关于我自己的信息，也作为博客之外的一点补充。</p>
     </div>
 
     <div class="about-grid">
-      <article class="about-card about-card-primary">
-        <p class="about-card-label">个人介绍</p>
+      <article class="about-card ui-card-border about-card-primary">
+        <p class="about-card-label subtle-copy">个人介绍</p>
         <h2 class="about-name">{PROFILE.name}</h2>
-        <p class="about-role">{PROFILE.tags.join(" / ")}</p>
+        <p class="about-role accent-copy">{PROFILE.tags.join(" / ")}</p>
         <p class="about-copy">
           {PROFILE.description || SITE_DESCRIPTION}
         </p>
       </article>
 
-      <article class="about-card">
-        <p class="about-card-label">居住城市</p>
+      <article class="about-card ui-card-border">
+        <p class="about-card-label subtle-copy">居住城市</p>
         <p class="about-meta">{PROFILE.city}</p>
-        <p class="about-hint">现在常住在这里，写代码、写文章，也把日常生活安放在这座城市里。</p>
+        <p class="about-hint muted-copy">
+          现在常住在这里，写代码、写文章，也把日常生活安放在这座城市里。
+        </p>
       </article>
 
-      <article class="about-card">
-        <p class="about-card-label">在线链接</p>
+      <article class="about-card ui-card-border">
+        <p class="about-card-label subtle-copy">在线链接</p>
         <ul class="about-links">
           {
             PROFILE.links.map((item) => (
               <li>
-                <a href={item.url} target="_blank" rel="noreferrer" class="about-link group">
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  class="about-link ui-card-border group"
+                >
                   <span class="about-link-main">
-                    <img src={getFavicon(item.url)} alt="232" class="size-4" />
+                    <img src={getFavicon(item.url)} alt="232" class="about-link-icon" />
                     <span>{item.label}</span>
                   </span>
-                  <span class="about-link-arrow" aria-hidden="true">
+                  <span class="about-link-arrow subtle-copy" aria-hidden="true">
                     ↗
                   </span>
                 </a>
@@ -74,16 +81,8 @@ function getFavicon(url: string) {
     @apply mbe-10 max-w-3xl space-y-4 lg:mbe-14;
   }
 
-  .about-kicker {
-    @apply text-xs font-semibold tracking-[0.24em] text-teal-600 uppercase dark:text-teal-300;
-  }
-
-  .about-title {
-    @apply text-4xl leading-none font-semibold tracking-tighter text-zinc-950 sm:text-5xl dark:text-white;
-  }
-
-  .about-summary {
-    @apply max-w-2xl text-sm leading-7 text-zinc-500 dark:text-zinc-400;
+  .about-hero-row {
+    @apply flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between;
   }
 
   .about-grid {
@@ -91,37 +90,51 @@ function getFavicon(url: string) {
   }
 
   .about-card {
-    @apply rounded-[1.75rem] border border-zinc-200/80 bg-white/85 p-6 shadow-[0_16px_50px_rgba(15,23,42,0.05)] backdrop-blur-sm dark:border-white/10 dark:bg-zinc-900/75 dark:shadow-[0_18px_50px_rgba(0,0,0,0.28)];
+    @apply bg-panel/85 rounded-3xl p-6 backdrop-blur-md;
+    box-shadow: 0 16px 50px rgba(15, 23, 42, 0.05);
   }
 
   .about-card-primary {
     @apply md:col-span-2;
-    @apply bg-[linear-gradient(135deg,rgba(255,255,255,0.95),rgba(240,253,250,0.9)_45%,rgba(244,244,245,0.92))];
-    @apply dark:bg-[linear-gradient(135deg,rgba(24,24,27,0.92),rgba(15,118,110,0.14)_55%,rgba(24,24,27,0.82))];
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.95),
+      rgba(240, 253, 250, 0.9) 45%,
+      rgba(244, 244, 245, 0.92)
+    );
+  }
+
+  :global(.dark) .about-card-primary {
+    background: linear-gradient(
+      135deg,
+      rgba(24, 24, 27, 0.92),
+      rgba(15, 118, 110, 0.14) 55%,
+      rgba(24, 24, 27, 0.82)
+    );
   }
 
   .about-card-label {
-    @apply mbe-4 text-xs font-semibold tracking-[0.22em] text-zinc-400 uppercase dark:text-zinc-500;
+    @apply mbe-4 text-xs font-semibold tracking-widest uppercase;
   }
 
   .about-name {
-    @apply text-3xl font-semibold tracking-tight text-zinc-950 dark:text-white;
+    @apply text-foreground text-3xl font-semibold tracking-tight;
   }
 
   .about-role {
-    @apply mbs-2 text-sm font-medium tracking-[0.18em] text-teal-700 dark:text-teal-300;
+    @apply mbs-2 text-sm font-medium tracking-wider;
   }
 
   .about-copy {
-    @apply mbs-5 max-w-2xl text-sm leading-7 text-zinc-600 dark:text-zinc-300;
+    @apply text-foreground-soft mbs-5 max-w-2xl text-sm leading-7;
   }
 
   .about-meta {
-    @apply text-2xl font-medium tracking-tight text-zinc-900 dark:text-zinc-100;
+    @apply text-foreground text-2xl font-medium tracking-tight;
   }
 
   .about-hint {
-    @apply mbs-3 text-sm leading-7 text-zinc-500 dark:text-zinc-400;
+    @apply mbs-3 text-sm leading-7;
   }
 
   .about-links {
@@ -129,14 +142,23 @@ function getFavicon(url: string) {
   }
 
   .about-link {
-    @apply flex items-center justify-between gap-4 rounded-2xl border border-zinc-200/80 px-4 py-3 text-sm text-zinc-700 no-underline transition hover:-translate-y-0.5 hover:border-teal-200 hover:text-teal-700 dark:border-white/10 dark:text-zinc-200 dark:hover:border-teal-400/30 dark:hover:text-teal-200;
+    @apply text-foreground-soft flex items-center justify-between gap-4 rounded-2xl px-4 py-3 text-sm no-underline transition;
+    background: transparent;
   }
 
   .about-link-main {
     @apply flex items-center gap-3;
   }
 
+  .about-link-icon {
+    @apply size-4;
+  }
+
   .about-link-arrow {
-    @apply text-zinc-400 transition group-hover:text-current;
+    @apply transition group-hover:text-current;
+  }
+
+  .about-link:hover {
+    @apply border-accent/25 text-accent-strong -translate-y-0.5;
   }
 </style>

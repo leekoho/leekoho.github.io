@@ -24,12 +24,10 @@ const currentYear = new Date().getFullYear()
     <meta name="description" content={description} />
     <title>{title}</title>
   </head>
-  <body class="bg-zinc-100 dark:bg-zinc-950">
-    <div
-      class="mx-auto flex min-h-screen max-w-4xl flex-col bg-white ring-1 ring-zinc-300/40 2xl:max-w-5xl dark:bg-zinc-900/95 dark:shadow-[0_0_0_1px_rgba(255,255,255,0.02),0_30px_80px_rgba(0,0,0,0.45)] dark:ring-white/10"
-    >
+  <body class="site-body">
+    <div class="site-shell">
       <Header />
-      <main class="flex-1">
+      <main class="site-main">
         <slot />
       </main>
       <footer class="site-footer">
@@ -46,15 +44,31 @@ const currentYear = new Date().getFullYear()
 <style>
   @reference "@/styles/tailwind.css";
 
+  .site-body {
+    @apply bg-zinc-100 dark:bg-zinc-950;
+  }
+
+  .site-shell {
+    @apply mx-auto flex min-h-screen max-w-4xl flex-col bg-white ring-1 ring-zinc-300/40 2xl:max-w-5xl dark:bg-zinc-900/95 dark:shadow-[0_0_0_1px_rgba(255,255,255,0.02),0_30px_80px_rgba(0,0,0,0.45)] dark:ring-white/10;
+  }
+
+  .site-main {
+    @apply flex-1;
+  }
+
   .site-footer {
-    @apply mbs-8 flex items-center justify-center gap-x-2 border-t border-zinc-200/80 px-4 py-6 sm:px-6 lg:px-10 dark:border-white/10 dark:bg-[linear-gradient(180deg,transparent,rgba(255,255,255,0.02))];
+    @apply border-border mbs-8 flex items-center justify-center gap-x-2 border-t px-4 py-6 sm:px-6 lg:px-10;
   }
 
   .footer-powered-by {
-    @apply text-sm text-zinc-500 no-underline transition hover:text-teal-600 dark:text-zinc-400 dark:hover:text-teal-200;
+    @apply text-muted text-sm no-underline transition;
+  }
+
+  .footer-powered-by:hover {
+    @apply text-accent-strong;
   }
 
   .footer-copyright {
-    @apply text-sm text-zinc-400 dark:text-zinc-500;
+    @apply text-subtle text-sm;
   }
 </style>

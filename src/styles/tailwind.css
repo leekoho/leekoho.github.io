@@ -1,23 +1,99 @@
 @import "tailwindcss";
-@import "@fontsource-variable/noto-sans";
 
 @custom-variant dark (&:is(.dark *));
 
-/*@theme inline {*/
-/*  --font-heading: var(--font-sans);*/
-/*  --font-sans: "Noto Sans Variable", sans-serif;*/
-/*}*/
+@theme inline {
+  --font-sans: var(--font-family-sans);
+  --font-mono: var(--font-family-mono);
+
+  --color-background: var(--ui-bg);
+  --color-background-muted: var(--ui-bg-soft);
+  --color-surface: var(--ui-surface);
+  --color-panel: var(--ui-surface-strong);
+  --color-foreground: var(--ui-text);
+  --color-foreground-soft: var(--ui-text-secondary);
+  --color-muted: var(--ui-text-muted);
+  --color-subtle: var(--ui-text-faint);
+  --color-border: var(--ui-border);
+  --color-border-strong: var(--ui-border-strong);
+  --color-accent: var(--ui-brand);
+  --color-accent-strong: var(--ui-brand-deep);
+  --color-accent-soft: var(--ui-brand-soft);
+}
 
 @layer base {
-  * {
-    @apply border-zinc-200 outline-teal-500/50 dark:border-white/10;
+  :root {
+    color-scheme: light;
+
+    --font-family-sans:
+      "Inter", "Inter Fallback", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-family-mono:
+      "Geist Mono", "Geist Mono Fallback", "SFMono-Regular", "SF Mono", ui-monospace, monospace;
+
+    --ui-bg: #ffffff;
+    --ui-bg-soft: #fafafa;
+    --ui-surface: rgba(255, 255, 255, 0.94);
+    --ui-surface-strong: #ffffff;
+    --ui-text: #0d0d0d;
+    --ui-text-secondary: #333333;
+    --ui-text-muted: #666666;
+    --ui-text-faint: #888888;
+    --ui-border: rgba(13, 13, 13, 0.05);
+    --ui-border-strong: rgba(13, 13, 13, 0.08);
+    --ui-brand: #18e299;
+    --ui-brand-deep: #0fa76e;
+    --ui-brand-soft: #d4fae8;
+
+    --shadow-card: 0 2px 4px rgba(0, 0, 0, 0.03);
+    --shadow-button: 0 1px 2px rgba(0, 0, 0, 0.06);
+    --radius-sm: 0.5rem;
+    --radius-md: 1rem;
+    --radius-lg: 1.5rem;
+    --radius-pill: 9999px;
   }
 
-  body {
-    @apply bg-zinc-100 text-zinc-900 dark:bg-black dark:text-zinc-100;
+  :root.dark {
+    color-scheme: dark;
+
+    --ui-bg: #0d0d0d;
+    --ui-bg-soft: #111111;
+    --ui-surface: rgba(19, 19, 19, 0.92);
+    --ui-surface-strong: #161616;
+    --ui-text: #ededed;
+    --ui-text-secondary: #d0d0d0;
+    --ui-text-muted: #a0a0a0;
+    --ui-text-faint: #7f7f7f;
+    --ui-border: rgba(255, 255, 255, 0.08);
+    --ui-border-strong: rgba(255, 255, 255, 0.12);
+    --ui-brand: #43e9a9;
+    --ui-brand-deep: #8ef3c8;
+    --ui-brand-soft: rgba(67, 233, 169, 0.12);
+
+    --shadow-card: 0 18px 48px rgba(0, 0, 0, 0.3);
+    --shadow-button: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  * {
+    border-color: var(--color-border);
+    @apply outline-accent/60;
   }
 
   html {
-    @apply font-sans antialiased;
+    font-family: var(--font-sans), sans-serif;
+    scroll-behavior: smooth;
+    @apply antialiased;
+  }
+
+  body {
+    min-height: 100vh;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  code,
+  pre,
+  kbd,
+  samp {
+    font-family: var(--font-mono), sans-serif;
   }
 }
