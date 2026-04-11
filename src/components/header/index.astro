@@ -3,9 +3,6 @@ import { Image } from "astro:assets"
 import ModeToggle from "./ModeToggle.astro"
 import SonGokuImage from "@/assets/SonGoku.jpeg"
 
-// const { href } = Astro.props
-
-// console.log("href", href)
 const { pathname } = Astro.url
 
 const normalizePath = (value: string) => {
@@ -32,7 +29,7 @@ const isActive = (href: string) => {
 
 <header class="header">
   <a href="/">
-    <Image src={SonGokuImage} alt="SonGoku" class="avatar" />
+    <Image src={SonGokuImage} alt="SonGoku" width="40" height="40" class="avatar" />
   </a>
 
   <nav class="nav">

@@ -1,6 +1,6 @@
 import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
-import { defineConfig } from "astro/config"
+import { defineConfig, fontProviders } from "astro/config"
 
 export default defineConfig({
   devToolbar: {
@@ -20,4 +20,21 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+
+  markdown: {
+    syntaxHighlight: "shiki",
+  },
+
+  fonts: [
+    {
+      name: "Inter",
+      cssVariable: "--font-sans",
+      provider: fontProviders.google(),
+    },
+    {
+      name: "JetBrains Mono",
+      cssVariable: "--font-mono",
+      provider: fontProviders.google(),
+    },
+  ],
 })

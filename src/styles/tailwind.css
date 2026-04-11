@@ -3,9 +3,6 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: var(--font-family-sans);
-  --font-mono: var(--font-family-mono);
-
   --color-background: var(--ui-bg);
   --color-background-muted: var(--ui-bg-soft);
   --color-surface: var(--ui-surface);
@@ -25,10 +22,10 @@
   :root {
     color-scheme: light;
 
-    --font-family-sans:
-      "Inter", "Inter Fallback", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-family-mono:
-      "Geist Mono", "Geist Mono Fallback", "SFMono-Regular", "SF Mono", ui-monospace, monospace;
+    /*--font-family-sans:*/
+    /*  "Inter", "Inter Fallback", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;*/
+    /*--font-family-mono:*/
+    /*  "Geist Mono", "Geist Mono Fallback", "SFMono-Regular", "SF Mono", ui-monospace, monospace;*/
 
     --ui-bg: #ffffff;
     --ui-bg-soft: #fafafa;
@@ -79,21 +76,12 @@
   }
 
   html {
-    font-family: var(--font-sans), sans-serif;
-    scroll-behavior: smooth;
-    @apply antialiased;
+    @apply scroll-smooth antialiased;
   }
 
   body {
     min-height: 100vh;
     background-color: var(--color-background);
     color: var(--color-foreground);
-  }
-
-  code,
-  pre,
-  kbd,
-  samp {
-    font-family: var(--font-mono), sans-serif;
   }
 }
