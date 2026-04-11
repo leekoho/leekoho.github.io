@@ -10,7 +10,7 @@ export async function GET(context: APIContext) {
 
   const posts = await getCollection("posts")
 
-  const response = await rss({
+  return await rss({
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
     site,
@@ -27,6 +27,4 @@ export async function GET(context: APIContext) {
       link: `/posts/${post.id}/`,
     })),
   })
-
-  return response
 }

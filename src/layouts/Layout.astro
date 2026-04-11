@@ -1,6 +1,7 @@
 ---
-import { Font } from "astro:assets"
+import { Font, getImage } from "astro:assets"
 import Header from "@/components/header/index.astro"
+import AvatarImage from "@/assets/avatar.jpeg"
 import "../styles/global.css"
 
 interface Props {
@@ -12,6 +13,9 @@ const { title = "leekoho | Blog", description = "记录开发中的经验、问�
   Astro.props
 
 const currentYear = new Date().getFullYear()
+
+const favicon = await getImage({ src: AvatarImage, width: 32, height: 32, format: "png" })
+const appleTouchIcon = await getImage({ src: AvatarImage, width: 180, height: 180, format: "png" })
 ---
 
 <!doctype html>
@@ -19,8 +23,8 @@ const currentYear = new Date().getFullYear()
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" href={favicon.src} />
+    <link rel="apple-touch-icon" href={appleTouchIcon.src} />
     <Font cssVariable="--font-sans" />
     <Font cssVariable="--font-mono" />
     <meta name="generator" content={Astro.generator} />

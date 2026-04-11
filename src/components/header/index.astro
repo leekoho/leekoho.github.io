@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets"
 import ModeToggle from "./ModeToggle.astro"
-import SonGokuImage from "@/assets/SonGoku.jpeg"
+import AvatarImage from "@/assets/avatar.jpeg"
 
 const { pathname } = Astro.url
 
@@ -29,7 +29,7 @@ const isActive = (href: string) => {
 
 <header class="header">
   <a href="/">
-    <Image src={SonGokuImage} alt="SonGoku" width="40" height="40" class="avatar" />
+    <Image src={AvatarImage} alt="Avatar" width="40" height="40" class="avatar" />
   </a>
 
   <nav class="nav">
