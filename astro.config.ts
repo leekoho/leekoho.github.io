@@ -9,13 +9,7 @@ export default defineConfig({
     enabled: false,
   },
 
-  site: "https://leekoho-blog.vercel.app",
-
-  // prefetch: true,
-
-  redirects: {
-    "/": "/posts",
-  },
+  site: "https://leekoho.github.io",
 
   integrations: [sitemap()],
 
