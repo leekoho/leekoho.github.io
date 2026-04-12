@@ -80,8 +80,15 @@
   }
 
   body {
-    min-height: 100vh;
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    @apply bg-background text-foreground min-h-screen;
+  }
+
+  /* Shiki Adaptive Themes */
+  .astro-code {
+    @apply border !bg-[var(--shiki-light-bg)] text-[var(--shiki-light)];
+    @apply dark:!bg-zinc-900/95 dark:!text-[var(--shiki-light)];
+  }
+  .astro-code span {
+    @apply text-[var(--shiki-light)] dark:!text-[var(--shiki-dark)];
   }
 }
