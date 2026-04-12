@@ -1,6 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro"
 import { getCollection, render } from "astro:content"
+import EncryptedContent from "@/components/EncryptedContent.astro"
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts")
@@ -18,7 +19,9 @@ const { Content } = await render(post)
   <article class="prose dark:prose-invert article-shell">
     <h1>{post.data.title}</h1>
 
-    <Content />
+    <EncryptedContent password={post.data.password}>
+      <Content />
+    </EncryptedContent>
   </article>
 </Layout>
 
