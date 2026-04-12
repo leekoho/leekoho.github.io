@@ -2,6 +2,8 @@ import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
 import { defineConfig, fontProviders } from "astro/config"
 
+import remarkCallout from "./plugins/remark-callout"
+
 export default defineConfig({
   devToolbar: {
     enabled: false,
@@ -22,6 +24,7 @@ export default defineConfig({
   },
 
   markdown: {
+    remarkPlugins: [remarkCallout],
     syntaxHighlight: "shiki",
     shikiConfig: {
       themes: {

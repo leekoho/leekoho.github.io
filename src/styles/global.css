@@ -1,9 +1,6 @@
 @import "./tailwind.css";
+@import "./callout.css";
 @config "../../tailwind.config.ts";
-
-body::selection {
-  @apply bg-accent/30 text-foreground;
-}
 
 a,
 button,

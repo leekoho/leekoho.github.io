@@ -32,6 +32,23 @@ const { x, y, z } = usePosition()
 
 [//]: # "This code is inline: `[1, 2, 3].join('-'){:js}` is `'1-2-3'{:js}`"
 
+## Callouts
+
+> [!NOTE]
+> Useful information that users should know, even when skimming content.
+
+> [!TIP]
+> Helpful advice for doing things better or more easily.
+
+> [!IMPORTANT]
+> Key information users need to know to achieve their goals.
+
+> [!WARNING]
+> Urgent info that needs immediate user attention to avoid problems.
+
+> [!CAUTION]
+> Negative potential consequences of an action.
+
 ## Images
 
 [//]: # "![This is a placeholder image description](../../assets/images/favicon.svg)"
