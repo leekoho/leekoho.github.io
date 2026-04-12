@@ -8,7 +8,9 @@ export async function GET(context: APIContext) {
   const site = context.site ?? ""
   const feedUrl = new URL(context.url.pathname, site).toString()
 
-  const posts = await getCollection("posts")
+  const posts = (await getCollection("posts"))
+    .filter((post) => !post.data.draft)
+    .toSorted((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
 
   return await rss({
     title: SITE_TITLE,

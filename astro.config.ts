@@ -7,9 +7,9 @@ export default defineConfig({
     enabled: false,
   },
 
-  site: "https://leekoho.com",
+  site: "https://leekoho-blog.vercel.app",
 
-  prefetch: true,
+  // prefetch: true,
 
   redirects: {
     "/": "/posts",
