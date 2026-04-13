@@ -1,26 +1,18 @@
 ---
+import { Moon, Sun, Monitor, Check } from "@lucide/astro"
+
 const options = [
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
-  { value: "system", label: "System" },
+  { value: "light", label: "Light", icon: Sun },
+  { value: "dark", label: "Dark", icon: Moon },
+  { value: "system", label: "System", icon: Monitor },
 ]
 ---
 
 <details class="theme-switcher" data-theme-switcher>
   <summary class="theme-trigger">
-    <svg
-      aria-hidden="true"
-      class="size-4"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      stroke-width="1.8"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.5 6.5 0 0 0 9.8 9.8Z"></path>
-    </svg>
+    <Sun class="icon-light size-4" />
+    <Moon class="icon-dark size-4" />
+    <Monitor class="icon-system size-4" />
     <span class="sr-only">切换主题</span>
   </summary>
 
@@ -28,17 +20,10 @@ const options = [
     {
       options.map((option) => (
         <button class="theme-option" data-theme-option={option.value} type="button">
-          <span>{option.label}</span>
+          <option.icon class="size-4" />
+          <span class="flex-1">{option.label}</span>
           <span aria-hidden="true" class="theme-check">
-            <svg
-              class="size-3.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="m5 12 5 5L20 7" />
-            </svg>
+            <Check class="size-3.5" />
           </span>
         </button>
       ))
@@ -102,7 +87,7 @@ const options = [
   }
 
   .theme-option {
-    @apply text-foreground-soft flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm transition;
+    @apply text-foreground-soft flex w-full items-center justify-between gap-x-2 rounded-xl px-3 py-2 text-left text-sm transition;
   }
 
   .theme-option[data-active="true"] {
@@ -132,5 +117,23 @@ const options = [
 
   :global(.dark) .theme-option[data-active="true"] {
     @apply bg-accent/10;
+  }
+
+  .icon-light,
+  .icon-dark,
+  .icon-system {
+    @apply hidden;
+  }
+
+  .theme-switcher[data-theme="light"] .icon-light {
+    @apply block;
+  }
+
+  .theme-switcher[data-theme="dark"] .icon-dark {
+    @apply block;
+  }
+
+  .theme-switcher[data-theme="system"] .icon-system {
+    @apply block;
   }
 </style>
