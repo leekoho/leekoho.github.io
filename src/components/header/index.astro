@@ -39,7 +39,7 @@ const isActive = (href: string) => {
         // ["Tools", "/tools", "_self"],
         ["About", "/about", "_self"],
         // ['Github', GITHUB_URL, '_blank'],
-        ["Feed", "/feed", "_blank"],
+        ["Feed", "/feed.xml", "_blank"],
       ].map(([title, url, target]) => (
         <a href={url} class:list={["nav-link", { active: isActive(url) }]} target={target}>
           {title}
