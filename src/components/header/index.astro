@@ -104,8 +104,7 @@ const isActive = (href: string) => {
   }
 
   .header::before {
-    content: "";
-    @apply pointer-events-none absolute inset-x-4 -top-14 h-56 rounded-3xl blur-3xl sm:inset-x-6;
+    @apply pointer-events-none absolute inset-x-4 -top-18 h-64 rounded-3xl blur-3xl content-none sm:inset-x-6 sm:content-[''];
     background:
       radial-gradient(
         circle at 18% 18%,
@@ -122,18 +121,6 @@ const isActive = (href: string) => {
         color-mix(in srgb, var(--color-background) 82%, transparent),
         transparent 78%
       );
-    z-index: 0;
-  }
-
-  .header > * {
-    @apply relative z-10;
-  }
-
-  @media (min-width: 1024px) {
-    .header::before {
-      @apply h-64;
-      top: -4.5rem;
-    }
   }
 
   .avatar {

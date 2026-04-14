@@ -2,6 +2,11 @@
 @import "./callout.css";
 @config "../../tailwind.config.ts";
 
+html,
+body {
+  @apply bg-white dark:bg-zinc-900;
+}
+
 a,
 button,
 summary,
