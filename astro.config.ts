@@ -13,6 +13,10 @@ export default defineConfig({
 
   integrations: [sitemap()],
 
+  build: {
+    inlineStylesheets: "always",
+  },
+
   vite: {
     plugins: [tailwindcss()],
   },
