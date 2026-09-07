@@ -1,8 +1,9 @@
+import { satteri } from "@astrojs/markdown-satteri"
 import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
 import { defineConfig, fontProviders } from "astro/config"
 
-import remarkCallout from "./plugins/remark-callout"
+import calloutPlugin from "./plugins/remark-callout"
 
 export default defineConfig({
   devToolbar: {
@@ -13,16 +14,12 @@ export default defineConfig({
 
   integrations: [sitemap()],
 
-  build: {
-    inlineStylesheets: "always",
-  },
-
   vite: {
     plugins: [tailwindcss()],
   },
 
   markdown: {
-    remarkPlugins: [remarkCallout],
+    processor: satteri({ mdastPlugins: [calloutPlugin] }),
     syntaxHighlight: "shiki",
     shikiConfig: {
       themes: {
@@ -35,14 +32,39 @@ export default defineConfig({
 
   fonts: [
     {
-      name: "Inter",
-      cssVariable: "--font-sans",
+      name: "Geist",
+      cssVariable: "--font-geist",
       provider: fontProviders.google(),
+      weights: ["100 900"],
+      styles: ["normal"],
+      subsets: ["latin", "latin-ext"],
+      fallbacks: [],
+      optimizedFallbacks: false,
+      display: "swap",
     },
     {
-      name: "JetBrains Mono",
-      cssVariable: "--font-mono",
+      name: "Noto Sans SC Variable",
+      cssVariable: "--font-noto",
+      provider: fontProviders.npm(),
+      options: {
+        package: "@fontsource-variable/noto-sans-sc",
+        version: "5.3.0",
+        file: "index.css",
+      },
+      fallbacks: [],
+      optimizedFallbacks: false,
+      display: "swap",
+    },
+    {
+      name: "Geist Mono",
+      cssVariable: "--font-code",
       provider: fontProviders.google(),
+      weights: ["100 900"],
+      styles: ["normal"],
+      subsets: ["latin", "latin-ext"],
+      fallbacks: [],
+      optimizedFallbacks: false,
+      display: "swap",
     },
   ],
 })

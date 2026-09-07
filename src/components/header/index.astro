@@ -1,157 +1,96 @@
 ---
-import { Image } from "astro:assets"
+import Brand from "@/components/Brand.astro"
 import ModeToggle from "./ModeToggle.astro"
-import AvatarImage from "@/assets/avatar.jpeg"
 
-const { pathname } = Astro.url
-
-const normalizePath = (value: string) => {
-  if (value === "/") {
-    return value
-  }
-
-  return value.replace(/\/$/, "")
-}
-
-const isActive = (href: string) => {
-  const normalizedHref = normalizePath(href)
-  const normalizedPathname = normalizePath(pathname)
-
-  if (normalizedHref === "/") {
-    return normalizedPathname === "/"
-  }
-
-  return (
-    normalizedHref === normalizedPathname || normalizedPathname.startsWith(`${normalizedHref}/`)
-  )
-}
+const pathname = Astro.url.pathname.replace(/\/$/, "") || "/"
+const links = [
+  {
+    href: "/posts",
+    label: "文章",
+    active: pathname === "/" || pathname === "/posts" || pathname.startsWith("/posts/"),
+  },
+  { href: "/about", label: "关于", active: pathname === "/about" },
+]
 ---
 
-<header class="header">
-  <a href="/">
-    <Image src={AvatarImage} alt="Avatar" width="40" height="40" class="avatar" />
-  </a>
-
-  <nav class="nav">
+<header class="header page-rule">
+  <Brand />
+  <nav aria-label="主导航">
     {
-      [
-        ["Blog", "/posts", "_self"],
-        // ["Tools", "/tools", "_self"],
-        ["About", "/about", "_self"],
-        // ['Github', GITHUB_URL, '_blank'],
-        ["Feed", "/feed.xml", "_blank"],
-      ].map(([title, url, target]) => (
-        <a href={url} class:list={["nav-link", { active: isActive(url) }]} target={target}>
-          {title}
+      links.map((link) => (
+        <a class="nav-link" href={link.href} aria-current={link.active ? "page" : undefined}>
+          {link.label}
         </a>
       ))
     }
   </nav>
-
-  <ModeToggle />
+  <div class="header-actions"><ModeToggle /></div>
 </header>
 
-<script is:inline>
-  const storageKey = "theme-preference"
-  const resolveTheme = (preference) => {
-    if (preference === "system") {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
-    }
-
-    return preference
-  }
-
-  const themeController = {
-    getPreference() {
-      if (typeof localStorage === "undefined") {
-        return "system"
-      }
-
-      return localStorage.getItem(storageKey) ?? "system"
-    },
-
-    apply(preference) {
-      const resolvedTheme = resolveTheme(preference)
-      document.documentElement.dataset.themePreference = preference
-      document.documentElement.classList.toggle("dark", resolvedTheme === "dark")
-
-      if (typeof localStorage !== "undefined") {
-        localStorage.setItem(storageKey, preference)
-      }
-
-      window.dispatchEvent(new CustomEvent("theme-change", { detail: { preference } }))
-    },
-  }
-
-  window.__themeController = themeController
-  themeController.apply(themeController.getPreference())
-
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-  const handleSystemThemeChange = () => {
-    if (themeController.getPreference() === "system") {
-      themeController.apply("system")
-    }
-  }
-
-  mediaQuery.addEventListener?.("change", handleSystemThemeChange)
-</script>
-
 <style>
-  @reference "@/styles/tailwind.css";
-
   .header {
-    @apply relative isolate z-20 flex items-center justify-between p-4 sm:px-6 lg:px-10;
+    position: relative;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    height: 66px;
+    gap: 22px;
+    padding: 0 24px;
   }
-
-  .header::before {
-    @apply pointer-events-none absolute inset-x-4 -top-18 h-64 rounded-3xl blur-3xl content-none sm:inset-x-6 sm:content-[''];
-    background:
-      radial-gradient(
-        circle at 18% 18%,
-        color-mix(in srgb, var(--color-accent) 22%, transparent),
-        transparent 34%
-      ),
-      radial-gradient(
-        circle at 78% 12%,
-        color-mix(in srgb, var(--color-foreground) 10%, transparent),
-        transparent 32%
-      ),
-      linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--color-background) 82%, transparent),
-        transparent 78%
-      );
+  nav {
+    display: flex;
+    align-self: stretch;
+    gap: 24px;
+    margin-left: auto;
   }
-
-  .avatar {
-    @apply border-border bg-panel/90 size-10 rounded-full border p-0.5 backdrop-blur-md;
-    box-shadow: var(--shadow-card);
-  }
-
-  .nav {
-    @apply border-border bg-panel/90 flex rounded-full border px-3 text-sm font-medium backdrop-blur-md;
-    box-shadow: var(--shadow-card);
-  }
-
   .nav-link {
-    @apply text-foreground-soft relative block px-3 py-2 no-underline transition;
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: var(--ui-text-muted);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-decoration: none;
   }
-
-  .nav-link.active {
-    @apply text-accent-strong;
+  .nav-link:hover,
+  .nav-link[aria-current="page"] {
+    color: var(--ui-text);
   }
-
-  .nav-link.active::after {
-    @apply absolute inset-x-1 -bottom-px h-px content-[''];
-    background: linear-gradient(
-      90deg,
-      transparent,
-      color-mix(in srgb, var(--color-accent) 42%, transparent),
-      transparent
-    );
+  .nav-link[aria-current="page"]::after {
+    content: "";
+    position: absolute;
+    height: 2px;
+    bottom: -1px;
+    inset-inline: 0;
+    background: var(--ui-text);
   }
-
-  .nav-link:hover {
-    @apply text-accent-strong;
+  .header-actions {
+    padding-left: 18px;
+    border-left: 1px solid var(--ui-border);
+  }
+  @media (max-width: 520px) {
+    .header {
+      height: 61px;
+      gap: 16px;
+      padding: 0 18px;
+    }
+    nav {
+      gap: 19px;
+    }
+    .header-actions {
+      padding-left: 13px;
+    }
+  }
+  @media (max-width: 340px) {
+    .header {
+      gap: 10px;
+      padding: 0 13px;
+    }
+    nav {
+      gap: 14px;
+    }
+    .header-actions {
+      padding-left: 9px;
+    }
   }
 </style>

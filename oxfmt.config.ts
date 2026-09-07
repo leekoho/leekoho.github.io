@@ -6,5 +6,5 @@ export default defineConfig({
   tabWidth: 2,
   sortImports: true,
   sortPackageJson: true,
-  sortTailwindcss: true,
+  sortTailwindcss: { stylesheet: "./src/styles/global.css" },
 })

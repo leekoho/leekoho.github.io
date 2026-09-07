@@ -1,54 +1,76 @@
 callout {
-  @apply relative my-6 flex gap-3 overflow-hidden rounded-2xl border px-5 py-4 text-sm;
-  @apply text-foreground-soft/90 transition-colors duration-200;
-
-  @apply border-blue-200/60 bg-blue-50/50 text-blue-900/80 dark:border-blue-500/20 dark:bg-blue-500/5 dark:text-blue-300;
+  --callout-accent: light-dark(#4e7196, #9fb9d8);
+  position: relative;
+  display: block;
+  min-width: 0;
+  margin: 24px 0;
+  padding: 16px 16px 16px 44px;
+  border-inline-start: 2px solid var(--callout-accent);
+  background: var(--ui-bg-soft);
+  color: var(--ui-text-secondary);
+  font-size: 14px;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
 
   &::before {
     content: "";
-    @apply mt-0.5 size-4.5 shrink-0 bg-current mask-contain mask-center mask-no-repeat;
+    position: absolute;
+    inset-block-start: 21px;
+    inset-inline-start: 15px;
+    width: 16px;
+    height: 16px;
+    background: var(--callout-accent);
+    mask-size: contain;
+    mask-position: center;
+    mask-repeat: no-repeat;
   }
 
   & p {
-    @apply my-0 leading-relaxed;
-    @apply [&_a]:border-current [&_a]:!text-current [&_code]:!text-current [&_kbd]:!text-current [&_strong]:!text-current;
+    margin-block: 0;
+    line-height: inherit;
   }
 
-  /* Note - Blue */
+  & p + p {
+    margin-block-start: 12px;
+  }
+
+  & > :first-child {
+    margin-block-start: 0;
+  }
+
+  & > :last-child {
+    margin-block-end: 0;
+  }
+
   &[type="note"] {
-    @apply border-blue-200/60 bg-blue-50/50 text-blue-900/80 dark:border-blue-500/20 dark:bg-blue-500/5 dark:text-blue-300;
     &::before {
       mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 16v-4'/%3E%3Cpath d='M12 8h.01'/%3E%3C/svg%3E");
     }
   }
 
-  /* Tip - Brand Green */
   &[type="tip"] {
-    @apply border-emerald-200/60 bg-emerald-50/50 text-emerald-900/80 dark:border-emerald-500/20 dark:bg-emerald-500/5 dark:text-emerald-300;
+    --callout-accent: light-dark(#386754, #a4c7b7);
     &::before {
       mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .5 2.2 1.5 3.1.7.7 1.3 1.5 1.5 2.5'/%3E%3Cpath d='M9 18h6'/%3E%3Cpath d='M10 22h4'/%3E%3C/svg%3E");
     }
   }
 
-  /* Important - Violet */
   &[type="important"] {
-    @apply border-violet-200/60 bg-violet-50/50 text-violet-900/80 dark:border-violet-500/20 dark:bg-violet-500/5 dark:text-violet-300;
+    --callout-accent: light-dark(#7b6090, #c4aed8);
     &::before {
       mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z'/%3E%3Cpath d='M12 16v-4'/%3E%3Cpath d='M12 8h.01'/%3E%3C/svg%3E");
     }
   }
 
-  /* Warning - Amber */
   &[type="warning"] {
-    @apply border-amber-200/60 bg-amber-50/50 text-amber-900/80 dark:border-amber-500/20 dark:bg-amber-500/5 dark:text-amber-300;
+    --callout-accent: light-dark(#916b28, #d6bb86);
     &::before {
       mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z'/%3E%3Cpath d='M12 9v4'/%3E%3Cpath d='M12 17h.01'/%3E%3C/svg%3E");
     }
   }
 
-  /* Caution - Red */
   &[type="caution"] {
-    @apply border-red-200/60 bg-red-50/50 text-red-900/80 dark:border-rose-500/20 dark:bg-rose-500/5 dark:text-rose-300;
+    --callout-accent: light-dark(#a65355, #dfa5a7);
     &::before {
       mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='m15 9-6 6'/%3E%3Cpath d='m9 9 6 6'/%3E%3C/svg%3E");
     }

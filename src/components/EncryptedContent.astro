@@ -71,33 +71,35 @@ if (password) {
       data-iv={ivStr}
       data-hash={authHash}
     >
-      <div class="not-prose border-border shadow-card bg-background-muted my-8 space-y-6 rounded-lg border p-6">
-        <div class="space-y-3 text-center">
-          <Lock class="text-muted mx-auto size-8" />
-          <div class="flex flex-col gap-y-1">
-            <h3 class="text-foreground text-lg font-medium">此文章已加密</h3>
-            <p class="text-muted text-sm">请输入密码以查看内容</p>
-          </div>
-        </div>
+      <form class="encrypted-panel not-prose" aria-labelledby="encrypt-heading">
+        <Lock size={22} stroke-width={1.5} class="encrypted-icon" aria-hidden="true" />
+        <h2 id="encrypt-heading">这篇文章需要密码</h2>
+        <p class="encrypted-description">输入访问密码，继续阅读。</p>
 
-        <div class="mx-auto flex max-w-sm items-center space-x-3">
+        <div class="encrypted-controls">
+          <label for="encrypt-pwd" class="sr-only">
+            文章访问密码
+          </label>
           <input
             type="password"
             id="encrypt-pwd"
+            autocomplete="current-password"
+            aria-describedby="encrypt-error"
+            required
             placeholder="输入密码"
-            class="border-border bg-background placeholder:text-muted focus-visible:ring-accent h-10 w-full rounded-full border px-4 py-2 text-sm transition-all focus-visible:ring-2 focus-visible:outline-none"
+            class="encrypted-input"
           />
-          <button
-            id="encrypt-btn"
-            class="shadow-button bg-foreground text-background inline-flex h-10 shrink-0 cursor-pointer items-center justify-center rounded-full px-6 py-2 text-sm font-medium transition-opacity hover:opacity-90 disabled:pointer-events-none disabled:opacity-50"
-          >
-            解锁
+          <button id="encrypt-btn" type="submit" class="encrypted-button">
+            继续阅读
           </button>
         </div>
-        <p id="encrypt-error" class="mt-3 hidden text-center text-sm text-red-500">
-          密码错误，请重试
+        <p id="encrypt-error" class="encrypted-error" role="alert" hidden>
+          密码不正确，请重试。
         </p>
-      </div>
+        <noscript>
+          <p class="encrypted-description">请启用 JavaScript 后输入密码。</p>
+        </noscript>
+      </form>
     </encrypted-content>
   ) : (
     <Fragment set:html={html} />
@@ -124,9 +126,12 @@ if (password) {
 
       if (!cipherText || !authHash || !saltStr || !ivStr) return
 
-      const btn = this.querySelector("#encrypt-btn") as HTMLButtonElement
-      const input = this.querySelector("#encrypt-pwd") as HTMLInputElement
-      const errorMsg = this.querySelector("#encrypt-error")
+      const form = this.querySelector("form")
+      const btn = this.querySelector<HTMLButtonElement>("#encrypt-btn")
+      const input = this.querySelector<HTMLInputElement>("#encrypt-pwd")
+      const errorMsg = this.querySelector<HTMLElement>("#encrypt-error")
+
+      if (!form || !btn || !input || !errorMsg) return
 
       // 预先解析 salt / iv，避免每次 unlock 重复解析
       const saltBuffer = hexToBuffer(saltStr)
@@ -134,11 +139,13 @@ if (password) {
 
       const unlock = async () => {
         const pwd = input.value
-        if (!pwd) return
+        if (!pwd || btn.disabled) return
 
         btn.disabled = true
-        btn.innerText = "解密中..."
-        errorMsg?.classList.add("hidden")
+        btn.innerText = "正在打开…"
+        form.setAttribute("aria-busy", "true")
+        input.removeAttribute("aria-invalid")
+        errorMsg.hidden = true
 
         try {
           const enc = new TextEncoder()
@@ -168,9 +175,10 @@ if (password) {
           const inputHash = bufferToHex(hashBuffer)
 
           if (inputHash !== authHash) {
-            errorMsg?.classList.remove("hidden")
-            btn.disabled = false
-            btn.innerText = "解锁"
+            errorMsg.textContent = "密码不正确，请重试。"
+            errorMsg.hidden = false
+            input.setAttribute("aria-invalid", "true")
+            input.focus()
             return
           }
 
@@ -194,21 +202,140 @@ if (password) {
           this.outerHTML = new TextDecoder().decode(decryptedBuffer)
         } catch (e) {
           console.error(e)
-          errorMsg?.classList.remove("hidden")
+          errorMsg.textContent = "暂时无法打开文章，请重试。"
+          errorMsg.hidden = false
+        } finally {
+          form.removeAttribute("aria-busy")
           btn.disabled = false
-          btn.innerText = "解锁"
+          btn.innerText = "继续阅读"
         }
       }
 
-      btn?.addEventListener("click", unlock)
-      input?.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") unlock()
+      form.addEventListener("submit", (event) => {
+        event.preventDefault()
+        void unlock()
       })
-      input?.addEventListener("input", () => {
-        errorMsg?.classList.add("hidden")
+      input.addEventListener("input", () => {
+        errorMsg.hidden = true
+        input.removeAttribute("aria-invalid")
       })
     }
   }
 
   customElements.define("encrypted-content", EncryptedContent)
 </script>
+
+<style>
+  encrypted-content {
+    display: block;
+  }
+
+  .encrypted-panel {
+    margin: 8px 0;
+    padding: 32px 24px;
+    border: 1px solid var(--ui-border);
+    border-radius: 6px;
+    background: var(--ui-bg-soft);
+    text-align: center;
+  }
+
+  .encrypted-icon {
+    margin: 0 auto 16px;
+    color: var(--ui-text-muted);
+  }
+
+  .encrypted-panel h2 {
+    margin: 0 0 6px;
+    color: var(--ui-text);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.7;
+  }
+
+  .encrypted-description {
+    margin: 0;
+    color: var(--ui-text-muted);
+    font-size: 13px;
+    line-height: 1.85;
+  }
+
+  .encrypted-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 360px;
+    margin: 24px auto 0;
+  }
+
+  .encrypted-input {
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+    padding: 9px 12px;
+    border: 1px solid var(--ui-border);
+    border-radius: 4px;
+    background: var(--ui-bg);
+    color: var(--ui-text);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .encrypted-input::placeholder {
+    color: var(--ui-text-muted);
+  }
+
+  .encrypted-button {
+    flex-shrink: 0;
+    height: 42px;
+    padding: 9px 16px;
+    border: 1px solid var(--ui-text);
+    border-radius: 4px;
+    background: var(--ui-text);
+    color: var(--ui-bg);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+
+  .encrypted-button:hover {
+    opacity: 0.85;
+  }
+
+  .encrypted-button:disabled {
+    opacity: 0.55;
+    cursor: wait;
+  }
+
+  .encrypted-error {
+    margin: 14px 0 0;
+    color: var(--ui-text-secondary);
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  .encrypted-error[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 520px) {
+    .encrypted-panel {
+      padding: 28px 16px;
+    }
+
+    .encrypted-controls {
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .encrypted-input,
+    .encrypted-button {
+      width: 100%;
+      height: 44px;
+    }
+
+    .encrypted-input {
+      font-size: 16px;
+    }
+  }
+</style>

@@ -1,0 +1,32 @@
+<script is:inline>
+  ;(() => {
+    const storageKey = "theme-preference"
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    const normalize = (value) => (["light", "dark", "system"].includes(value) ? value : "system")
+    let preference = "system"
+    try {
+      preference = normalize(localStorage.getItem(storageKey))
+    } catch {}
+
+    const apply = (value, persist = true) => {
+      preference = normalize(value)
+      document.documentElement.dataset.themePreference = preference
+      document.documentElement.classList.toggle(
+        "dark",
+        preference === "dark" || (preference === "system" && mediaQuery.matches),
+      )
+      if (persist) {
+        try {
+          localStorage.setItem(storageKey, preference)
+        } catch {}
+      }
+      window.dispatchEvent(new CustomEvent("theme-change"))
+    }
+
+    window.__themeController = { getPreference: () => preference, apply }
+    apply(preference, false)
+    mediaQuery.addEventListener("change", () => {
+      if (preference === "system") apply("system", false)
+    })
+  })()
+</script>

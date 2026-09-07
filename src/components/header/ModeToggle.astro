@@ -2,29 +2,26 @@
 import { Moon, Sun, Monitor, Check } from "@lucide/astro"
 
 const options = [
-  { value: "light", label: "Light", icon: Sun },
-  { value: "dark", label: "Dark", icon: Moon },
-  { value: "system", label: "System", icon: Monitor },
+  { value: "light", label: "浅色", icon: Sun },
+  { value: "dark", label: "深色", icon: Moon },
+  { value: "system", label: "跟随系统", icon: Monitor },
 ]
 ---
 
 <details class="theme-switcher" data-theme-switcher>
   <summary class="theme-trigger">
-    <Sun class="icon-light size-4" />
-    <Moon class="icon-dark size-4" />
-    <Monitor class="icon-system size-4" />
+    <Sun class="icon-light" size={16} stroke-width={1.5} aria-hidden="true" />
+    <Moon class="icon-dark" size={16} stroke-width={1.5} aria-hidden="true" />
+    <Monitor class="icon-system" size={16} stroke-width={1.5} aria-hidden="true" />
     <span class="sr-only">切换主题</span>
   </summary>
-
-  <div class="theme-menu">
+  <div class="theme-menu" role="group" aria-label="外观">
     {
       options.map((option) => (
         <button class="theme-option" data-theme-option={option.value} type="button">
-          <option.icon class="size-4" />
-          <span class="flex-1">{option.label}</span>
-          <span aria-hidden="true" class="theme-check">
-            <Check class="size-3.5" />
-          </span>
+          <option.icon size={16} stroke-width={1.5} aria-hidden="true" />
+          <span class="theme-label">{option.label}</span>
+          <Check class="theme-check" size={14} aria-hidden="true" />
         </button>
       ))
     }
@@ -32,108 +29,118 @@ const options = [
 </details>
 
 <script is:inline>
-  const initializeThemeSwitcher = (switcher) => {
-    if (!switcher || switcher.dataset.ready === "true") {
-      return
-    }
-
-    const syncSelection = () => {
-      const currentPreference = window.__themeController?.getPreference?.() ?? "system"
-      switcher.dataset.theme = currentPreference
-
+  ;(() => {
+    document.querySelectorAll("[data-theme-switcher]").forEach((switcher) => {
+      if (switcher.dataset.ready === "true") return
+      const trigger = switcher.querySelector("summary")
+      const syncSelection = () => {
+        const current = window.__themeController?.getPreference() ?? "system"
+        switcher.dataset.theme = current
+        switcher.querySelectorAll("[data-theme-option]").forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.themeOption === current))
+        })
+      }
       switcher.querySelectorAll("[data-theme-option]").forEach((button) => {
-        const isActive = button.dataset.themeOption === currentPreference
-        button.dataset.active = isActive ? "true" : "false"
-        button.setAttribute("aria-pressed", isActive ? "true" : "false")
+        button.addEventListener("click", () => {
+          window.__themeController?.apply(button.dataset.themeOption)
+          switcher.open = false
+          trigger.focus()
+        })
       })
-    }
-
-    switcher.querySelectorAll("[data-theme-option]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const preference = button.dataset.themeOption ?? "system"
-        window.__themeController?.apply?.(preference)
-        switcher.open = false
-        syncSelection()
+      document.addEventListener("click", (event) => {
+        if (!switcher.contains(event.target)) switcher.open = false
       })
+      switcher.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          switcher.open = false
+          trigger.focus()
+        }
+      })
+      window.addEventListener("theme-change", syncSelection)
+      syncSelection()
+      switcher.dataset.ready = "true"
     })
-
-    window.addEventListener("theme-change", syncSelection)
-    syncSelection()
-    switcher.dataset.ready = "true"
-  }
-
-  document.querySelectorAll("[data-theme-switcher]").forEach(initializeThemeSwitcher)
+  })()
 </script>
 
 <style>
-  @reference "@/styles/tailwind.css";
-
   .theme-switcher {
-    @apply relative;
+    position: relative;
   }
-
   .theme-trigger {
-    @apply bg-surface/90 border-border text-foreground-soft flex cursor-pointer list-none items-center justify-center rounded-full border p-2 backdrop-blur-md transition;
-    box-shadow: var(--shadow-button);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    list-style: none;
+    border: 1px solid var(--ui-border);
+    border-radius: 5px;
+    color: var(--ui-text-muted);
+    background: var(--ui-bg);
   }
-
   .theme-trigger::-webkit-details-marker {
     display: none;
   }
-
   .theme-menu {
-    @apply bg-surface/95 border-border absolute top-full right-0 z-20 mbs-2 grid min-w-32 gap-1 rounded-2xl border p-1.5 backdrop-blur-lg;
+    position: absolute;
+    z-index: 30;
+    top: 100%;
+    right: 0;
+    display: grid;
+    gap: 3px;
+    min-width: 144px;
+    margin-top: 8px;
+    padding: 6px;
+    border: 1px solid var(--ui-border);
+    border-radius: 6px;
+    background: var(--ui-surface);
     box-shadow: var(--shadow-card);
   }
-
   .theme-option {
-    @apply text-foreground-soft flex w-full items-center justify-between gap-x-2 rounded-xl px-3 py-2 text-left text-sm transition;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    color: var(--ui-text-muted);
+    font-size: 12px;
+    text-align: left;
   }
-
-  .theme-option[data-active="true"] {
-    @apply bg-accent/10 text-foreground;
+  .theme-label {
+    flex: 1;
+    white-space: nowrap;
   }
-
-  .theme-check {
-    @apply opacity-0 transition;
-  }
-
-  .theme-option[data-active="true"] .theme-check {
-    @apply opacity-100;
-  }
-
   .theme-trigger:hover,
-  .theme-option:hover {
-    @apply text-accent-strong;
+  .theme-option:hover,
+  .theme-option[aria-pressed="true"] {
+    color: var(--ui-text);
+    background: var(--ui-hover);
   }
-
-  :global(.dark) .theme-trigger {
-    @apply bg-surface;
+  .theme-option :global(.theme-check) {
+    opacity: 0;
   }
-
-  :global(.dark) .theme-menu {
-    @apply bg-surface;
+  .theme-option[aria-pressed="true"] :global(.theme-check) {
+    opacity: 1;
   }
-
-  :global(.dark) .theme-option[data-active="true"] {
-    @apply bg-accent/10;
+  :global(.icon-light),
+  :global(.icon-dark),
+  :global(.icon-system) {
+    display: none;
   }
-
-  .icon-light,
-  .icon-dark,
-  .icon-system {
-    @apply hidden;
+  .theme-switcher[data-theme="light"] :global(.icon-light),
+  .theme-switcher[data-theme="dark"] :global(.icon-dark),
+  .theme-switcher[data-theme="system"] :global(.icon-system) {
+    display: block;
   }
-
-  .theme-switcher[data-theme="light"] .icon-light {
-    @apply block;
-  }
-
-  .theme-switcher[data-theme="dark"] .icon-dark {
-    @apply block;
-  }
-
-  .theme-switcher[data-theme="system"] .icon-system {
-    @apply block;
+  @media (pointer: coarse) {
+    .theme-trigger {
+      width: 44px;
+      height: 44px;
+    }
+    .theme-option {
+      min-height: 44px;
+    }
   }
 </style>

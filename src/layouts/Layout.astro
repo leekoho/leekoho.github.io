@@ -1,77 +1,126 @@
 ---
-import { Font, getImage } from "astro:assets"
+import { Font } from "astro:assets"
+import { Rss } from "@lucide/astro"
 import Header from "@/components/header/index.astro"
-import AvatarImage from "@/assets/avatar.jpeg"
+import ThemeScript from "@/components/header/ThemeScript.astro"
+import { SITE_TITLE, SITE_DESCRIPTION } from "@/consts"
 import "../styles/global.css"
 
 interface Props {
   title?: string
   description?: string
 }
-
-const { title = "leekoho | Blog", description = "记录开发中的经验、问题拆解和一些可复用的实践。" } =
-  Astro.props
-
+const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props
 const currentYear = new Date().getFullYear()
-
-const favicon = await getImage({ src: AvatarImage, width: 32, height: 32, format: "png" })
-const appleTouchIcon = await getImage({ src: AvatarImage, width: 180, height: 180, format: "png" })
 ---
 
 <!doctype html>
-<html lang="zh">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/png" href={favicon.src} />
-    <link rel="apple-touch-icon" href={appleTouchIcon.src} />
-    <Font cssVariable="--font-sans" />
-    <Font cssVariable="--font-mono" />
+    <ThemeScript />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href="/feed.xml" />
+    <Font cssVariable="--font-geist" preload={[{ subset: "latin", style: "normal" }]} />
+    <Font cssVariable="--font-noto" preload={false} />
+    <Font cssVariable="--font-code" preload={false} />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <title>{title}</title>
   </head>
   <body class="site-body">
+    <a class="skip-link" href="#main-content">跳至正文</a>
     <div class="site-shell">
       <Header />
-      <main class="site-main">
-        <slot />
-      </main>
+      <main id="main-content" class="site-main" tabindex="-1"><slot /></main>
       <footer class="site-footer">
-        <a href="https://astro.build" class="footer-powered-by" target="_blank" rel="noreferrer">
-          Powered by Astro
-        </a>
-
-        <p class="footer-copyright">© {currentYear} leekoho</p>
+        <a href="/" class="footer-name">leekoho</a>
+        <div class="footer-end">
+          <a class="footer-feed" href="/feed.xml"
+            ><Rss size={13} stroke-width={1.5} aria-hidden="true" />RSS</a
+          >
+          <span>© {currentYear}</span>
+        </div>
       </footer>
     </div>
   </body>
 </html>
 
 <style>
-  @reference "@/styles/tailwind.css";
-
+  .site-body {
+    overflow-x: clip;
+  }
   .site-shell {
-    @apply mx-auto flex min-h-svh max-w-4xl flex-col bg-white ring-1 ring-zinc-300/40 2xl:max-w-5xl dark:bg-zinc-900/95 dark:ring-white/10;
+    display: flex;
+    flex-direction: column;
+    width: min(100%, 768px);
+    min-height: 100svh;
+    margin-inline: auto;
+    border-inline: 1px solid var(--ui-border);
+    background: var(--ui-bg);
   }
-
   .site-main {
-    @apply flex-1;
+    flex: 1;
+    min-width: 0;
   }
-
+  .site-main:focus {
+    outline: none;
+  }
   .site-footer {
-    @apply border-border mbs-8 flex items-center justify-center gap-x-2 border-t px-4 py-6 sm:px-6 lg:px-10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 24px 28px;
+    border-top: 1px solid var(--ui-border);
+    color: var(--ui-text-muted);
+    font-size: 11px;
   }
-
-  .footer-powered-by {
-    @apply text-muted text-sm no-underline transition;
+  .site-footer a {
+    text-decoration: none;
   }
-
-  .footer-powered-by:hover {
-    @apply text-accent-strong;
+  .site-footer a:hover {
+    color: var(--ui-text);
   }
-
-  .footer-copyright {
-    @apply text-subtle text-sm;
+  .footer-name {
+    font-family: var(--font-geist), sans-serif;
+    letter-spacing: -0.2px;
+  }
+  .footer-end {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .footer-feed {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .skip-link {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 100;
+    padding: 10px 16px;
+    transform: translateY(-150%);
+    background: var(--ui-bg);
+    border: 1px solid var(--ui-border);
+  }
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+  @media (max-width: 520px) {
+    .site-footer {
+      padding: 20px;
+    }
+  }
+  @media (pointer: coarse) {
+    .site-footer a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
   }
 </style>

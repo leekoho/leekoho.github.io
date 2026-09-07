@@ -2,9 +2,12 @@
 import Layout from "@/layouts/Layout.astro"
 import { getCollection, render } from "astro:content"
 import EncryptedContent from "@/components/EncryptedContent.astro"
+import { ArrowLeft } from "@lucide/astro"
 
 export async function getStaticPaths() {
-  const posts = await getCollection("posts")
+  const posts = await getCollection("posts", ({ data }) =>
+    import.meta.env.PROD ? data.draft !== true : true,
+  )
   return posts.map((post) => ({
     params: { slug: post.id },
     props: post,
@@ -13,22 +16,153 @@ export async function getStaticPaths() {
 
 const post = Astro.props
 const { Content } = await render(post)
+const publishedAt = post.data.pubDate.toISOString()
+const publishedLabel = publishedAt.slice(0, 10).replaceAll("-", ".")
 ---
 
-<Layout>
-  <article class="prose dark:prose-invert article-shell">
-    <h1>{post.data.title}</h1>
+<Layout title={`${post.data.title} · leekoho`} description={post.data.description}>
+  <article class="article-shell" aria-labelledby="article-title">
+    <header class="article-heading page-rule">
+      <a href="/posts" class="article-back">
+        <ArrowLeft size={16} stroke-width={1.5} aria-hidden="true" />
+        所有文章
+      </a>
+      <h1 id="article-title">{post.data.title}</h1>
+      <div class="article-meta">
+        <a href="/about" class="article-author" rel="author">leekoho</a>
+        <span class="article-meta-rule" aria-hidden="true"></span>
+        <time datetime={publishedAt}>{publishedLabel}</time>
+        {
+          post.data.tags.length > 0 && (
+            <>
+              <span class="article-meta-rule" aria-hidden="true" />
+              <span>{post.data.tags.join(" / ")}</span>
+            </>
+          )
+        }
+        {post.data.draft && <span class="article-draft">草稿</span>}
+      </div>
+    </header>
 
-    <EncryptedContent password={post.data.password}>
-      <Content />
-    </EncryptedContent>
+    <div class="section-divider page-rule" aria-hidden="true"></div>
+
+    <div class="article-content page-rule prose">
+      <EncryptedContent password={post.data.password}>
+        <Content />
+      </EncryptedContent>
+    </div>
   </article>
 </Layout>
 
 <style>
-  @reference "@/styles/tailwind.css";
-
   .article-shell {
-    @apply text-foreground-soft mx-auto w-full max-w-none px-6 pbs-10 pbe-16 sm:pbs-12 lg:px-16 lg:pbs-16;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .article-heading {
+    padding: 24px 32px 30px;
+  }
+
+  .article-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--ui-text-muted);
+    font-size: 12px;
+    text-decoration: none;
+  }
+
+  .article-back:hover {
+    color: var(--ui-text);
+  }
+
+  .article-heading h1 {
+    margin: 24px 0 18px;
+    font: 500 30px/1.6 var(--font-sans);
+    letter-spacing: 0;
+    overflow-wrap: anywhere;
+    text-wrap: pretty;
+  }
+
+  .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 11px;
+    color: var(--ui-text-muted);
+    font-size: 11px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+
+  .article-author {
+    color: var(--ui-text);
+    text-decoration: none;
+  }
+
+  .article-author:hover {
+    text-decoration: underline;
+  }
+
+  .article-meta time {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .article-meta-rule {
+    width: 1px;
+    height: 10px;
+    background: var(--ui-border);
+  }
+
+  .article-draft {
+    border: 1px solid var(--ui-border);
+    border-radius: 3px;
+    padding: 0 5px;
+  }
+
+  .article-content {
+    min-width: 0;
+    max-width: none;
+    padding: 32px 32px 40px;
+    font-size: 16px;
+    line-height: 1.95;
+    letter-spacing: 0.012em;
+    overflow-wrap: anywhere;
+  }
+
+  .article-content :global(> :first-child) {
+    margin-top: 0;
+  }
+
+  .article-content :global(> :last-child) {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 520px) {
+    .article-heading {
+      padding: 23px 20px 26px;
+    }
+
+    .article-heading h1 {
+      font-size: 26px;
+    }
+
+    .article-content {
+      padding: 25px 20px 32px;
+    }
+  }
+
+  @media (max-width: 340px) {
+    .article-heading h1 {
+      font-size: 24px;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .article-back {
+      min-height: 44px;
+    }
   }
 </style>

@@ -1,0 +1,47 @@
+---
+import Logo from "@/assets/logo.svg"
+---
+
+<a class="brand" href="/" aria-label="leekoho 首页">
+  <Logo class="brand-mark" aria-hidden="true" focusable="false" />
+  <span>leekoho</span>
+</a>
+
+<style>
+  .brand {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 11px;
+    color: var(--ui-text);
+    font:
+      500 20px/1 var(--font-geist),
+      sans-serif;
+    letter-spacing: -0.75px;
+    text-decoration: none;
+  }
+  .brand :global(.brand-mark) {
+    width: 32px;
+    height: 32px;
+  }
+  @media (max-width: 520px) {
+    .brand {
+      gap: 9px;
+      font-size: 18px;
+    }
+    .brand :global(.brand-mark) {
+      width: 29px;
+      height: 29px;
+    }
+  }
+  @media (max-width: 340px) {
+    .brand {
+      gap: 6px;
+      font-size: 17px;
+    }
+    .brand :global(.brand-mark) {
+      width: 27px;
+      height: 27px;
+    }
+  }
+</style>

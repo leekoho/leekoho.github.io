@@ -1,199 +1,227 @@
 ---
 import { type CollectionEntry, getCollection } from "astro:content"
+import { FileText, LockKeyhole, ArrowUpRight } from "@lucide/astro"
+import { SITE_DESCRIPTION } from "@/consts"
 
 type Post = CollectionEntry<"posts">
-
 const allPosts = (
   await getCollection("posts", ({ data }) => (import.meta.env.PROD ? data.draft !== true : true))
 ).toSorted((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
-
 const groups = new Map<number, Post[]>()
-
 allPosts.forEach((post) => {
-  const year = post.data.pubDate.getFullYear()
-  if (!groups.has(year)) {
-    groups.set(year, [])
-  }
+  const year = post.data.pubDate.getUTCFullYear()
+  if (!groups.has(year)) groups.set(year, [])
   groups.get(year)!.push(post)
 })
 ---
 
-<main class="post-shell">
-  {
-    allPosts.length === 0 ? (
-      <p class="post-empty">No posts yet.</p>
-    ) : (
-      <>
-        <section class="post-hero" aria-label="Archive overview">
-          <p class="section-kicker">Blog</p>
-
-          <div class="post-hero-row">
-            <h1 class="section-title">Posts</h1>
-          </div>
-
-          <p class="section-summary">这里主要记录开发中的经验、问题拆解和一些可复用的实践。</p>
-        </section>
-
-        <div class="post-groups">
-          {Array.from(groups).map(([year, yearPosts]) => (
-            <section class="post-group" aria-labelledby={`post-year-${year}`}>
-              <div class="post-group-year">
-                <h2 class="year-heading" id={`post-year-${year}`}>
-                  {year}
-                </h2>
-              </div>
-
-              <ul class="post-group-list">
-                {yearPosts.map((post) => (
-                  <li class="post-item">
-                    <a href={`/posts/${post.id}`} class="post-link group">
+<div class="post-shell">
+  <header class="page-heading page-rule">
+    <h1 class="section-title">Blog</h1>
+    <p class="section-summary">{SITE_DESCRIPTION}</p>
+  </header>
+  <div class="section-divider page-rule" aria-hidden="true"></div>
+  <section aria-labelledby="archive-title">
+    <div class="archive-bar page-rule">
+      <h2 id="archive-title">文章</h2>
+      <span>按年份归档</span>
+    </div>
+    {
+      allPosts.length === 0 ? (
+        <p class="post-empty">文章正在整理中。</p>
+      ) : (
+        Array.from(groups).map(([year, yearPosts]) => (
+          <section aria-labelledby={`post-year-${year}`}>
+            <h3 class="post-year page-rule" id={`post-year-${year}`}>
+              {year}
+            </h3>
+            <ul class="post-list">
+              {yearPosts.map((post) => (
+                <li class="page-rule">
+                  <a href={`/posts/${post.id}`} class="post-link">
+                    <span class="post-icon" aria-hidden="true">
+                      {post.data.password ? (
+                        <LockKeyhole size={20} stroke-width={1.5} />
+                      ) : (
+                        <FileText size={20} stroke-width={1.5} />
+                      )}
+                    </span>
+                    <span class="post-copy">
                       <span class="post-title">{post.data.title}</span>
-                      <time
-                        class="post-date"
-                        data-post-date="short"
-                        datetime={post.data.pubDate.toISOString()}
-                      >
-                        {post.data.pubDate.toISOString().slice(5, 10)}
-                      </time>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
-        </div>
-      </>
-    )
-  }
-</main>
-
-<script is:inline>
-  const formatPostDates = () => {
-    const shortFormatter = new Intl.DateTimeFormat(undefined, {
-      month: "short",
-      day: "numeric",
-    })
-    const longFormatter = new Intl.DateTimeFormat(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "2-digit",
-    })
-
-    document.querySelectorAll("[data-post-date]").forEach((element) => {
-      const datetime = element.getAttribute("datetime")
-      if (!datetime) {
-        return
-      }
-
-      const date = new Date(datetime)
-      if (Number.isNaN(date.getTime())) {
-        return
-      }
-
-      element.textContent =
-        element.getAttribute("data-post-date") === "long"
-          ? longFormatter.format(date)
-          : shortFormatter.format(date)
-    })
-  }
-
-  formatPostDates()
-</script>
+                      {post.data.description && (
+                        <span class="post-description">{post.data.description}</span>
+                      )}
+                      <span class="post-meta">
+                        <time datetime={post.data.pubDate.toISOString()}>
+                          {post.data.pubDate.toISOString().slice(5, 10).replace("-", ".")}
+                        </time>
+                        {post.data.tags.length > 0 && (
+                          <>
+                            <span class="post-meta-rule" aria-hidden="true" />
+                            <span class="post-tags">
+                              {post.data.tags.map((tag) => (
+                                <span>{tag}</span>
+                              ))}
+                            </span>
+                          </>
+                        )}
+                        {post.data.password && <span class="sr-only">密码保护</span>}
+                        {post.data.draft && <span class="post-draft">草稿</span>}
+                      </span>
+                    </span>
+                    <span class="post-arrow" aria-hidden="true">
+                      <ArrowUpRight size={16} stroke-width={1.5} />
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      )
+    }
+  </section>
+  <div class="archive-end" aria-hidden="true"></div>
+</div>
 
 <style>
-  @reference "@/styles/tailwind.css";
-
   .post-shell {
-    @apply relative overflow-hidden px-4 pbs-6 pbe-14 sm:px-6 lg:px-10 lg:pbs-10 lg:pbe-24;
+    min-width: 0;
   }
-
-  .post-empty {
-    @apply text-muted py-8;
+  .archive-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 17px 28px;
   }
-
-  .post-hero {
-    @apply relative z-10 mbe-10 space-y-4 lg:mbe-14;
+  .archive-bar h2 {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
   }
-
-  .post-hero-row {
-    @apply flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between;
+  .archive-bar > span {
+    color: var(--ui-text-muted);
+    font-size: 11px;
   }
-
-  .post-groups {
-    @apply relative z-10 space-y-14;
+  .post-year {
+    padding: 10px 28px;
+    color: var(--ui-text-muted);
+    background: var(--ui-bg-soft);
+    font: 400 12px/1.6 var(--font-mono);
+    letter-spacing: 0.03em;
   }
-
-  .post-group {
-    @apply space-y-3 lg:flex lg:space-y-0 lg:gap-x-4;
+  .post-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
-
-  .post-group-year {
-    @apply flex items-center gap-3 lg:w-24 lg:flex-none lg:self-start lg:pbs-2;
-  }
-
-  .post-group-list {
-    @apply relative lg:flex-1;
-  }
-
-  .year-heading {
-    @apply text-foreground/25 text-2xl font-semibold lg:self-start lg:pbs-2;
-  }
-
-  .post-item {
-    @apply relative list-none;
-  }
-
-  .post-item::after {
-    content: "";
-    @apply absolute right-0 bottom-0 left-0 h-px;
-    background: linear-gradient(90deg, transparent, var(--color-border), transparent);
-  }
-
   .post-link {
-    @apply relative flex flex-col gap-2 py-5 no-underline sm:flex-row sm:items-center sm:justify-between;
+    display: grid;
+    grid-template-columns: 57px minmax(0, 1fr) 44px;
+    padding: 23px 22px 23px 17px;
+    color: var(--ui-text);
+    text-decoration: none;
   }
-
-  .post-link::before {
-    content: "";
-    @apply pointer-events-none absolute -inset-x-3 inset-y-1 rounded-2xl opacity-0 transition duration-300;
-    background: linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--color-accent) 6%, transparent),
-      color-mix(in srgb, var(--color-panel) 18%, transparent) 38%,
-      color-mix(in srgb, var(--color-background-muted) 86%, white)
-    );
+  .post-link:hover {
+    background: var(--ui-hover);
   }
-
-  .post-link:hover,
   .post-link:focus-visible {
-    @apply -translate-y-px;
+    outline-offset: -3px;
   }
-
-  .post-link:hover::before,
-  .post-link:focus-visible::before {
-    @apply opacity-100;
+  .post-icon {
+    display: flex;
+    justify-content: center;
+    padding-top: 5px;
+    color: var(--ui-text-muted);
   }
-
-  .post-link:focus-visible {
-    @apply outline-none;
+  .post-copy {
+    min-width: 0;
   }
-
   .post-title {
-    @apply text-foreground relative z-10 text-base leading-6 font-medium tracking-tight transition duration-300 sm:ps-5;
+    display: block;
+    font-size: 16px;
+    line-height: 1.8;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+    text-wrap: pretty;
   }
-
-  .post-link:hover .post-title,
-  .post-link:focus-visible .post-title {
-    @apply translate-x-0.5;
-    @apply text-accent-strong;
+  .post-description {
+    display: block;
+    margin-top: 7px;
+    color: var(--ui-text-muted);
+    font-size: 13px;
+    line-height: 1.95;
+    letter-spacing: 0.01em;
+    overflow-wrap: anywhere;
   }
-
-  .post-date {
-    @apply text-subtle relative z-10 text-xs font-medium tracking-wider tabular-nums transition duration-300 sm:ms-8 sm:text-right;
+  .post-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 13px;
+    color: var(--ui-text-muted);
+    font-size: 11px;
+    line-height: 1.8;
   }
-
-  .post-link:hover .post-date,
-  .post-link:focus-visible .post-date {
-    @apply text-muted;
+  .post-meta time {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .post-meta-rule {
+    width: 1px;
+    height: 9px;
+    background: var(--ui-border-strong);
+  }
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    overflow-wrap: anywhere;
+  }
+  .post-tags > span + span::before {
+    content: "·";
+    margin-right: 7px;
+  }
+  .post-draft {
+    border: 1px solid var(--ui-border);
+    border-radius: 3px;
+    padding-inline: 5px;
+  }
+  .post-arrow {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 7px;
+    color: var(--ui-text-muted);
+  }
+  .post-empty {
+    padding: 32px 28px;
+    color: var(--ui-text-muted);
+    font-size: 14px;
+  }
+  .archive-end {
+    height: 32px;
+  }
+  @media (max-width: 520px) {
+    .archive-bar {
+      padding: 15px 20px;
+    }
+    .post-year {
+      padding-inline: 20px;
+    }
+    .post-link {
+      grid-template-columns: 41px minmax(0, 1fr) 23px;
+      padding: 19px 13px;
+    }
+    .post-icon {
+      padding-top: 4px;
+    }
+    .post-title {
+      font-size: 15px;
+    }
+    .post-description {
+      font-size: 12.5px;
+    }
   }
 </style>

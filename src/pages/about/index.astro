@@ -1,204 +1,265 @@
 ---
+import { ArrowUpRight } from "@lucide/astro"
 import Layout from "@/layouts/Layout.astro"
-import { SITE_DESCRIPTION, PROFILE } from "@/consts.ts"
-
-function getFavicon(url: string) {
-  const host = new URL(url).hostname
-  return `https://www.google.com/s2/favicons?domain=${host}&sz=64`
-}
+import { PROFILE } from "@/consts.ts"
 ---
 
-<Layout title="About | leekoho" description="关于 leekoho 的个人介绍、居住城市与 GitHub 信息。">
-  <section class="about-shell">
-    <div class="about-hero">
-      <p class="section-kicker">About</p>
-      <div class="about-hero-row">
-        <h1 class="section-title">About Me</h1>
-      </div>
-      <p class="section-summary">这里放一些关于我自己的信息，也作为博客之外的一点补充。</p>
+<Layout title="关于我 · leekoho" description="关于 leekoho，以及日常使用的设备与工具。">
+  <section aria-labelledby="about-title">
+    <header class="page-heading page-rule">
+      <h1 id="about-title" class="section-title">关于我</h1>
+      <p class="section-summary">我是 {PROFILE.name}，一名写代码的人。</p>
+    </header>
+
+    <div class="section-divider page-rule" aria-hidden="true"></div>
+
+    <div class="about-intro page-rule">
+      <p>
+        {PROFILE.description || "这个博客用来整理开发中的问题，写清过程，也保留当时的取舍。"}
+      </p>
+      <p>希望这些记录，能在下一次遇到类似问题时派上用场。</p>
     </div>
 
-    <div class="about-grid">
-      <article class="about-card ui-card-border about-card-primary">
-        <p class="about-card-label subtle-copy">个人介绍</p>
-        <h2 class="about-name">{PROFILE.name}</h2>
-        <p class="about-role accent-copy">{PROFILE.tags.join(" / ")}</p>
-        <p class="about-copy">
-          {PROFILE.description || SITE_DESCRIPTION}
-        </p>
-      </article>
+    <section aria-labelledby="profile-title">
+      <header class="about-section-heading page-rule">
+        <h2 id="profile-title">基本信息</h2>
+      </header>
+      <dl class="profile-list">
+        <div class="profile-row">
+          <dt>名字</dt>
+          <dd>{PROFILE.name}</dd>
+        </div>
+        <div class="profile-row">
+          <dt>身份</dt>
+          <dd>{PROFILE.tags.join(" / ")}</dd>
+        </div>
+        <div class="profile-row">
+          <dt>现居</dt>
+          <dd>{PROFILE.city}</dd>
+        </div>
+      </dl>
+    </section>
 
-      <article class="about-card ui-card-border">
-        <p class="about-card-label subtle-copy">居住城市</p>
-        <p class="about-meta">{PROFILE.city}</p>
-        <p class="about-hint muted-copy">
-          现在常住在这里，写代码、写文章，也把日常生活安放在这座城市里。
-        </p>
-      </article>
+    <section aria-labelledby="links-title">
+      <header class="about-section-heading page-rule">
+        <h2 id="links-title">在别处</h2>
+      </header>
+      <ul class="about-links">
+        {
+          PROFILE.links.map((item) => (
+            <li>
+              <a href={item.url} target="_blank" rel="noopener noreferrer" class="about-link">
+                <span class="about-link-label">{item.label}</span>
+                <span class="about-link-address">{item.url.replace(/^https?:\/\//, "")}</span>
+                <ArrowUpRight size={16} stroke-width={1.5} aria-hidden="true" />
+                <span class="sr-only">（在新标签页打开）</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
 
-      <article class="about-card ui-card-border">
-        <p class="about-card-label subtle-copy">在线链接</p>
-        <ul class="about-links">
-          {
-            PROFILE.links.map((item) => (
-              <li>
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  class="about-link ui-card-border group"
-                >
-                  <span class="about-link-main">
-                    <img src={getFavicon(item.url)} alt="232" class="about-link-icon" />
-                    <span>{item.label}</span>
-                  </span>
-                  <span class="about-link-arrow subtle-copy" aria-hidden="true">
-                    ↗
-                  </span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </article>
+    <div class="section-divider page-rule" aria-hidden="true"></div>
 
+    <section aria-labelledby="uses-title">
+      <header class="about-section-heading page-rule">
+        <h2 id="uses-title">工作台</h2>
+        <p>日常使用的设备与软件</p>
+      </header>
       {
-        PROFILE.uses.map((group) => (
-          <article class="about-card ui-card-border md:col-span-2">
-            <div>
-              <p class="about-card-label subtle-copy">{group.category}</p>
-              <ul class="uses-list">
-                {group.items.map((item) => (
-                  <li class="uses-list-item">
-                    <h4 class="uses-item-name">{item.name}</h4>
-                    {item.description && (
-                      <p class="uses-item-description muted-copy">{item.description}</p>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </article>
+        PROFILE.uses.map((group, index) => (
+          <section aria-labelledby={`uses-group-${index}`}>
+            <h3 id={`uses-group-${index}`} class="uses-category page-rule">
+              {group.category}
+            </h3>
+            <ul class="uses-list">
+              {group.items.map((item) => (
+                <li class="uses-row">
+                  <h4 class="uses-name">{item.name}</h4>
+                  {item.description && <p class="uses-description">{item.description}</p>}
+                </li>
+              ))}
+            </ul>
+          </section>
         ))
       }
-    </div>
+    </section>
+    <div class="about-end-space page-rule" aria-hidden="true"></div>
   </section>
 </Layout>
 
 <style>
-  @reference "@/styles/tailwind.css";
-
-  .about-shell {
-    @apply relative overflow-hidden px-4 pbs-6 pbe-14 sm:px-6 lg:px-10 lg:pbs-10 lg:pbe-24;
+  .about-intro {
+    padding: 30px 28px;
+    color: var(--ui-text-secondary);
+    font-size: 15px;
+    line-height: 2;
+    letter-spacing: 0.015em;
   }
 
-  .about-hero,
-  .about-grid {
-    @apply relative z-10;
+  .about-intro p + p {
+    margin-top: 12px;
   }
 
-  .about-hero {
-    @apply mbe-10 max-w-3xl space-y-4 lg:mbe-14;
+  .about-section-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 28px;
   }
 
-  .about-hero-row {
-    @apply flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between;
+  .about-section-heading h2 {
+    color: var(--ui-text);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.6;
   }
 
-  .about-grid {
-    @apply grid gap-4 md:grid-cols-2;
+  .about-section-heading p {
+    color: var(--ui-text-muted);
+    font-size: 12px;
+    line-height: 1.7;
   }
 
-  .about-card {
-    @apply bg-panel/85 rounded-3xl p-6 backdrop-blur-md;
-    box-shadow: 0 16px 50px rgba(15, 23, 42, 0.05);
+  .profile-list,
+  .about-links,
+  .uses-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .about-card-primary {
-    @apply md:col-span-2;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.95),
-      rgba(240, 253, 250, 0.9) 45%,
-      rgba(244, 244, 245, 0.92)
-    );
+  .profile-row {
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 16px;
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--ui-border);
+    font-size: 13px;
+    line-height: 1.8;
   }
 
-  :global(.dark) .about-card-primary {
-    background: linear-gradient(
-      135deg,
-      rgba(24, 24, 27, 0.92),
-      rgba(15, 118, 110, 0.14) 55%,
-      rgba(24, 24, 27, 0.82)
-    );
+  .profile-row dt {
+    color: var(--ui-text-muted);
   }
 
-  .about-card-label {
-    @apply mbe-4 text-xs font-semibold tracking-widest uppercase;
-  }
-
-  .about-name {
-    @apply text-foreground text-3xl font-semibold tracking-tight;
-  }
-
-  .about-role {
-    @apply mbs-2 text-sm font-medium tracking-wider;
-  }
-
-  .about-copy {
-    @apply text-foreground-soft mbs-5 max-w-2xl text-sm leading-7;
-  }
-
-  .about-meta {
-    @apply text-foreground text-2xl font-medium tracking-tight;
-  }
-
-  .about-hint {
-    @apply mbs-3 text-sm leading-7;
-  }
-
-  .about-links {
-    @apply m-0 list-none space-y-3 p-0;
+  .profile-row dd {
+    margin: 0;
+    color: var(--ui-text-secondary);
+    overflow-wrap: anywhere;
   }
 
   .about-link {
-    @apply text-foreground-soft flex items-center justify-between gap-4 rounded-2xl px-4 py-3 text-sm no-underline transition;
-    background: transparent;
-  }
-
-  .about-link-main {
-    @apply flex items-center gap-3;
-  }
-
-  .about-link-icon {
-    @apply size-4;
-  }
-
-  .about-link-arrow {
-    @apply transition group-hover:text-current;
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr) 16px;
+    align-items: center;
+    gap: 16px;
+    min-height: 56px;
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--ui-border);
+    color: var(--ui-text-muted);
+    text-decoration: none;
+    transition: background-color 160ms ease;
   }
 
   .about-link:hover {
-    @apply border-accent/25 text-accent-strong -translate-y-0.5;
+    background: var(--ui-bg-soft);
   }
 
-  .uses-card-label {
-    @apply border-border mbe-6 border-b pb-2 text-xs font-semibold tracking-widest uppercase;
+  .about-link:focus-visible {
+    outline: 2px solid var(--ui-text);
+    outline-offset: -3px;
   }
 
-  .uses-list {
-    @apply m-0 list-none space-y-6 p-0;
+  .about-link-label {
+    color: var(--ui-text);
+    font-size: 13px;
+    font-weight: 500;
   }
 
-  .uses-list-item {
-    @apply flex flex-col gap-1;
+  .about-link-address {
+    font-size: 12px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
   }
 
-  .uses-item-name {
-    @apply text-foreground text-lg font-medium tracking-tight;
+  .uses-category {
+    padding: 10px 28px;
+    background: var(--ui-bg-soft);
+    color: var(--ui-text-muted);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.8;
   }
 
-  .uses-item-description {
-    @apply text-sm leading-relaxed;
+  .uses-row {
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr);
+    align-items: baseline;
+    gap: 18px;
+    padding: 19px 28px;
+    border-bottom: 1px solid var(--ui-border);
+  }
+
+  .uses-name {
+    color: var(--ui-text);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+  }
+
+  .uses-description {
+    color: var(--ui-text-muted);
+    font-size: 13px;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+  }
+
+  .about-end-space {
+    height: 32px;
+  }
+
+  @media (max-width: 520px) {
+    .about-intro {
+      padding: 24px 20px;
+      font-size: 14px;
+    }
+
+    .about-section-heading,
+    .profile-row,
+    .about-link,
+    .uses-category,
+    .uses-row {
+      padding-inline: 20px;
+    }
+
+    .profile-row {
+      grid-template-columns: 64px minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    .about-link {
+      grid-template-columns: 64px minmax(0, 1fr) 16px;
+      gap: 12px;
+    }
+
+    .about-link-address {
+      font-size: 11px;
+    }
+
+    .uses-row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 4px;
+      padding-block: 17px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-link {
+      transition: none;
+    }
   }
 </style>

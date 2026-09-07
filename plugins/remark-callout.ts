@@ -1,39 +1,32 @@
-import type { Blockquote, Root, Text } from "mdast"
-import type { Plugin } from "unified"
-import { visit } from "unist-util-visit"
+import { defineMdastPlugin } from "satteri"
 
-const remarkCallout: Plugin<[], Root> = () => {
-  return (tree: Root) => {
-    visit(tree, "blockquote", (node: Blockquote) => {
-      const firstChild = node.children[0]
+const calloutPlugin = defineMdastPlugin({
+  name: "callout",
+  blockquote(node, ctx) {
+    const paragraph = node.children[0]
+    if (paragraph?.type !== "paragraph") return
 
-      if (firstChild?.type === "paragraph") {
-        const textNode = firstChild.children[0] as Text
+    const text = paragraph.children[0]
+    if (text?.type !== "text") return
 
-        if (textNode?.type === "text") {
-          const match = textNode.value.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)]\s*(.*)/i)
+    const marker = text.value.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\][ \t]*(?:\r?\n)?/i)
+    if (!marker) return
 
-          if (match) {
-            const type = match[1].toLowerCase()
-            const firstLineRest = match[2]
+    const content = text.value.slice(marker[0].length)
+    if (content) {
+      ctx.setProperty(text, "value", content)
+    } else {
+      ctx.removeChildAt(paragraph, 0)
+    }
 
-            if (firstLineRest) {
-              textNode.value = firstLineRest
-            } else {
-              firstChild.children.shift()
-            }
-
-            node.data = {
-              hName: "callout",
-              hProperties: {
-                type,
-              },
-            }
-          }
-        }
-      }
+    ctx.setProperty(node, "data", {
+      ...node.data,
+      hName: "callout",
+      hProperties: {
+        type: marker[1].toLowerCase(),
+      },
     })
-  }
-}
+  },
+})
 
-export default remarkCallout
+export default calloutPlugin
