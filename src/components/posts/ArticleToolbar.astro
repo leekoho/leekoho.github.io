@@ -1,0 +1,233 @@
+---
+import { ArrowLeft, ArrowRight, Copy, Link } from "@lucide/astro"
+
+interface Props {
+  previous?: { href: string; title: string }
+  next?: { href: string; title: string }
+}
+
+const { previous, next } = Astro.props
+---
+
+<div class="article-toolbar page-rule" data-article-tools>
+  <a class="article-back" href="/posts">
+    <ArrowLeft size={15} stroke-width={1.5} aria-hidden="true" />
+    Blog
+  </a>
+  <div class="article-actions">
+    <button
+      class="article-action copy-article"
+      type="button"
+      data-copy="article"
+      disabled
+      aria-label="复制正文"
+    >
+      <Copy size={15} stroke-width={1.5} aria-hidden="true" />
+      <span>复制正文</span>
+    </button>
+    <button
+      class="article-action icon-action"
+      type="button"
+      data-copy="link"
+      disabled
+      aria-label="复制链接"
+      title="复制链接"
+    >
+      <Link size={15} stroke-width={1.5} aria-hidden="true" />
+    </button>
+    {
+      (previous || next) && (
+        <nav class="article-pagination" aria-label="相邻文章">
+          {previous && (
+            <a
+              class="article-action icon-action"
+              href={previous.href}
+              rel="prev"
+              aria-label={`上一篇：${previous.title}`}
+              title={`上一篇：${previous.title}`}
+            >
+              <ArrowLeft size={15} stroke-width={1.5} aria-hidden="true" />
+            </a>
+          )}
+          {next && (
+            <a
+              class="article-action icon-action"
+              href={next.href}
+              rel="next"
+              aria-label={`下一篇：${next.title}`}
+              title={`下一篇：${next.title}`}
+            >
+              <ArrowRight size={15} stroke-width={1.5} aria-hidden="true" />
+            </a>
+          )}
+        </nav>
+      )
+    }
+  </div>
+  <span class="copy-status" role="status" aria-live="polite" aria-atomic="true"></span>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-article-tools]").forEach((toolbar) => {
+    const article = toolbar.closest("article")
+    const content = article?.querySelector<HTMLElement>("[data-article-body]")
+    const copyArticle = toolbar.querySelector<HTMLButtonElement>('[data-copy="article"]')
+    const copyLink = toolbar.querySelector<HTMLButtonElement>('[data-copy="link"]')
+    const status = toolbar.querySelector<HTMLElement>('[role="status"]')
+    if (!article || !content || !copyArticle || !copyLink || !status) return
+
+    const isLocked = () => Boolean(content.querySelector("encrypted-content"))
+    const syncCopy = () => {
+      copyArticle.disabled = isLocked()
+      copyArticle.title = isLocked() ? "解锁后可复制正文" : "复制正文"
+    }
+    syncCopy()
+    copyLink.disabled = false
+
+    if (isLocked()) {
+      const observer = new MutationObserver(() => {
+        syncCopy()
+        if (!isLocked()) observer.disconnect()
+      })
+      observer.observe(content, { childList: true })
+    }
+
+    let feedbackTimer: ReturnType<typeof setTimeout>
+    const report = (message: string) => {
+      clearTimeout(feedbackTimer)
+      status.textContent = message
+      feedbackTimer = setTimeout(() => {
+        status.textContent = ""
+      }, 3000)
+    }
+
+    toolbar.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const copyBody = button.dataset.copy === "article"
+        if (copyBody && isLocked()) return
+        const text = copyBody
+          ? [
+              article.querySelector("h1")?.textContent?.trim(),
+              article.querySelector("[data-article-description]")?.textContent?.trim(),
+              content.innerText.trim(),
+            ]
+              .filter(Boolean)
+              .join("\n\n")
+          : `${window.location.origin}${window.location.pathname}`
+
+        button.disabled = true
+        button.setAttribute("aria-busy", "true")
+        try {
+          await navigator.clipboard.writeText(text)
+          report(copyBody ? "正文已复制" : "链接已复制")
+        } catch {
+          report(copyBody ? "复制失败，请选中正文后手动复制。" : "复制失败，请从地址栏复制链接。")
+        } finally {
+          button.removeAttribute("aria-busy")
+          button.disabled = copyBody && isLocked()
+        }
+      })
+    })
+  })
+</script>
+
+<style>
+  .article-toolbar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 48px;
+    padding: 8px 12px 8px 16px;
+  }
+  .article-back {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 8px;
+    min-height: 30px;
+    color: var(--ui-text-muted);
+    font-size: 13px;
+    letter-spacing: 0.025em;
+    text-decoration: none;
+  }
+  .article-back:hover {
+    color: var(--ui-text);
+  }
+  .article-actions,
+  .article-pagination {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .article-pagination {
+    padding-left: 6px;
+    border-left: 1px solid var(--ui-border);
+  }
+  .article-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 30px;
+    padding: 5px 8px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background: var(--ui-bg-soft);
+    color: var(--ui-text-secondary);
+    font-size: 12px;
+    line-height: 1.5;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .article-action:hover {
+    background: var(--ui-hover);
+    color: var(--ui-text);
+  }
+  .article-action:disabled {
+    color: var(--ui-text-muted);
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .icon-action {
+    width: 30px;
+    padding: 0;
+  }
+  .copy-status {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 12px;
+    z-index: 10;
+    max-width: calc(100% - 24px);
+    padding: 7px 10px;
+    border: 1px solid var(--ui-border);
+    border-radius: 4px;
+    background: var(--ui-bg);
+    box-shadow: var(--shadow-card);
+    color: var(--ui-text-secondary);
+    font-size: 12px;
+  }
+  .copy-status:empty {
+    display: none;
+  }
+  @media (max-width: 420px) {
+    .copy-article span {
+      display: none;
+    }
+    .copy-article {
+      width: 30px;
+      padding: 0;
+    }
+  }
+  @media (pointer: coarse) {
+    .article-action,
+    .article-back {
+      min-height: 44px;
+    }
+    .icon-action,
+    .copy-article {
+      min-width: 44px;
+    }
+  }
+</style>

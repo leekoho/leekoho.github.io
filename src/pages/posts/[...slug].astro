@@ -2,51 +2,48 @@
 import Layout from "@/layouts/Layout.astro"
 import { getCollection, render } from "astro:content"
 import EncryptedContent from "@/components/EncryptedContent.astro"
-import { ArrowLeft } from "@lucide/astro"
+import ArticleToolbar from "@/components/posts/ArticleToolbar.astro"
 
 export async function getStaticPaths() {
-  const posts = await getCollection("posts", ({ data }) =>
-    import.meta.env.PROD ? data.draft !== true : true,
-  )
-  return posts.map((post) => ({
+  const posts = (
+    await getCollection("posts", ({ data }) => (import.meta.env.PROD ? data.draft !== true : true))
+  ).toSorted((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+
+  const link = (post: (typeof posts)[number] | undefined) =>
+    post ? { href: `/posts/${post.id}`, title: post.data.title } : undefined
+
+  return posts.map((post, index) => ({
     params: { slug: post.id },
-    props: post,
+    props: { post, previous: link(posts[index - 1]), next: link(posts[index + 1]) },
   }))
 }
 
-const post = Astro.props
+const { post, previous, next } = Astro.props
 const { Content } = await render(post)
-const publishedAt = post.data.pubDate.toISOString()
-const publishedLabel = publishedAt.slice(0, 10).replaceAll("-", ".")
 ---
 
-<Layout title={`${post.data.title} · leekoho`} description={post.data.description}>
+<Layout
+  title={`${post.data.title} · leekoho`}
+  description={post.data.description}
+  publishedAt={post.data.pubDate}
+  tags={post.data.tags}
+>
   <article class="article-shell" aria-labelledby="article-title">
-    <header class="article-heading page-rule">
-      <a href="/posts" class="article-back">
-        <ArrowLeft size={16} stroke-width={1.5} aria-hidden="true" />
-        所有文章
-      </a>
-      <h1 id="article-title">{post.data.title}</h1>
-      <div class="article-meta">
-        <a href="/about" class="article-author" rel="author">leekoho</a>
-        <span class="article-meta-rule" aria-hidden="true"></span>
-        <time datetime={publishedAt}>{publishedLabel}</time>
-        {
-          post.data.tags.length > 0 && (
-            <>
-              <span class="article-meta-rule" aria-hidden="true" />
-              <span>{post.data.tags.join(" / ")}</span>
-            </>
-          )
-        }
-        {post.data.draft && <span class="article-draft">草稿</span>}
-      </div>
+    <div class="article-space page-rule" aria-hidden="true"></div>
+    <ArticleToolbar previous={previous} next={next} />
+
+    <header class="article-heading">
+      <h1 class="page-rule" id="article-title">{post.data.title}</h1>
+      {
+        post.data.description && (
+          <p class="article-description" data-article-description>
+            {post.data.description}
+          </p>
+        )
+      }
     </header>
 
-    <div class="section-divider page-rule" aria-hidden="true"></div>
-
-    <div class="article-content page-rule prose">
+    <div class="article-content prose" data-article-body>
       <EncryptedContent password={post.data.password}>
         <Content />
       </EncryptedContent>
@@ -59,110 +56,68 @@ const publishedLabel = publishedAt.slice(0, 10).replaceAll("-", ".")
     min-width: 0;
     width: 100%;
   }
-
+  .article-space {
+    height: 48px;
+  }
   .article-heading {
-    padding: 24px 32px 30px;
+    padding-top: 16px;
   }
-
-  .article-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    color: var(--ui-text-muted);
-    font-size: 12px;
-    text-decoration: none;
-  }
-
-  .article-back:hover {
-    color: var(--ui-text);
-  }
-
   .article-heading h1 {
-    margin: 24px 0 18px;
-    font: 500 30px/1.6 var(--font-sans);
-    letter-spacing: 0;
+    margin: 0;
+    padding: 0 16px 5px;
+    font: 500 36px/1.35 var(--font-sans);
+    letter-spacing: -0.025em;
     overflow-wrap: anywhere;
-    text-wrap: pretty;
+    text-wrap: balance;
   }
-
-  .article-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 11px;
+  .article-description {
+    margin: 28px 16px 0;
     color: var(--ui-text-muted);
-    font-size: 11px;
-    line-height: 1.7;
+    font-size: 16px;
+    line-height: 1.9;
     overflow-wrap: anywhere;
   }
-
-  .article-author {
-    color: var(--ui-text);
-    text-decoration: none;
-  }
-
-  .article-author:hover {
-    text-decoration: underline;
-  }
-
-  .article-meta time {
-    font-family: var(--font-mono);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .article-meta-rule {
-    width: 1px;
-    height: 10px;
-    background: var(--ui-border);
-  }
-
-  .article-draft {
-    border: 1px solid var(--ui-border);
-    border-radius: 3px;
-    padding: 0 5px;
-  }
-
   .article-content {
     min-width: 0;
     max-width: none;
-    padding: 32px 32px 40px;
+    padding: 32px 16px 48px;
     font-size: 16px;
     line-height: 1.95;
     letter-spacing: 0.012em;
     overflow-wrap: anywhere;
   }
-
   .article-content :global(> :first-child) {
     margin-top: 0;
   }
-
   .article-content :global(> :last-child) {
     margin-bottom: 0;
   }
-
+  .article-content :global(img) {
+    border: 1px solid var(--ui-border);
+    border-radius: 10px;
+  }
   @media (max-width: 520px) {
-    .article-heading {
-      padding: 23px 20px 26px;
+    .article-space {
+      height: 28px;
     }
-
     .article-heading h1 {
-      font-size: 26px;
+      font-size: 30px;
+      line-height: 1.45;
+      letter-spacing: -0.015em;
     }
-
+    .article-description {
+      margin-top: 22px;
+      font-size: 14px;
+      line-height: 1.95;
+    }
     .article-content {
-      padding: 25px 20px 32px;
+      padding-top: 26px;
+      padding-bottom: 36px;
     }
   }
-
   @media (max-width: 340px) {
     .article-heading h1 {
-      font-size: 24px;
-    }
-  }
-
-  @media (pointer: coarse) {
-    .article-back {
-      min-height: 44px;
+      font-size: 27px;
     }
   }
 </style>

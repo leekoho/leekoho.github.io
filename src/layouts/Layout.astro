@@ -1,6 +1,6 @@
 ---
 import { Font } from "astro:assets"
-import { Rss } from "@lucide/astro"
+import SiteFooter from "@/components/SiteFooter.astro"
 import Header from "@/components/header/index.astro"
 import ThemeScript from "@/components/header/ThemeScript.astro"
 import { SITE_TITLE, SITE_DESCRIPTION } from "@/consts"
@@ -9,9 +9,10 @@ import "../styles/global.css"
 interface Props {
   title?: string
   description?: string
+  publishedAt?: Date
+  tags?: readonly string[]
 }
-const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props
-const currentYear = new Date().getFullYear()
+const { title = SITE_TITLE, description = SITE_DESCRIPTION, publishedAt, tags } = Astro.props
 ---
 
 <!doctype html>
@@ -35,15 +36,7 @@ const currentYear = new Date().getFullYear()
     <div class="site-shell">
       <Header />
       <main id="main-content" class="site-main" tabindex="-1"><slot /></main>
-      <footer class="site-footer">
-        <a href="/" class="footer-name">leekoho</a>
-        <div class="footer-end">
-          <a class="footer-feed" href="/feed.xml"
-            ><Rss size={13} stroke-width={1.5} aria-hidden="true" />RSS</a
-          >
-          <span>© {currentYear}</span>
-        </div>
-      </footer>
+      <SiteFooter publishedAt={publishedAt} tags={tags} />
     </div>
   </body>
 </html>
@@ -68,36 +61,6 @@ const currentYear = new Date().getFullYear()
   .site-main:focus {
     outline: none;
   }
-  .site-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 24px 28px;
-    border-top: 1px solid var(--ui-border);
-    color: var(--ui-text-muted);
-    font-size: 11px;
-  }
-  .site-footer a {
-    text-decoration: none;
-  }
-  .site-footer a:hover {
-    color: var(--ui-text);
-  }
-  .footer-name {
-    font-family: var(--font-geist), sans-serif;
-    letter-spacing: -0.2px;
-  }
-  .footer-end {
-    display: flex;
-    align-items: center;
-    gap: 22px;
-  }
-  .footer-feed {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
   .skip-link {
     position: fixed;
     top: 8px;
@@ -110,17 +73,5 @@ const currentYear = new Date().getFullYear()
   }
   .skip-link:focus {
     transform: translateY(0);
-  }
-  @media (max-width: 520px) {
-    .site-footer {
-      padding: 20px;
-    }
-  }
-  @media (pointer: coarse) {
-    .site-footer a {
-      display: inline-flex;
-      align-items: center;
-      min-height: 44px;
-    }
   }
 </style>

@@ -1,0 +1,227 @@
+---
+import { CodeXml, Rss } from "@lucide/astro"
+import { PROFILE, SITE_DESCRIPTION } from "@/consts"
+
+interface Props {
+  publishedAt?: Date
+  tags?: readonly string[]
+}
+
+const { publishedAt, tags = [] } = Astro.props
+const dateTime = publishedAt?.toISOString()
+const dateLabel = dateTime?.slice(0, 10).replaceAll("-", ".")
+const columnCount = 1 + Number(Boolean(publishedAt)) + Number(tags.length > 0)
+
+const siteName = Astro.site?.hostname ?? PROFILE.name
+const githubProfile = PROFILE.links.find((link) => link.label === "GitHub")
+---
+
+<footer class="site-footer" aria-label="站点信息">
+  <div class="footer-divider page-rule" aria-hidden="true"></div>
+
+  <div class="footer-intro page-rule">
+    <a class="footer-site" href="/">{siteName}</a>
+    <p>{SITE_DESCRIPTION}</p>
+  </div>
+
+  <dl
+    class="footer-grid page-rule"
+    style={`--footer-columns: ${columnCount}`}
+    aria-label={publishedAt ? "文章信息" : "作者信息"}
+  >
+    <div class="footer-cell">
+      <dt>作者</dt>
+      <dd><a href="/about" rel="author">{PROFILE.name}</a></dd>
+    </div>
+    {
+      dateTime && (
+        <div class="footer-cell">
+          <dt>日期</dt>
+          <dd>
+            <time datetime={dateTime}>{dateLabel}</time>
+          </dd>
+        </div>
+      )
+    }
+    {
+      tags.length > 0 && (
+        <div class="footer-cell">
+          <dt>标签</dt>
+          <dd>{tags.join(" / ")}</dd>
+        </div>
+      )
+    }
+  </dl>
+
+  <div class="footer-bottom">
+    <nav aria-label="站点链接">
+      {
+        githubProfile && (
+          <a
+            href={githubProfile.url}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="leekoho 的 GitHub"
+            title="GitHub"
+          >
+            <CodeXml size={16} stroke-width={1.5} aria-hidden="true" />
+          </a>
+        )
+      }
+      <a href="/feed.xml" aria-label="RSS 订阅" title="RSS 订阅"
+        ><Rss size={16} stroke-width={1.5} aria-hidden="true" /></a
+      >
+    </nav>
+    <p>© {new Date().getFullYear()} {PROFILE.name}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    min-width: 0;
+  }
+  .footer-divider {
+    position: relative;
+    height: 48px;
+    border-top: 1px solid var(--ui-border);
+  }
+  .footer-divider::before {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    background: repeating-linear-gradient(
+      135deg,
+      transparent 0,
+      transparent 6px,
+      var(--ui-pattern) 6px,
+      var(--ui-pattern) 7px
+    );
+    pointer-events: none;
+  }
+  .footer-intro {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding: 12px 16px;
+  }
+  .footer-site {
+    color: var(--ui-text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+  .footer-intro p {
+    color: var(--ui-text-muted);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--footer-columns), minmax(0, 1fr));
+    margin: 0;
+  }
+  .footer-cell {
+    min-width: 0;
+    padding: 14px 16px 16px;
+    border-right: 1px solid var(--ui-border);
+  }
+  .footer-cell:last-child {
+    border-right: 0;
+  }
+  dt {
+    margin-bottom: 6px;
+    color: var(--ui-text-muted);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+  }
+  dd {
+    margin: 0;
+    color: var(--ui-text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+  }
+  dd a {
+    text-decoration: underline;
+    text-decoration-color: var(--ui-border-strong);
+    text-underline-offset: 4px;
+  }
+  dd a:hover {
+    text-decoration-color: currentColor;
+  }
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px;
+    color: var(--ui-text-muted);
+  }
+  .footer-bottom nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .footer-bottom a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+  }
+  .footer-bottom a:hover {
+    color: var(--ui-text);
+  }
+  .footer-bottom p {
+    font-family: var(--font-mono);
+    font-size: 10px;
+  }
+  @media (max-width: 520px) {
+    .footer-divider {
+      height: 36px;
+    }
+    .footer-intro {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .footer-intro p {
+      font-size: 12px;
+    }
+    .footer-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .footer-cell:nth-child(2n) {
+      border-right: 0;
+    }
+    .footer-cell:nth-child(3) {
+      grid-column: 1 / -1;
+      border-top: 1px solid var(--ui-border);
+    }
+    .footer-cell:only-child {
+      grid-column: 1 / -1;
+    }
+    dd {
+      font-size: 12px;
+    }
+  }
+  @media (pointer: coarse) {
+    .footer-bottom a {
+      width: 44px;
+      height: 44px;
+    }
+    dd a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
+  }
+</style>
