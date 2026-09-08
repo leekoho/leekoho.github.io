@@ -1,5 +1,6 @@
 ---
 import { Lock } from "@lucide/astro"
+import Button from "./Button.astro"
 
 interface Props {
   password?: string
@@ -89,9 +90,9 @@ if (password) {
             placeholder="输入密码"
             class="encrypted-input"
           />
-          <button id="encrypt-btn" type="submit" class="encrypted-button">
+          <Button id="encrypt-btn" type="submit" size="lg" class="encrypted-button">
             继续阅读
-          </button>
+          </Button>
         </div>
         <p id="encrypt-error" class="encrypted-error" role="alert" hidden>
           密码不正确，请重试。
@@ -226,116 +227,33 @@ if (password) {
 </script>
 
 <style>
+  @reference "../styles/global.css";
+
   encrypted-content {
-    display: block;
+    @apply block;
   }
-
   .encrypted-panel {
-    margin: 8px 0;
-    padding: 32px 24px;
-    border: 1px solid var(--ui-border);
-    border-radius: 6px;
-    background: var(--ui-bg-soft);
-    text-align: center;
+    @apply m-0 rounded-md border border-border bg-background-muted px-4 py-8 text-center sm:px-6;
   }
-
-  .encrypted-icon {
-    margin: 0 auto 16px;
-    color: var(--ui-text-muted);
+  :global(.encrypted-icon) {
+    @apply mx-auto mb-4 text-muted;
   }
-
   .encrypted-panel h2 {
-    margin: 0 0 6px;
-    color: var(--ui-text);
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 1.7;
+    @apply mb-2 text-lg leading-7 font-medium text-foreground;
   }
-
   .encrypted-description {
-    margin: 0;
-    color: var(--ui-text-muted);
-    font-size: 13px;
-    line-height: 1.85;
+    @apply m-0 text-sm leading-7 text-muted;
   }
-
   .encrypted-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    max-width: 360px;
-    margin: 24px auto 0;
+    @apply mx-auto mt-6 flex max-w-sm flex-col items-center gap-4 sm:flex-row;
   }
-
   .encrypted-input {
-    width: 100%;
-    min-width: 0;
-    height: 42px;
-    padding: 9px 12px;
-    border: 1px solid var(--ui-border);
-    border-radius: 4px;
-    background: var(--ui-bg);
-    color: var(--ui-text);
-    font-size: 14px;
-    line-height: 1.5;
+    @apply h-11 w-full min-w-0 rounded-sm border border-border bg-background px-3 py-2 text-base leading-6 text-foreground placeholder:text-muted sm:text-sm;
   }
-
-  .encrypted-input::placeholder {
-    color: var(--ui-text-muted);
-  }
-
   .encrypted-button {
-    flex-shrink: 0;
-    height: 42px;
-    padding: 9px 16px;
-    border: 1px solid var(--ui-text);
-    border-radius: 4px;
-    background: var(--ui-text);
-    color: var(--ui-bg);
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 1.5;
-    cursor: pointer;
+    @apply w-full sm:w-auto;
   }
-
-  .encrypted-button:hover {
-    opacity: 0.85;
-  }
-
-  .encrypted-button:disabled {
-    opacity: 0.55;
-    cursor: wait;
-  }
-
   .encrypted-error {
-    margin: 14px 0 0;
-    color: var(--ui-text-secondary);
-    font-size: 12px;
-    line-height: 1.8;
-  }
-
-  .encrypted-error[hidden] {
-    display: none;
-  }
-
-  @media (max-width: 520px) {
-    .encrypted-panel {
-      padding: 28px 16px;
-    }
-
-    .encrypted-controls {
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .encrypted-input,
-    .encrypted-button {
-      width: 100%;
-      height: 44px;
-    }
-
-    .encrypted-input {
-      font-size: 16px;
-    }
+    @apply mt-4 text-xs leading-relaxed text-foreground-soft;
   }
 </style>

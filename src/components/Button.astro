@@ -1,0 +1,87 @@
+---
+import type { HTMLAttributes } from "astro/types"
+
+type Appearance = {
+  variant?: "default" | "outline" | "secondary" | "ghost" | "destructive" | "link"
+  size?: "default" | "sm" | "lg" | "icon" | "icon-sm"
+}
+
+type Props = Appearance &
+  (
+    | (HTMLAttributes<"button"> & { as?: "button"; href?: never })
+    | (Omit<HTMLAttributes<"a">, "type"> & { as?: "a"; href: string; type?: never })
+    | (HTMLAttributes<"summary"> & { as: "summary"; href?: never })
+  )
+
+const {
+  as,
+  href,
+  variant = "default",
+  size = "default",
+  class: className,
+  "class:list": classList,
+  ...attributes
+} = Astro.props
+const Tag = href !== undefined ? "a" : (as ?? "button")
+---
+
+<Tag
+  type={Tag === "button" ? "button" : undefined}
+  href={href}
+  {...attributes}
+  class:list={["button", `button-${variant}`, `button-size-${size}`, className, classList]}
+>
+  <slot />
+</Tag>
+
+<style>
+  @reference "../styles/global.css";
+
+  /* This stylesheet can load before Tailwind's global stylesheet. */
+  @layer theme, base, components, utilities;
+
+  @layer components {
+    .button {
+      @apply inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md border border-transparent text-sm leading-5 font-medium whitespace-nowrap no-underline transition-colors select-none focus-visible:border-foreground focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-red-600 aria-invalid:ring-2 aria-invalid:ring-red-600/20 pointer-coarse:min-h-11;
+    }
+    .button :global(svg) {
+      @apply pointer-events-none shrink-0;
+    }
+    summary.button {
+      @apply list-none [&::-webkit-details-marker]:hidden;
+    }
+    .button-default {
+      @apply bg-foreground text-background shadow-xs hover:bg-foreground/90;
+    }
+    .button-outline {
+      @apply border-border bg-background text-foreground shadow-xs hover:bg-hover dark:bg-background-muted dark:hover:bg-hover;
+    }
+    .button-secondary {
+      @apply bg-background-muted text-foreground hover:bg-hover;
+    }
+    .button-ghost {
+      @apply text-foreground-soft hover:bg-hover hover:text-foreground;
+    }
+    .button-destructive {
+      @apply bg-red-600 text-white shadow-xs hover:bg-red-600/90 focus-visible:border-red-600 focus-visible:ring-red-600/30 dark:bg-red-500/70;
+    }
+    .button-link {
+      @apply text-foreground underline-offset-4 hover:underline;
+    }
+    .button-size-default {
+      @apply h-9 px-4 py-2;
+    }
+    .button-size-sm {
+      @apply h-8 gap-2 px-3;
+    }
+    .button-size-lg {
+      @apply h-11 px-6;
+    }
+    .button-size-icon {
+      @apply size-9 p-0 pointer-coarse:min-w-11;
+    }
+    .button-size-icon-sm {
+      @apply size-8 p-0 pointer-coarse:min-w-11;
+    }
+  }
+</style>

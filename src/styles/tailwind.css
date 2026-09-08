@@ -1,12 +1,16 @@
 @import "tailwindcss";
+@config "../../tailwind.config.ts";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: var(--font-geist), var(--font-noto), system-ui, sans-serif;
-  --font-mono: var(--font-code), var(--font-noto), ui-monospace, monospace;
+  --font-sans: var(--font-geist), var(--font-cjk), sans-serif;
+  --font-mono: var(--font-code), var(--font-cjk), ui-monospace, monospace;
   --color-background: var(--ui-bg);
   --color-background-muted: var(--ui-bg-soft);
+  --color-hover: var(--ui-hover);
+  --shadow-card: var(--ui-shadow-card);
   --color-surface: var(--ui-surface);
   --color-panel: var(--ui-surface-strong);
   --color-foreground: var(--ui-text);
@@ -22,8 +26,9 @@
 
 @layer base {
   :root {
-    --font-sans: var(--font-geist), var(--font-noto), system-ui, sans-serif;
-    --font-mono: var(--font-code), var(--font-noto), ui-monospace, monospace;
+    --font-cjk: "PingFang SC", "Noto Sans SC Variable";
+    --font-sans: var(--font-geist), var(--font-cjk), sans-serif;
+    --font-mono: var(--font-code), var(--font-cjk), ui-monospace, monospace;
     color-scheme: light;
     --ui-bg: #ffffff;
     --ui-bg-soft: #fafafa;
@@ -40,11 +45,11 @@
     --ui-brand: #202024;
     --ui-brand-deep: #202024;
     --ui-brand-soft: #f5f5f7;
-    --shadow-card: 0 6px 20px rgb(0 0 0 / 6%);
+    --ui-shadow-card: 0 6px 20px rgb(0 0 0 / 6%);
     --shadow-button: none;
-    --radius-sm: 4px;
-    --radius-md: 6px;
-    --radius-lg: 8px;
+    --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
   }
 
   :root.dark {
@@ -64,22 +69,17 @@
     --ui-brand: #eeeef0;
     --ui-brand-deep: #eeeef0;
     --ui-brand-soft: #1e1e22;
-    --shadow-card: 0 6px 20px rgb(0 0 0 / 20%);
+    --ui-shadow-card: 0 6px 20px rgb(0 0 0 / 20%);
   }
 
   * {
-    border-color: var(--ui-border);
+    @apply border-border;
   }
   html {
-    @apply scroll-smooth antialiased;
-    overflow-x: clip;
-    background: var(--ui-bg);
+    @apply overflow-x-clip scroll-smooth bg-background antialiased;
   }
   body {
-    @apply font-sans;
-    min-height: 100svh;
-    color: var(--ui-text);
-    background: var(--ui-bg);
+    @apply min-h-svh bg-background font-sans text-foreground;
     font-synthesis: style;
     text-rendering: optimizeLegibility;
   }

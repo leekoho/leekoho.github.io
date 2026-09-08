@@ -1,0 +1,114 @@
+/* Shared typography for Markdown, including content inserted after decryption. */
+/* Keep these overrides above the typography plugin's utility layer. */
+.prose {
+  @apply font-sans text-base leading-8 wrap-anywhere;
+}
+.prose :where(h1, h2, h3, h4):not(:where(.not-prose, .not-prose *)) {
+  @apply scroll-mt-6 font-sans font-medium tracking-normal text-pretty;
+}
+.prose :where(h1):not(:where(.not-prose, .not-prose *)) {
+  @apply mt-10 mb-4 text-3xl leading-snug;
+}
+.prose :where(h2):not(:where(.not-prose, .not-prose *)) {
+  @apply mt-10 mb-4 text-2xl leading-snug;
+}
+.prose :where(h3):not(:where(.not-prose, .not-prose *)) {
+  @apply mt-8 mb-4 text-lg leading-7;
+}
+.prose :where(h4):not(:where(.not-prose, .not-prose *)) {
+  @apply mt-6 mb-3 text-base leading-7;
+}
+.prose :where(p):not(:where(.not-prose, .not-prose *, callout *)) {
+  @apply my-6;
+}
+.prose :where(ul, ol):not(:where(.not-prose, .not-prose *)) {
+  @apply my-6 ps-6;
+}
+.prose :where(li):not(:where(.not-prose, .not-prose *)) {
+  @apply my-2 ps-1;
+}
+.prose :where(li > p, li > ul, li > ol):not(:where(.not-prose, .not-prose *)) {
+  @apply my-2;
+}
+.prose :where(a):not(:where(.not-prose, .not-prose *)) {
+  @apply font-normal decoration-muted underline-offset-4 hover:text-foreground hover:decoration-current;
+}
+.prose :where(strong):not(:where(.not-prose, .not-prose *)) {
+  @apply font-semibold;
+}
+.prose :where(blockquote):not(:where(.not-prose, .not-prose *)) {
+  @apply my-6 border-s-2 bg-background-muted p-4 font-normal not-italic;
+}
+.prose :where(blockquote > p):not(:where(.not-prose, .not-prose *)) {
+  @apply my-4;
+}
+.prose :where(blockquote p:first-of-type):not(:where(.not-prose, .not-prose *))::before,
+.prose :where(blockquote p:last-of-type):not(:where(.not-prose, .not-prose *))::after {
+  content: none;
+}
+.prose :where(code):not(:where(.not-prose, .not-prose *)) {
+  @apply rounded-sm border border-border bg-background-muted px-1 py-px font-mono text-sm font-normal wrap-anywhere;
+}
+.prose :where(code):not(:where(.not-prose, .not-prose *))::before,
+.prose :where(code):not(:where(.not-prose, .not-prose *))::after {
+  display: none;
+}
+.prose :where(pre):not(:where(.not-prose, .not-prose *)) {
+  @apply my-6 max-w-full overflow-x-auto rounded-md border border-border p-4 font-mono text-sm leading-7 tracking-normal wrap-normal whitespace-pre;
+}
+.prose :where(pre code):not(:where(.not-prose, .not-prose *)) {
+  @apply rounded-none border-0 bg-transparent p-0 wrap-normal;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: inherit;
+}
+.prose :where(table):not(:where(.not-prose, .not-prose *)) {
+  @apply my-6 block w-full max-w-full border-collapse overflow-x-auto text-start text-sm leading-6 wrap-normal;
+}
+.prose :where(th, td):not(:where(.not-prose, .not-prose *)) {
+  @apply min-w-32 px-4 py-3 align-top;
+}
+.prose :where(th):not(:where(.not-prose, .not-prose *)) {
+  @apply bg-background-muted font-medium;
+}
+.prose :where(tbody tr:nth-child(even)):not(:where(.not-prose, .not-prose *)) {
+  @apply bg-background-muted;
+}
+.prose :where(img):not(:where(.not-prose, .not-prose *)) {
+  @apply my-6 h-auto max-w-full;
+}
+.prose :where(video, iframe):not(:where(.not-prose, .not-prose *)) {
+  @apply my-6 max-w-full;
+}
+.prose :where(figure):not(:where(.not-prose, .not-prose *)) {
+  @apply my-6;
+}
+.prose :where(p > img, figure > img, figure > video):not(:where(.not-prose, .not-prose *)) {
+  @apply my-0;
+}
+.prose :where(figcaption):not(:where(.not-prose, .not-prose *)) {
+  @apply mt-3 mb-0 text-center text-xs leading-5;
+}
+.prose :where(kbd):not(:where(.not-prose, .not-prose *)) {
+  @apply rounded-sm border border-border bg-background-muted px-1.5 py-0.5 font-mono font-normal shadow-none;
+}
+.prose :where(mark):not(:where(.not-prose, .not-prose *)) {
+  @apply bg-background-muted text-foreground;
+}
+.prose :where(hr):not(:where(.not-prose, .not-prose *)) {
+  @apply my-8;
+}
+.prose :where(blockquote > :first-child, li > :first-child):not(:where(.not-prose, .not-prose *)) {
+  @apply mt-0;
+}
+.prose :where(blockquote > :last-child, li > :last-child):not(:where(.not-prose, .not-prose *)) {
+  @apply mb-0;
+}
+/* Apply after block spacing so the heading controls the following gap. */
+.prose
+  :where(h1, h2, h3, h4)
+  + :where(p, ul, ol, pre, blockquote, table, figure, callout, h2, h3, h4):not(
+    :where(.not-prose, .not-prose *)
+  ) {
+  @apply mt-0;
+}

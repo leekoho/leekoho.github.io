@@ -6,10 +6,10 @@ const pathname = Astro.url.pathname.replace(/\/$/, "") || "/"
 const links = [
   {
     href: "/posts",
-    label: "文章",
+    label: "Blog",
     active: pathname === "/" || pathname === "/posts" || pathname.startsWith("/posts/"),
   },
-  { href: "/about", label: "关于", active: pathname === "/about" },
+  { href: "/about", label: "About", active: pathname === "/about" },
 ]
 ---
 
@@ -28,69 +28,18 @@ const links = [
 </header>
 
 <style>
+  @reference "../../styles/global.css";
+
   .header {
-    position: relative;
-    z-index: 20;
-    display: flex;
-    align-items: center;
-    height: 66px;
-    gap: 22px;
-    padding: 0 24px;
+    @apply relative z-20 flex h-16 items-center gap-3 px-4 sm:gap-6 sm:px-6;
   }
   nav {
-    display: flex;
-    align-self: stretch;
-    gap: 24px;
-    margin-left: auto;
+    @apply ml-auto flex gap-4 self-stretch sm:gap-6;
   }
   .nav-link {
-    position: relative;
-    display: flex;
-    align-items: center;
-    color: var(--ui-text-muted);
-    font-size: 13px;
-    letter-spacing: 0.06em;
-    text-decoration: none;
-  }
-  .nav-link:hover,
-  .nav-link[aria-current="page"] {
-    color: var(--ui-text);
-  }
-  .nav-link[aria-current="page"]::after {
-    content: "";
-    position: absolute;
-    height: 2px;
-    bottom: -1px;
-    inset-inline: 0;
-    background: var(--ui-text);
+    @apply relative flex items-center text-sm tracking-wide text-muted no-underline hover:text-foreground aria-[current=page]:text-foreground aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-0 aria-[current=page]:after:-bottom-px aria-[current=page]:after:h-0.5 aria-[current=page]:after:bg-foreground;
   }
   .header-actions {
-    padding-left: 18px;
-    border-left: 1px solid var(--ui-border);
-  }
-  @media (max-width: 520px) {
-    .header {
-      height: 61px;
-      gap: 16px;
-      padding: 0 18px;
-    }
-    nav {
-      gap: 19px;
-    }
-    .header-actions {
-      padding-left: 13px;
-    }
-  }
-  @media (max-width: 340px) {
-    .header {
-      gap: 10px;
-      padding: 0 13px;
-    }
-    nav {
-      gap: 14px;
-    }
-    .header-actions {
-      padding-left: 9px;
-    }
+    @apply border-l border-border pl-3 sm:pl-4;
   }
 </style>

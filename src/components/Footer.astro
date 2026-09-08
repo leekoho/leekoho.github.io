@@ -1,0 +1,50 @@
+---
+import { CodeXml, Rss } from "@lucide/astro"
+import { PROFILE } from "@/consts"
+
+const githubProfile = PROFILE.links.find((link) => link.label === "GitHub")
+---
+
+<footer class="site-footer" aria-label="站点信息">
+  <div class="footer-bottom">
+    <nav aria-label="站点链接">
+      {
+        githubProfile && (
+          <a
+            href={githubProfile.url}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="leekoho 的 GitHub"
+            title="GitHub"
+          >
+            <CodeXml size={16} stroke-width={1.5} aria-hidden="true" />
+          </a>
+        )
+      }
+      <a href="/feed.xml" aria-label="RSS 订阅" title="RSS 订阅"
+        ><Rss size={16} stroke-width={1.5} aria-hidden="true" /></a
+      >
+    </nav>
+    <p>© {new Date().getFullYear()} {PROFILE.name}</p>
+  </div>
+</footer>
+
+<style>
+  @reference "../styles/global.css";
+
+  .site-footer {
+    @apply min-w-0;
+  }
+  .footer-bottom {
+    @apply flex items-center justify-between gap-4 px-4 py-4 text-muted sm:px-6;
+  }
+  .footer-bottom nav {
+    @apply -ml-2 flex items-center gap-2;
+  }
+  .footer-bottom a {
+    @apply inline-flex size-8 items-center justify-center hover:text-foreground pointer-coarse:size-11;
+  }
+  .footer-bottom p {
+    @apply font-mono text-xs;
+  }
+</style>

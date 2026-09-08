@@ -4,10 +4,10 @@ import Layout from "@/layouts/Layout.astro"
 import { PROFILE } from "@/consts.ts"
 ---
 
-<Layout title="关于我 · leekoho" description="关于 leekoho，以及日常使用的设备与工具。">
+<Layout title="About · leekoho" description="关于 leekoho，以及日常使用的设备与工具。">
   <section aria-labelledby="about-title">
     <header class="page-heading page-rule">
-      <h1 id="about-title" class="section-title">关于我</h1>
+      <h1 id="about-title" class="section-title">About</h1>
       <p class="section-summary">我是 {PROFILE.name}，一名写代码的人。</p>
     </header>
 
@@ -31,7 +31,9 @@ import { PROFILE } from "@/consts.ts"
         </div>
         <div class="profile-row">
           <dt>身份</dt>
-          <dd>{PROFILE.tags.join(" / ")}</dd>
+          <dd>
+            {PROFILE.tags.join(" / ")}
+          </dd>
         </div>
         <div class="profile-row">
           <dt>现居</dt>
@@ -51,7 +53,12 @@ import { PROFILE } from "@/consts.ts"
               <a href={item.url} target="_blank" rel="noopener noreferrer" class="about-link">
                 <span class="about-link-label">{item.label}</span>
                 <span class="about-link-address">{item.url.replace(/^https?:\/\//, "")}</span>
-                <ArrowUpRight size={16} stroke-width={1.5} aria-hidden="true" />
+                <ArrowUpRight
+                  class="about-link-icon"
+                  size={16}
+                  stroke-width={1.5}
+                  aria-hidden="true"
+                />
                 <span class="sr-only">（在新标签页打开）</span>
               </a>
             </li>
@@ -90,176 +97,63 @@ import { PROFILE } from "@/consts.ts"
 </Layout>
 
 <style>
+  @reference "../../styles/global.css";
+
   .about-intro {
-    padding: 30px 28px;
-    color: var(--ui-text-secondary);
-    font-size: 15px;
-    line-height: 2;
-    letter-spacing: 0.015em;
+    @apply space-y-4 px-4 py-8 text-sm leading-8 text-foreground-soft sm:px-6 sm:text-base;
   }
-
-  .about-intro p + p {
-    margin-top: 12px;
-  }
-
   .about-section-heading {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 14px 28px;
+    @apply flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 px-4 py-4 sm:px-6;
   }
-
   .about-section-heading h2 {
-    color: var(--ui-text);
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 1.6;
+    @apply text-sm leading-relaxed font-medium text-foreground;
   }
-
-  .about-section-heading p {
-    color: var(--ui-text-muted);
-    font-size: 12px;
-    line-height: 1.7;
+  .profile-list {
+    @apply m-0 p-0;
   }
-
-  .profile-list,
-  .about-links,
-  .uses-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
   .profile-row {
-    display: grid;
-    grid-template-columns: 112px minmax(0, 1fr);
-    gap: 16px;
-    padding: 16px 28px;
-    border-bottom: 1px solid var(--ui-border);
-    font-size: 13px;
-    line-height: 1.8;
+    @apply flex gap-4 border-b border-border px-4 py-4 text-sm leading-6 sm:px-6;
   }
-
   .profile-row dt {
-    color: var(--ui-text-muted);
+    @apply w-16 shrink-0 text-muted sm:w-28;
   }
-
   .profile-row dd {
-    margin: 0;
-    color: var(--ui-text-secondary);
-    overflow-wrap: anywhere;
+    @apply m-0 min-w-0 flex-1 wrap-anywhere text-foreground-soft;
   }
-
+  .about-links {
+    @apply m-0 list-none p-0;
+  }
   .about-link {
-    display: grid;
-    grid-template-columns: 112px minmax(0, 1fr) 16px;
-    align-items: center;
-    gap: 16px;
-    min-height: 56px;
-    padding: 16px 28px;
-    border-bottom: 1px solid var(--ui-border);
-    color: var(--ui-text-muted);
-    text-decoration: none;
-    transition: background-color 160ms ease;
+    @apply flex min-h-14 items-center gap-4 border-b border-border px-4 py-4 text-muted no-underline hover:bg-background-muted focus-visible:-outline-offset-4 sm:px-6;
   }
-
-  .about-link:hover {
-    background: var(--ui-bg-soft);
-  }
-
-  .about-link:focus-visible {
-    outline: 2px solid var(--ui-text);
-    outline-offset: -3px;
-  }
-
   .about-link-label {
-    color: var(--ui-text);
-    font-size: 13px;
-    font-weight: 500;
+    @apply w-16 shrink-0 text-sm font-medium text-foreground sm:w-28;
   }
-
   .about-link-address {
-    font-size: 12px;
-    line-height: 1.8;
-    overflow-wrap: anywhere;
+    @apply min-w-0 flex-1 text-xs leading-relaxed wrap-anywhere;
   }
-
+  .about-link :global(.about-link-icon) {
+    @apply shrink-0;
+  }
+  .about-section-heading p {
+    @apply text-xs leading-relaxed text-muted;
+  }
   .uses-category {
-    padding: 10px 28px;
-    background: var(--ui-bg-soft);
-    color: var(--ui-text-muted);
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 1.8;
+    @apply bg-background-muted px-4 py-2 text-xs leading-6 font-normal text-muted sm:px-6;
   }
-
+  .uses-list {
+    @apply m-0 list-none p-0;
+  }
   .uses-row {
-    display: grid;
-    grid-template-columns: 190px minmax(0, 1fr);
-    align-items: baseline;
-    gap: 18px;
-    padding: 19px 28px;
-    border-bottom: 1px solid var(--ui-border);
+    @apply flex flex-col gap-2 border-b border-border px-4 py-4 sm:flex-row sm:items-baseline sm:gap-4 sm:px-6;
   }
-
   .uses-name {
-    color: var(--ui-text);
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.8;
-    overflow-wrap: anywhere;
+    @apply text-sm leading-6 font-medium wrap-anywhere text-foreground sm:w-48 sm:shrink-0;
   }
-
   .uses-description {
-    color: var(--ui-text-muted);
-    font-size: 13px;
-    line-height: 1.9;
-    overflow-wrap: anywhere;
+    @apply min-w-0 flex-1 text-sm leading-6 wrap-anywhere text-muted;
   }
-
   .about-end-space {
-    height: 32px;
-  }
-
-  @media (max-width: 520px) {
-    .about-intro {
-      padding: 24px 20px;
-      font-size: 14px;
-    }
-
-    .about-section-heading,
-    .profile-row,
-    .about-link,
-    .uses-category,
-    .uses-row {
-      padding-inline: 20px;
-    }
-
-    .profile-row {
-      grid-template-columns: 64px minmax(0, 1fr);
-      gap: 12px;
-    }
-
-    .about-link {
-      grid-template-columns: 64px minmax(0, 1fr) 16px;
-      gap: 12px;
-    }
-
-    .about-link-address {
-      font-size: 11px;
-    }
-
-    .uses-row {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 4px;
-      padding-block: 17px;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .about-link {
-      transition: none;
-    }
+    @apply h-8 sm:h-12;
   }
 </style>

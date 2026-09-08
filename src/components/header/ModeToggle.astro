@@ -1,5 +1,6 @@
 ---
 import { Moon, Sun, Monitor, Check } from "@lucide/astro"
+import Button from "../Button.astro"
 
 const options = [
   { value: "light", label: "浅色", icon: Sun },
@@ -9,20 +10,20 @@ const options = [
 ---
 
 <details class="theme-switcher" data-theme-switcher>
-  <summary class="theme-trigger">
+  <Button as="summary" variant="outline" size="icon" class="theme-trigger">
     <Sun class="icon-light" size={16} stroke-width={1.5} aria-hidden="true" />
     <Moon class="icon-dark" size={16} stroke-width={1.5} aria-hidden="true" />
     <Monitor class="icon-system" size={16} stroke-width={1.5} aria-hidden="true" />
     <span class="sr-only">切换主题</span>
-  </summary>
+  </Button>
   <div class="theme-menu" role="group" aria-label="外观">
     {
       options.map((option) => (
-        <button class="theme-option" data-theme-option={option.value} type="button">
+        <Button variant="ghost" class="theme-option" data-theme-option={option.value}>
           <option.icon size={16} stroke-width={1.5} aria-hidden="true" />
           <span class="theme-label">{option.label}</span>
           <Check class="theme-check" size={14} aria-hidden="true" />
-        </button>
+        </Button>
       ))
     }
   </div>
@@ -64,83 +65,41 @@ const options = [
 </script>
 
 <style>
+  @reference "../../styles/global.css";
+
   .theme-switcher {
-    position: relative;
+    @apply relative;
   }
   .theme-trigger {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    list-style: none;
-    border: 1px solid var(--ui-border);
-    border-radius: 5px;
-    color: var(--ui-text-muted);
-    background: var(--ui-bg);
+    @apply text-muted hover:text-foreground;
   }
-  .theme-trigger::-webkit-details-marker {
-    display: none;
+  :global(.icon-light) {
+    @apply hidden;
+  }
+  :global(.icon-dark) {
+    @apply hidden;
+  }
+  :global(.icon-system) {
+    @apply hidden;
   }
   .theme-menu {
-    position: absolute;
-    z-index: 30;
-    top: 100%;
-    right: 0;
-    display: grid;
-    gap: 3px;
-    min-width: 144px;
-    margin-top: 8px;
-    padding: 6px;
-    border: 1px solid var(--ui-border);
-    border-radius: 6px;
-    background: var(--ui-surface);
-    box-shadow: var(--shadow-card);
+    @apply absolute top-full right-0 z-30 mt-2 grid min-w-36 gap-1 rounded-md border border-border bg-surface p-1 shadow-card;
   }
   .theme-option {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    border-radius: 4px;
-    color: var(--ui-text-muted);
-    font-size: 12px;
-    text-align: left;
+    @apply w-full justify-start px-3 text-left font-normal text-muted aria-pressed:bg-hover aria-pressed:text-foreground;
   }
   .theme-label {
-    flex: 1;
-    white-space: nowrap;
-  }
-  .theme-trigger:hover,
-  .theme-option:hover,
-  .theme-option[aria-pressed="true"] {
-    color: var(--ui-text);
-    background: var(--ui-hover);
+    @apply flex-1 whitespace-nowrap;
   }
   .theme-option :global(.theme-check) {
-    opacity: 0;
+    @apply opacity-0;
   }
   .theme-option[aria-pressed="true"] :global(.theme-check) {
-    opacity: 1;
-  }
-  :global(.icon-light),
-  :global(.icon-dark),
-  :global(.icon-system) {
-    display: none;
+    @apply opacity-100;
   }
   .theme-switcher[data-theme="light"] :global(.icon-light),
   .theme-switcher[data-theme="dark"] :global(.icon-dark),
   .theme-switcher[data-theme="system"] :global(.icon-system) {
-    display: block;
-  }
-  @media (pointer: coarse) {
-    .theme-trigger {
-      width: 44px;
-      height: 44px;
-    }
-    .theme-option {
-      min-height: 44px;
-    }
+    @apply block;
   }
 </style>

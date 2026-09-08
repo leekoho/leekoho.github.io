@@ -36,7 +36,6 @@ npx pnpm@12.3.4 dev
 - 支持 `title`、`description`、`pubDate`、`tags`、`draft` 和可选的 `password` 字段。
 - 个人资料与站点文案在 `src/consts.ts`，品牌标识在 `src/assets/logo.svg`。
 - 视觉规范见 [DESIGN.md](./DESIGN.md)，全局样式在 `src/styles/`。
-- 字体为 Geist、Noto Sans SC 和 Geist Mono，由 Astro Fonts 下载并自托管；首次构建需要访问字体源。中文采用 Unicode 分片按需加载。
 
 ## 配置约定
 

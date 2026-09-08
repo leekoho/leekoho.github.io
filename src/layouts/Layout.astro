@@ -1,18 +1,17 @@
 ---
 import { Font } from "astro:assets"
-import SiteFooter from "@/components/SiteFooter.astro"
+import Footer from "@/components/Footer.astro"
 import Header from "@/components/header/index.astro"
 import ThemeScript from "@/components/header/ThemeScript.astro"
 import { SITE_TITLE, SITE_DESCRIPTION } from "@/consts"
+import "@fontsource-variable/noto-sans-sc"
 import "../styles/global.css"
 
 interface Props {
   title?: string
   description?: string
-  publishedAt?: Date
-  tags?: readonly string[]
 }
-const { title = SITE_TITLE, description = SITE_DESCRIPTION, publishedAt, tags } = Astro.props
+const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props
 ---
 
 <!doctype html>
@@ -25,7 +24,6 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION, publishedAt, tags } 
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href="/feed.xml" />
     <Font cssVariable="--font-geist" preload={[{ subset: "latin", style: "normal" }]} />
-    <Font cssVariable="--font-noto" preload={false} />
     <Font cssVariable="--font-code" preload={false} />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
@@ -35,43 +33,27 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION, publishedAt, tags } 
     <a class="skip-link" href="#main-content">跳至正文</a>
     <div class="site-shell">
       <Header />
-      <main id="main-content" class="site-main" tabindex="-1"><slot /></main>
-      <SiteFooter publishedAt={publishedAt} tags={tags} />
+      <main id="main-content" class="site-main" tabindex="-1">
+        <slot />
+      </main>
+      <Footer />
     </div>
   </body>
 </html>
 
 <style>
+  @reference "../styles/global.css";
+
   .site-body {
-    overflow-x: clip;
-  }
-  .site-shell {
-    display: flex;
-    flex-direction: column;
-    width: min(100%, 768px);
-    min-height: 100svh;
-    margin-inline: auto;
-    border-inline: 1px solid var(--ui-border);
-    background: var(--ui-bg);
-  }
-  .site-main {
-    flex: 1;
-    min-width: 0;
-  }
-  .site-main:focus {
-    outline: none;
+    @apply overflow-x-clip;
   }
   .skip-link {
-    position: fixed;
-    top: 8px;
-    left: 8px;
-    z-index: 100;
-    padding: 10px 16px;
-    transform: translateY(-150%);
-    background: var(--ui-bg);
-    border: 1px solid var(--ui-border);
+    @apply fixed top-2 left-2 z-100 -translate-y-24 border border-border bg-background px-4 py-3 focus:translate-y-0;
   }
-  .skip-link:focus {
-    transform: translateY(0);
+  .site-shell {
+    @apply mx-auto flex min-h-svh w-full max-w-3xl flex-col border-x border-border bg-background;
+  }
+  .site-main {
+    @apply min-w-0 flex-1 focus:outline-none;
   }
 </style>

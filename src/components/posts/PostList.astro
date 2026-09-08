@@ -23,205 +23,116 @@ allPosts.forEach((post) => {
   <div class="section-divider page-rule" aria-hidden="true"></div>
   <section aria-labelledby="archive-title">
     <div class="archive-bar page-rule">
-      <h2 id="archive-title">文章</h2>
-      <span>按年份归档</span>
+      <h2 id="archive-title">Posts</h2>
+      <!--<span>按年份归档</span>-->
     </div>
     {
-      allPosts.length === 0 ? (
-        <p class="post-empty">文章正在整理中。</p>
-      ) : (
-        Array.from(groups).map(([year, yearPosts]) => (
-          <section aria-labelledby={`post-year-${year}`}>
-            <h3 class="post-year page-rule" id={`post-year-${year}`}>
-              {year}
-            </h3>
-            <ul class="post-list">
-              {yearPosts.map((post) => (
-                <li class="page-rule">
-                  <a href={`/posts/${post.id}`} class="post-link">
-                    <span class="post-icon" aria-hidden="true">
-                      {post.data.password ? (
-                        <LockKeyhole size={20} stroke-width={1.5} />
-                      ) : (
-                        <FileText size={20} stroke-width={1.5} />
+      Array.from(groups).map(([year, yearPosts]) => (
+        <section aria-labelledby={`post-year-${year}`}>
+          <h3 class="post-year page-rule" id={`post-year-${year}`}>
+            {year}
+          </h3>
+          <ul class="post-list">
+            {yearPosts.map((post) => (
+              <li class="page-rule">
+                <a href={`/posts/${post.id}`} class="post-link">
+                  <span class="post-icon" aria-hidden="true">
+                    {post.data.password ? (
+                      <LockKeyhole size={20} stroke-width={1.5} />
+                    ) : (
+                      <FileText size={20} stroke-width={1.5} />
+                    )}
+                  </span>
+                  <span class="post-copy">
+                    <span class="post-title">{post.data.title}</span>
+                    {/* 列表摘要按当前设计隐藏。 */}
+                    <span class="post-meta">
+                      <time datetime={post.data.pubDate.toISOString()}>
+                        {post.data.pubDate.toISOString().slice(5, 10).replace("-", ".")}
+                      </time>
+                      {post.data.tags.length > 0 && (
+                        <>
+                          <span class="post-meta-rule" aria-hidden="true" />
+                          <span class="post-tags">
+                            {post.data.tags.map((tag) => (
+                              <span>{tag}</span>
+                            ))}
+                          </span>
+                        </>
                       )}
+                      {post.data.password && <span class="sr-only">密码保护</span>}
+                      {post.data.draft && <span class="post-draft">草稿</span>}
                     </span>
-                    <span class="post-copy">
-                      <span class="post-title">{post.data.title}</span>
-                      {post.data.description && (
-                        <span class="post-description">{post.data.description}</span>
-                      )}
-                      <span class="post-meta">
-                        <time datetime={post.data.pubDate.toISOString()}>
-                          {post.data.pubDate.toISOString().slice(5, 10).replace("-", ".")}
-                        </time>
-                        {post.data.tags.length > 0 && (
-                          <>
-                            <span class="post-meta-rule" aria-hidden="true" />
-                            <span class="post-tags">
-                              {post.data.tags.map((tag) => (
-                                <span>{tag}</span>
-                              ))}
-                            </span>
-                          </>
-                        )}
-                        {post.data.password && <span class="sr-only">密码保护</span>}
-                        {post.data.draft && <span class="post-draft">草稿</span>}
-                      </span>
-                    </span>
-                    <span class="post-arrow" aria-hidden="true">
-                      <ArrowUpRight size={16} stroke-width={1.5} />
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))
-      )
+                  </span>
+                  <span class="post-arrow" aria-hidden="true">
+                    <ArrowUpRight size={16} stroke-width={1.5} />
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
     }
   </section>
   <div class="archive-end" aria-hidden="true"></div>
 </div>
 
 <style>
+  @reference "../../styles/global.css";
+
   .post-shell {
-    min-width: 0;
+    @apply min-w-0;
   }
   .archive-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 17px 28px;
+    @apply flex items-center justify-between gap-4 px-4 py-4 sm:px-6;
   }
   .archive-bar h2 {
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.04em;
+    @apply text-lg font-medium tracking-wide;
   }
   .archive-bar > span {
-    color: var(--ui-text-muted);
-    font-size: 11px;
+    @apply text-xs text-muted;
   }
   .post-year {
-    padding: 10px 28px;
-    color: var(--ui-text-muted);
-    background: var(--ui-bg-soft);
-    font: 400 12px/1.6 var(--font-mono);
-    letter-spacing: 0.03em;
+    @apply bg-background-muted px-4 py-2 font-mono text-xs leading-6 tracking-wide text-muted sm:px-6;
   }
   .post-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+    @apply m-0 list-none p-0;
   }
   .post-link {
-    display: grid;
-    grid-template-columns: 57px minmax(0, 1fr) 44px;
-    padding: 23px 22px 23px 17px;
-    color: var(--ui-text);
-    text-decoration: none;
-  }
-  .post-link:hover {
-    background: var(--ui-hover);
-  }
-  .post-link:focus-visible {
-    outline-offset: -3px;
+    @apply flex gap-3 px-4 py-6 text-foreground no-underline hover:bg-hover focus-visible:-outline-offset-4 sm:gap-4 sm:px-6;
   }
   .post-icon {
-    display: flex;
-    justify-content: center;
-    padding-top: 5px;
-    color: var(--ui-text-muted);
+    @apply flex w-5 shrink-0 justify-center pt-1 text-muted;
   }
   .post-copy {
-    min-width: 0;
+    @apply min-w-0 flex-1;
   }
   .post-title {
-    display: block;
-    font-size: 16px;
-    line-height: 1.8;
-    font-weight: 500;
-    overflow-wrap: anywhere;
-    text-wrap: pretty;
-  }
-  .post-description {
-    display: block;
-    margin-top: 7px;
-    color: var(--ui-text-muted);
-    font-size: 13px;
-    line-height: 1.95;
-    letter-spacing: 0.01em;
-    overflow-wrap: anywhere;
+    @apply block text-base leading-7 font-medium text-pretty wrap-anywhere;
   }
   .post-meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 13px;
-    color: var(--ui-text-muted);
-    font-size: 11px;
-    line-height: 1.8;
+    @apply mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-5 text-muted;
   }
   .post-meta time {
-    font-family: var(--font-mono);
-    font-variant-numeric: tabular-nums;
+    @apply font-mono tabular-nums;
   }
   .post-meta-rule {
-    width: 1px;
-    height: 9px;
-    background: var(--ui-border-strong);
+    @apply h-3 w-px bg-border-strong;
   }
   .post-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-    overflow-wrap: anywhere;
+    @apply flex flex-wrap gap-2 wrap-anywhere;
   }
   .post-tags > span + span::before {
-    content: "·";
-    margin-right: 7px;
+    @apply mr-2 content-['·'];
   }
   .post-draft {
-    border: 1px solid var(--ui-border);
-    border-radius: 3px;
-    padding-inline: 5px;
+    @apply rounded-sm border border-border px-1;
   }
   .post-arrow {
-    display: flex;
-    justify-content: flex-end;
-    padding-top: 7px;
-    color: var(--ui-text-muted);
-  }
-  .post-empty {
-    padding: 32px 28px;
-    color: var(--ui-text-muted);
-    font-size: 14px;
+    @apply flex w-4 shrink-0 justify-end pt-1.5 text-muted;
   }
   .archive-end {
-    height: 32px;
-  }
-  @media (max-width: 520px) {
-    .archive-bar {
-      padding: 15px 20px;
-    }
-    .post-year {
-      padding-inline: 20px;
-    }
-    .post-link {
-      grid-template-columns: 41px minmax(0, 1fr) 23px;
-      padding: 19px 13px;
-    }
-    .post-icon {
-      padding-top: 4px;
-    }
-    .post-title {
-      font-size: 15px;
-    }
-    .post-description {
-      font-size: 12.5px;
-    }
+    @apply h-8 sm:h-12;
   }
 </style>

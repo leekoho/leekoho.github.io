@@ -1,5 +1,6 @@
 ---
 import { ArrowLeft, ArrowRight, Copy, Link } from "@lucide/astro"
+import Button from "../Button.astro"
 
 interface Props {
   previous?: { href: string; title: string }
@@ -10,55 +11,61 @@ const { previous, next } = Astro.props
 ---
 
 <div class="article-toolbar page-rule" data-article-tools>
-  <a class="article-back" href="/posts">
-    <ArrowLeft size={15} stroke-width={1.5} aria-hidden="true" />
+  <Button variant="ghost" size="sm" class="article-back" href="/posts">
+    <ArrowLeft size={16} stroke-width={1.5} aria-hidden="true" />
     Blog
-  </a>
+  </Button>
   <div class="article-actions">
-    <button
+    <Button
       class="article-action copy-article"
-      type="button"
+      variant="outline"
+      size="sm"
       data-copy="article"
       disabled
       aria-label="复制正文"
     >
-      <Copy size={15} stroke-width={1.5} aria-hidden="true" />
+      <Copy size={16} stroke-width={1.5} aria-hidden="true" />
       <span>复制正文</span>
-    </button>
-    <button
-      class="article-action icon-action"
-      type="button"
+    </Button>
+    <Button
+      class="article-action"
+      variant="outline"
+      size="icon-sm"
       data-copy="link"
       disabled
       aria-label="复制链接"
       title="复制链接"
     >
-      <Link size={15} stroke-width={1.5} aria-hidden="true" />
-    </button>
+      <Link size={16} stroke-width={1.5} aria-hidden="true" />
+    </Button>
     {
       (previous || next) && (
         <nav class="article-pagination" aria-label="相邻文章">
           {previous && (
-            <a
-              class="article-action icon-action"
+            <Button
+              class="article-action"
+              variant="ghost"
+              size="icon-sm"
               href={previous.href}
               rel="prev"
               aria-label={`上一篇：${previous.title}`}
               title={`上一篇：${previous.title}`}
             >
-              <ArrowLeft size={15} stroke-width={1.5} aria-hidden="true" />
-            </a>
+              <ArrowLeft size={16} stroke-width={1.5} aria-hidden="true" />
+            </Button>
           )}
           {next && (
-            <a
-              class="article-action icon-action"
+            <Button
+              class="article-action"
+              variant="ghost"
+              size="icon-sm"
               href={next.href}
               rel="next"
               aria-label={`下一篇：${next.title}`}
               title={`下一篇：${next.title}`}
             >
-              <ArrowRight size={15} stroke-width={1.5} aria-hidden="true" />
-            </a>
+              <ArrowRight size={16} stroke-width={1.5} aria-hidden="true" />
+            </Button>
           )}
         </nav>
       )
@@ -132,102 +139,27 @@ const { previous, next } = Astro.props
 </script>
 
 <style>
+  @reference "../../styles/global.css";
+
   .article-toolbar {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    min-height: 48px;
-    padding: 8px 12px 8px 16px;
+    @apply relative flex min-h-12 flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 py-2 sm:px-6;
   }
   .article-back {
-    display: inline-flex;
-    align-items: center;
-    flex-shrink: 0;
-    gap: 8px;
-    min-height: 30px;
-    color: var(--ui-text-muted);
-    font-size: 13px;
-    letter-spacing: 0.025em;
-    text-decoration: none;
+    @apply -ml-2 px-2 font-normal tracking-wide text-muted;
   }
-  .article-back:hover {
-    color: var(--ui-text);
+  .article-actions {
+    @apply ml-auto flex items-center gap-2;
   }
-  .article-actions,
-  .article-pagination {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  .copy-article {
+    @apply w-8 px-0 sm:w-auto sm:px-3 pointer-coarse:min-w-11;
+  }
+  .copy-article span {
+    @apply hidden sm:inline;
   }
   .article-pagination {
-    padding-left: 6px;
-    border-left: 1px solid var(--ui-border);
-  }
-  .article-action {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    min-height: 30px;
-    padding: 5px 8px;
-    border: 1px solid transparent;
-    border-radius: 5px;
-    background: var(--ui-bg-soft);
-    color: var(--ui-text-secondary);
-    font-size: 12px;
-    line-height: 1.5;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-  .article-action:hover {
-    background: var(--ui-hover);
-    color: var(--ui-text);
-  }
-  .article-action:disabled {
-    color: var(--ui-text-muted);
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
-  .icon-action {
-    width: 30px;
-    padding: 0;
+    @apply flex items-center gap-2 border-l border-border pl-2;
   }
   .copy-status {
-    position: absolute;
-    top: calc(100% + 6px);
-    right: 12px;
-    z-index: 10;
-    max-width: calc(100% - 24px);
-    padding: 7px 10px;
-    border: 1px solid var(--ui-border);
-    border-radius: 4px;
-    background: var(--ui-bg);
-    box-shadow: var(--shadow-card);
-    color: var(--ui-text-secondary);
-    font-size: 12px;
-  }
-  .copy-status:empty {
-    display: none;
-  }
-  @media (max-width: 420px) {
-    .copy-article span {
-      display: none;
-    }
-    .copy-article {
-      width: 30px;
-      padding: 0;
-    }
-  }
-  @media (pointer: coarse) {
-    .article-action,
-    .article-back {
-      min-height: 44px;
-    }
-    .icon-action,
-    .copy-article {
-      min-width: 44px;
-    }
+    @apply absolute top-full right-4 left-4 z-10 mt-2 w-fit max-w-full justify-self-end rounded-sm border border-border bg-background px-3 py-2 text-xs leading-5 text-foreground-soft shadow-card empty:hidden sm:right-6 sm:left-6;
   }
 </style>

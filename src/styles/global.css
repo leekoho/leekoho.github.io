@@ -1,68 +1,47 @@
 @import "./tailwind.css";
 @import "./callout.css";
-@config "../../tailwind.config.ts";
-@plugin "@tailwindcss/typography";
+@import "./prose.css";
 
-a,
-button,
-summary,
-input,
-textarea,
-select {
-  transition:
-    color 160ms ease,
-    border-color 160ms ease,
-    background-color 160ms ease;
-}
-a {
-  color: inherit;
-  text-underline-offset: 4px;
-}
-button,
-summary {
-  cursor: pointer;
-}
-:focus-visible {
-  outline: 2px solid var(--ui-text);
-  outline-offset: 4px;
+@layer base {
+  a,
+  button,
+  summary,
+  input,
+  textarea,
+  select {
+    @apply transition-colors duration-150;
+  }
+  a {
+    @apply text-inherit underline-offset-4;
+  }
+  button,
+  summary {
+    @apply cursor-pointer;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-4 outline-foreground;
+  }
 }
 
 @layer components {
   .page-rule {
-    position: relative;
-    border-bottom: 1px solid var(--ui-border);
+    @apply relative border-b border-border;
   }
   .page-rule::after {
     content: "";
-    position: absolute;
-    pointer-events: none;
-    bottom: -1px;
-    left: 50%;
-    width: 100vw;
-    height: 1px;
-    transform: translateX(-50%);
-    background: var(--ui-border);
+    @apply pointer-events-none absolute -bottom-px left-1/2 h-px w-screen -translate-x-1/2 bg-border;
   }
   .page-heading {
-    padding: 43px 28px 35px;
+    @apply px-4 py-8 sm:px-6 sm:py-12;
   }
   .section-title {
-    font-size: 36px;
-    font-weight: 500;
-    line-height: 1.5;
-    letter-spacing: 0.035em;
-    overflow-wrap: anywhere;
+    @apply text-3xl leading-normal font-medium tracking-wide wrap-anywhere sm:text-4xl;
   }
   .section-summary {
-    max-width: 550px;
-    margin-top: 17px;
-    color: var(--ui-text-muted);
-    font-size: 14px;
-    line-height: 2;
-    letter-spacing: 0.025em;
+    @apply mt-4 max-w-xl text-sm leading-7 tracking-wide text-muted;
   }
   .section-divider {
-    height: 19px;
+    @apply h-4;
     background: repeating-linear-gradient(
       135deg,
       transparent 0,
@@ -70,26 +49,6 @@ summary {
       var(--ui-pattern) 3px,
       var(--ui-pattern) 4px
     );
-  }
-  .section-kicker {
-    color: var(--ui-text-muted);
-    font-size: 12px;
-    letter-spacing: 0.05em;
-  }
-  .muted-copy,
-  .subtle-copy {
-    color: var(--ui-text-muted);
-  }
-  @media (max-width: 520px) {
-    .page-heading {
-      padding: 33px 20px 27px;
-    }
-    .section-title {
-      font-size: 33px;
-    }
-    .section-summary {
-      font-size: 13px;
-    }
   }
 }
 

@@ -65,4 +65,4 @@ export const PROFILE = {
 } as const
 
 export const SITE_TITLE: string = "Blog · leekoho"
-export const SITE_DESCRIPTION: string = "写给此刻，也留给以后。"
+export const SITE_DESCRIPTION: string = "记录技术问题、解决过程和阅读笔记。"

@@ -14,8 +14,16 @@ export default defineConfig({
 
   integrations: [sitemap()],
 
+  build: {
+    inlineStylesheets: "never",
+  },
+
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // Keep font bytes out of CSS so local PingFang can avoid CJK font downloads.
+      assetsInlineLimit: (filePath) => (/\.(woff2?|ttf|otf)$/i.test(filePath) ? false : undefined),
+    },
   },
 
   markdown: {
@@ -38,19 +46,6 @@ export default defineConfig({
       weights: ["100 900"],
       styles: ["normal"],
       subsets: ["latin", "latin-ext"],
-      fallbacks: [],
-      optimizedFallbacks: false,
-      display: "swap",
-    },
-    {
-      name: "Noto Sans SC Variable",
-      cssVariable: "--font-noto",
-      provider: fontProviders.npm(),
-      options: {
-        package: "@fontsource-variable/noto-sans-sc",
-        version: "5.3.0",
-        file: "index.css",
-      },
       fallbacks: [],
       optimizedFallbacks: false,
       display: "swap",
