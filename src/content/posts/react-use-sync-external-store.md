@@ -1,6 +1,6 @@
 ---
 title: "React 处理外部状态时，什么时候该用 useSyncExternalStore"
-description: "React 里有些状态本来就不归它管，这时候继续用 useEffect 硬同步，通常不如直接上 useSyncExternalStore。"
+#description: "React 里有些状态本来就不归它管，这时候继续用 useEffect 硬同步，通常不如直接上 useSyncExternalStore。"
 pubDate: "2026-04-11"
 tags: ["React", "Hooks"]
 ---

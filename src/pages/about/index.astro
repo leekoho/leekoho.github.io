@@ -8,17 +8,21 @@ import { PROFILE } from "@/consts.ts"
   <section aria-labelledby="about-title">
     <header class="page-heading page-rule">
       <h1 id="about-title" class="section-title">About</h1>
-      <p class="section-summary">我是 {PROFILE.name}，一名写代码的人。</p>
+      <p class="section-summary">{PROFILE.description || `我是 ${PROFILE.name}`}</p>
     </header>
 
     <div class="section-divider page-rule" aria-hidden="true"></div>
 
-    <div class="about-intro page-rule">
-      <p>
-        {PROFILE.description || "这个博客用来整理开发中的问题，写清过程，也保留当时的取舍。"}
-      </p>
-      <p>希望这些记录，能在下一次遇到类似问题时派上用场。</p>
-    </div>
+    {
+      PROFILE.description && (
+        <div class="about-intro page-rule">
+          <p>
+            {PROFILE.description || "这个博客用来整理开发中的问题，写清过程，也保留当时的取舍。"}
+          </p>
+          <p>希望这些记录，能在下一次遇到类似问题时派上用场。</p>
+        </div>
+      )
+    }
 
     <section aria-labelledby="profile-title">
       <header class="about-section-heading page-rule">
@@ -109,13 +113,13 @@ import { PROFILE } from "@/consts.ts"
     @apply text-sm leading-relaxed font-medium text-foreground;
   }
   .profile-list {
-    @apply m-0 p-0;
+    @apply m-0 grid grid-cols-3 p-0;
   }
   .profile-row {
-    @apply flex gap-4 border-b border-border px-4 py-4 text-sm leading-6 sm:px-6;
+    @apply flex flex-col gap-2 border-r border-b border-border px-4 py-4 text-sm leading-6 sm:px-6;
   }
   .profile-row dt {
-    @apply w-16 shrink-0 text-muted sm:w-28;
+    @apply shrink-0 text-xs text-muted sm:w-28;
   }
   .profile-row dd {
     @apply m-0 min-w-0 flex-1 wrap-anywhere text-foreground-soft;

@@ -1,6 +1,6 @@
 ---
 title: "加密测试文章, 密码是：hello123"
-description: "用于验证博客静态加密功能：构建端与客户端均使用 Web Crypto API，零第三方依赖。"
+#description: "用于验证博客静态加密功能：构建端与客户端均使用 Web Crypto API，零第三方依赖。"
 password: "hello123"
 pubDate: "2026-04-12"
 tags: ["测试", "加密"]

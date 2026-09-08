@@ -73,7 +73,7 @@
   }
 
   * {
-    @apply border-border;
+    @apply scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent scrollbar-gutter-stable border-border;
   }
   html {
     @apply overflow-x-clip scroll-smooth bg-background antialiased;
