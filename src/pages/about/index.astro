@@ -2,6 +2,7 @@
 import { ArrowUpRight } from "@lucide/astro"
 import Layout from "@/layouts/Layout.astro"
 import { PROFILE } from "@/consts.ts"
+import Button from "@/components/Button.astro"
 ---
 
 <Layout title="About · leekoho" description="关于 leekoho，以及日常使用的设备与工具。">
@@ -24,7 +25,7 @@ import { PROFILE } from "@/consts.ts"
       )
     }
 
-    <section aria-labelledby="profile-title">
+    <section aria-labelledby="profile-title " class="page-rule">
       <header class="about-section-heading page-rule">
         <h2 class="about-section-title" id="profile-title">基本信息</h2>
       </header>
@@ -39,6 +40,7 @@ import { PROFILE } from "@/consts.ts"
             {PROFILE.tags.join(" / ")}
           </dd>
         </div>
+
         <div class="profile-row">
           <dt class="profile-label">现居</dt>
           <dd class="profile-value">{PROFILE.city}</dd>
@@ -46,57 +48,86 @@ import { PROFILE } from "@/consts.ts"
       </dl>
     </section>
 
-    <section aria-labelledby="links-title">
-      <header class="about-section-heading page-rule">
-        <h2 class="about-section-title" id="links-title">在别处</h2>
-      </header>
-      <ul class="about-links">
-        {
-          PROFILE.links.map((item) => (
-            <li>
-              <a href={item.url} target="_blank" rel="noopener noreferrer" class="about-link">
-                <span class="about-link-label">{item.label}</span>
-                <span class="about-link-address">{item.url.replace(/^https?:\/\//, "")}</span>
-                <ArrowUpRight
-                  class="about-link-icon"
-                  size={16}
-                  stroke-width={1.5}
-                  aria-hidden="true"
-                />
-                <span class="sr-only">（在新标签页打开）</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
+    <!--<div class="section-divider page-rule" aria-hidden="true"></div>-->
 
-    <div class="section-divider page-rule" aria-hidden="true"></div>
+    <!--<section aria-labelledby="links-title">-->
+    <!--<header class="about-section-heading page-rule justify-start!">-->
+    <!--  <Button variant="outline" size="icon-sm" href="https://github.com/leekoho" target="_blank">-->
+    <!--    <svg-->
+    <!--      role="img"-->
+    <!--      viewBox="0 0 24 24"-->
+    <!--      xmlns="http://www.w3.org/2000/svg"-->
+    <!--      class="size-4 fill-white"-->
+    <!--    >-->
+    <!--      <path-->
+    <!--        d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"-->
+    <!--      ></path>-->
+    <!--    </svg>-->
+    <!--  </Button>-->
+    <!--  <Button variant="outline" size="icon-sm" href="https://github.com/leekoho" target="_blank">-->
+    <!--    <svg-->
+    <!--      role="img"-->
+    <!--      viewBox="0 0 24 24"-->
+    <!--      xmlns="http://www.w3.org/2000/svg"-->
+    <!--      class="size-4 fill-white"-->
+    <!--    >-->
+    <!--      <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"-->
+    <!--        ><title>V2EX</title><path-->
+    <!--          d="M.671 1.933h13.821a1.342 1.342 0 0 1 .98.425l8.166 8.725a1.342 1.342 0 0 1 0 1.834l-8.166 8.724a1.342 1.342 0 0 1-.98.426H.673A.671.671 0 0 1 0 21.395v-6.878h13.19l2.276-2.28a.336.336 0 0 0 0-.474l-2.276-2.28H0V2.604a.671.671 0 0 1 .671-.671Z"-->
+    <!--        ></path></svg-->
+    <!--      >-->
+    <!--    </svg>-->
+    <!--  </Button>-->
+    <!--</header>-->
 
-    <section aria-labelledby="uses-title">
-      <header class="about-section-heading page-rule">
-        <h2 class="about-section-title" id="uses-title">工作台</h2>
-        <p class="about-section-description">日常使用的设备与软件</p>
-      </header>
-      {
-        PROFILE.uses.map((group, index) => (
-          <section aria-labelledby={`uses-group-${index}`}>
-            <h3 id={`uses-group-${index}`} class="uses-category page-rule">
-              {group.category}
-            </h3>
-            <ul class="uses-list">
-              {group.items.map((item) => (
-                <li class="uses-row">
-                  <h4 class="uses-name">{item.name}</h4>
-                  {item.description && <p class="uses-description">{item.description}</p>}
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))
-      }
-    </section>
-    <div class="about-end-space page-rule" aria-hidden="true"></div>
+    <!--<header class="about-section-heading page-rule">-->
+    <!--  <h2 class="about-section-title" id="links-title">在别处</h2>-->
+    <!--</header>-->
+    <!--<ul class="about-links">-->
+    <!--  {-->
+    <!--    PROFILE.links.map((item) => (-->
+    <!--      <li>-->
+    <!--        <a href={item.url} target="_blank" rel="noopener noreferrer" class="about-link">-->
+    <!--          <span class="about-link-label">{item.label}</span>-->
+    <!--          <span class="about-link-address">{item.url.replace(/^https?:\/\//, "")}</span>-->
+    <!--          <ArrowUpRight-->
+    <!--            class="about-link-icon"-->
+    <!--            size={16}-->
+    <!--            stroke-width={1.5}-->
+    <!--            aria-hidden="true"-->
+    <!--          />-->
+    <!--          <span class="sr-only">（在新标签页打开）</span>-->
+    <!--        </a>-->
+    <!--      </li>-->
+    <!--    ))-->
+    <!--  }-->
+    <!--</ul>-->
+    <!--</section>-->
+
+    <!--<section aria-labelledby="uses-title">-->
+    <!--  <header class="about-section-heading page-rule">-->
+    <!--    <h2 class="about-section-title" id="uses-title">工作台</h2>-->
+    <!--    <p class="about-section-description">日常使用的设备与软件</p>-->
+    <!--  </header>-->
+    <!--  {-->
+    <!--    PROFILE.uses.map((group, index) => (-->
+    <!--      <section aria-labelledby={`uses-group-${index}`}>-->
+    <!--        <h3 id={`uses-group-${index}`} class="uses-category page-rule">-->
+    <!--          {group.category}-->
+    <!--        </h3>-->
+    <!--        <ul class="uses-list">-->
+    <!--          {group.items.map((item) => (-->
+    <!--            <li class="uses-row">-->
+    <!--              <h4 class="uses-name">{item.name}</h4>-->
+    <!--              {item.description && <p class="uses-description">{item.description}</p>}-->
+    <!--            </li>-->
+    <!--          ))}-->
+    <!--        </ul>-->
+    <!--      </section>-->
+    <!--    ))-->
+    <!--  }-->
+    <!--</section>-->
+    <!--<div class="about-end-space page-rule" aria-hidden="true"></div>-->
   </section>
 </Layout>
 
@@ -113,10 +144,10 @@ import { PROFILE } from "@/consts.ts"
     @apply text-sm leading-relaxed font-medium text-foreground;
   }
   .profile-list {
-    @apply m-0 grid grid-cols-3 p-0;
+    @apply m-0 grid grid-cols-2 p-0 sm:grid-cols-3;
   }
   .profile-row {
-    @apply flex flex-col gap-2 border-r border-b border-border px-4 py-4 text-sm leading-6 sm:px-6;
+    @apply flex flex-col gap-2 border-r border-border px-4 py-4 text-sm leading-6 nth-[2n]:border-r-0 sm:px-6 sm:nth-[2n]:border-r sm:nth-[3n]:border-r-0;
   }
   .profile-label {
     @apply shrink-0 text-xs text-muted sm:w-28;

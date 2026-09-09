@@ -74,7 +74,9 @@ if (password) {
     >
       <form class="encrypted-panel not-prose" aria-labelledby="encrypt-heading">
         <Lock size={22} stroke-width={1.5} class="encrypted-icon" aria-hidden="true" />
-        <h2 class="encrypted-title" id="encrypt-heading">这篇文章需要密码</h2>
+        <h2 class="encrypted-title" id="encrypt-heading">
+          这篇文章需要密码
+        </h2>
         <p class="encrypted-description">输入访问密码，继续阅读。</p>
 
         <div class="encrypted-controls">
@@ -90,7 +92,7 @@ if (password) {
             placeholder="输入密码"
             class="encrypted-input"
           />
-          <Button id="encrypt-btn" type="submit" size="lg" class="encrypted-button">
+          <Button id="encrypt-btn" type="submit" class="encrypted-button">
             继续阅读
           </Button>
         </div>
@@ -248,7 +250,7 @@ if (password) {
     @apply mx-auto mt-6 flex max-w-sm flex-col items-center gap-4 sm:flex-row;
   }
   .encrypted-input {
-    @apply h-11 w-full min-w-0 rounded-sm border border-border bg-background px-3 py-2 text-base leading-6 text-foreground placeholder:text-muted sm:text-sm;
+    @apply h-9 w-full min-w-0 rounded-sm border border-border bg-background px-3 py-2 text-base text-sm leading-6 text-foreground placeholder:text-muted;
   }
   .encrypted-button {
     @apply w-full sm:w-auto;
