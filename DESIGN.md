@@ -11,9 +11,9 @@
 
 ## 字体
 
-- 中文优先使用本机苹方（PingFang SC），缺失时回落至 Noto Sans SC Variable；拉丁字母使用 Geist，代码使用 Geist Mono，代码中的中文沿用同一中文字体顺序。
-- Noto Sans SC 通过 Fontsource 导入公共外部 CSS，自托管字体文件。中文声明不内联进 HTML，不使用微软雅黑，也不在 Noto 之前插入通用字体回退。
-- Geist 与 Geist Mono 继续通过 Astro Fonts 自托管，仅预加载 Geist 拉丁子集。CJK 保留完整 Unicode ranges，按页面字符加载，不预加载中文字体。
+- 中文优先使用本机苹方（PingFang SC），缺失时回落到 `Hiragino Sans GB`、`Source Han Sans` 和系统 sans。
+- 拉丁字母使用 Geist，代码使用 Geist Mono；中文与拉丁共用同一中文回退链。
+- Geist 与 Geist Mono 通过 Astro Fonts 自托管，仅预加载 Geist 拉丁子集；中文不额外引入字体资源。
 - 正文使用 `text-base leading-8`，常规字重 400，标题字重 500。禁止中文使用衬线字体。
 
 ## 框架与配色

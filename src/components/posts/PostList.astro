@@ -23,7 +23,7 @@ allPosts.forEach((post) => {
   <div class="section-divider page-rule" aria-hidden="true"></div>
   <section aria-labelledby="archive-title">
     <div class="archive-bar page-rule">
-      <h2 id="archive-title">Posts</h2>
+      <h2 class="archive-title" id="archive-title">Posts</h2>
       <!--<span>按年份归档</span>-->
     </div>
     {
@@ -47,7 +47,7 @@ allPosts.forEach((post) => {
                     <span class="post-title">{post.data.title}</span>
                     {/* 列表摘要按当前设计隐藏。 */}
                     <span class="post-meta">
-                      <time datetime={post.data.pubDate.toISOString()}>
+                      <time class="post-date" datetime={post.data.pubDate.toISOString()}>
                         {post.data.pubDate.toISOString().slice(5, 10).replace("-", ".")}
                       </time>
                       {post.data.tags.length > 0 && (
@@ -55,7 +55,7 @@ allPosts.forEach((post) => {
                           <span class="post-meta-rule" aria-hidden="true" />
                           <span class="post-tags">
                             {post.data.tags.map((tag) => (
-                              <span>{tag}</span>
+                              <span class="post-tag">{tag}</span>
                             ))}
                           </span>
                         </>
@@ -87,11 +87,8 @@ allPosts.forEach((post) => {
   .archive-bar {
     @apply flex items-center justify-between gap-4 px-4 py-4 sm:px-6;
   }
-  .archive-bar h2 {
+  .archive-title {
     @apply text-lg font-medium tracking-wide;
-  }
-  .archive-bar > span {
-    @apply text-xs text-muted;
   }
   .post-year {
     @apply bg-background-muted px-4 py-2 font-mono text-xs leading-6 tracking-wide text-muted sm:px-6;
@@ -114,7 +111,7 @@ allPosts.forEach((post) => {
   .post-meta {
     @apply mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-5 text-muted;
   }
-  .post-meta time {
+  .post-date {
     @apply font-mono tabular-nums;
   }
   .post-meta-rule {
@@ -123,7 +120,7 @@ allPosts.forEach((post) => {
   .post-tags {
     @apply flex flex-wrap gap-2 wrap-anywhere;
   }
-  .post-tags > span + span::before {
+  .post-tag + .post-tag::before {
     @apply mr-2 content-['·'];
   }
   .post-draft {

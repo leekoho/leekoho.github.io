@@ -26,29 +26,29 @@ import { PROFILE } from "@/consts.ts"
 
     <section aria-labelledby="profile-title">
       <header class="about-section-heading page-rule">
-        <h2 id="profile-title">基本信息</h2>
+        <h2 class="about-section-title" id="profile-title">基本信息</h2>
       </header>
       <dl class="profile-list">
         <div class="profile-row">
-          <dt>名字</dt>
-          <dd>{PROFILE.name}</dd>
+          <dt class="profile-label">名字</dt>
+          <dd class="profile-value">{PROFILE.name}</dd>
         </div>
         <div class="profile-row">
-          <dt>身份</dt>
-          <dd>
+          <dt class="profile-label">身份</dt>
+          <dd class="profile-value">
             {PROFILE.tags.join(" / ")}
           </dd>
         </div>
         <div class="profile-row">
-          <dt>现居</dt>
-          <dd>{PROFILE.city}</dd>
+          <dt class="profile-label">现居</dt>
+          <dd class="profile-value">{PROFILE.city}</dd>
         </div>
       </dl>
     </section>
 
     <section aria-labelledby="links-title">
       <header class="about-section-heading page-rule">
-        <h2 id="links-title">在别处</h2>
+        <h2 class="about-section-title" id="links-title">在别处</h2>
       </header>
       <ul class="about-links">
         {
@@ -75,8 +75,8 @@ import { PROFILE } from "@/consts.ts"
 
     <section aria-labelledby="uses-title">
       <header class="about-section-heading page-rule">
-        <h2 id="uses-title">工作台</h2>
-        <p>日常使用的设备与软件</p>
+        <h2 class="about-section-title" id="uses-title">工作台</h2>
+        <p class="about-section-description">日常使用的设备与软件</p>
       </header>
       {
         PROFILE.uses.map((group, index) => (
@@ -109,7 +109,7 @@ import { PROFILE } from "@/consts.ts"
   .about-section-heading {
     @apply flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 px-4 py-4 sm:px-6;
   }
-  .about-section-heading h2 {
+  .about-section-title {
     @apply text-sm leading-relaxed font-medium text-foreground;
   }
   .profile-list {
@@ -118,10 +118,10 @@ import { PROFILE } from "@/consts.ts"
   .profile-row {
     @apply flex flex-col gap-2 border-r border-b border-border px-4 py-4 text-sm leading-6 sm:px-6;
   }
-  .profile-row dt {
+  .profile-label {
     @apply shrink-0 text-xs text-muted sm:w-28;
   }
-  .profile-row dd {
+  .profile-value {
     @apply m-0 min-w-0 flex-1 wrap-anywhere text-foreground-soft;
   }
   .about-links {
@@ -136,10 +136,10 @@ import { PROFILE } from "@/consts.ts"
   .about-link-address {
     @apply min-w-0 flex-1 text-xs leading-relaxed wrap-anywhere;
   }
-  .about-link :global(.about-link-icon) {
+  :global(.about-link-icon) {
     @apply shrink-0;
   }
-  .about-section-heading p {
+  .about-section-description {
     @apply text-xs leading-relaxed text-muted;
   }
   .uses-category {

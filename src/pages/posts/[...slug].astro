@@ -34,8 +34,8 @@ const dateLabel = dateTime?.slice(0, 10).replaceAll("-", ".")
     <div class="article-space page-rule" aria-hidden="true"></div>
     <ArticleToolbar previous={previous} next={next} />
 
-    <header class="article-heading">
-      <h1 class="page-rule" id="article-title">
+    <header>
+      <h1 class="article-title page-rule" id="article-title">
         {post.data.title}
       </h1>
       {
@@ -58,16 +58,16 @@ const dateLabel = dateTime?.slice(0, 10).replaceAll("-", ".")
 
   <dl class="footer-grid page-rule" aria-label={pubDate ? "文章信息" : "作者信息"}>
     <div class="footer-cell">
-      <dt>作者</dt>
-      <dd>
-        <a href="/about" rel="author">{PROFILE.name}</a>
+      <dt class="article-meta-label">作者</dt>
+      <dd class="article-meta-value">
+        <a class="article-meta-link" href="/about" rel="author">{PROFILE.name}</a>
       </dd>
     </div>
     {
       dateTime && (
         <div class="footer-cell">
-          <dt>日期</dt>
-          <dd>
+          <dt class="article-meta-label">日期</dt>
+          <dd class="article-meta-value">
             <time datetime={dateTime}>{dateLabel}</time>
           </dd>
         </div>
@@ -76,8 +76,8 @@ const dateLabel = dateTime?.slice(0, 10).replaceAll("-", ".")
     {
       tags.length > 0 && (
         <div class="footer-cell">
-          <dt>标签</dt>
-          <dd>{tags.join(" / ")}</dd>
+          <dt class="article-meta-label">标签</dt>
+          <dd class="article-meta-value">{tags.join(" / ")}</dd>
         </div>
       )
     }
@@ -93,10 +93,7 @@ const dateLabel = dateTime?.slice(0, 10).replaceAll("-", ".")
   .article-space {
     @apply h-8 sm:h-12;
   }
-  .article-heading {
-    //@apply pt-6 sm:pt-8;
-  }
-  .article-heading h1 {
+  .article-title {
     @apply m-0 px-4 py-2 text-3xl leading-snug font-medium tracking-tight text-balance wrap-anywhere sm:px-6 sm:text-4xl;
   }
   .article-description {
@@ -114,13 +111,13 @@ const dateLabel = dateTime?.slice(0, 10).replaceAll("-", ".")
   .footer-cell {
     @apply min-w-0 border-r border-border p-4 last:border-r-0 only:col-span-full max-sm:even:border-r-0 sm:px-6 max-sm:[&:nth-child(3)]:col-span-full max-sm:[&:nth-child(3)]:border-t;
   }
-  dt {
+  .article-meta-label {
     @apply mb-2 text-xs leading-5 tracking-wide text-muted;
   }
-  dd {
+  .article-meta-value {
     @apply m-0 font-mono text-sm leading-6 wrap-anywhere text-foreground;
   }
-  dd a {
+  .article-meta-link {
     @apply underline decoration-border-strong underline-offset-4 hover:decoration-current pointer-coarse:inline-flex pointer-coarse:min-h-11 pointer-coarse:items-center;
   }
   .article-content :global(> :first-child) {

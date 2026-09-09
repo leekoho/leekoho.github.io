@@ -25,7 +25,7 @@ const { previous, next } = Astro.props
       aria-label="复制正文"
     >
       <Copy size={16} stroke-width={1.5} aria-hidden="true" />
-      <span>复制正文</span>
+      <span class="copy-article-label">复制正文</span>
     </Button>
     <Button
       class="article-action"
@@ -153,7 +153,7 @@ const { previous, next } = Astro.props
   .copy-article {
     @apply w-8 px-0 sm:w-auto sm:px-3 pointer-coarse:min-w-11;
   }
-  .copy-article span {
+  .copy-article-label {
     @apply hidden sm:inline;
   }
   .article-pagination {

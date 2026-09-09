@@ -15,7 +15,7 @@ const links = [
 
 <header class="header page-rule">
   <Brand />
-  <nav aria-label="主导航">
+  <nav class="header-nav" aria-label="主导航">
     {
       links.map((link) => (
         <a class="nav-link" href={link.href} aria-current={link.active ? "page" : undefined}>
@@ -33,7 +33,7 @@ const links = [
   .header {
     @apply relative z-20 flex h-16 items-center gap-3 px-4 sm:gap-6 sm:px-6;
   }
-  nav {
+  .header-nav {
     @apply ml-auto flex gap-4 self-stretch sm:gap-6;
   }
   .nav-link {

@@ -74,7 +74,7 @@ if (password) {
     >
       <form class="encrypted-panel not-prose" aria-labelledby="encrypt-heading">
         <Lock size={22} stroke-width={1.5} class="encrypted-icon" aria-hidden="true" />
-        <h2 id="encrypt-heading">这篇文章需要密码</h2>
+        <h2 class="encrypted-title" id="encrypt-heading">这篇文章需要密码</h2>
         <p class="encrypted-description">输入访问密码，继续阅读。</p>
 
         <div class="encrypted-controls">
@@ -238,7 +238,7 @@ if (password) {
   :global(.encrypted-icon) {
     @apply mx-auto mb-4 text-muted;
   }
-  .encrypted-panel h2 {
+  .encrypted-title {
     @apply mb-2 text-lg leading-7 font-medium text-foreground;
   }
   .encrypted-description {

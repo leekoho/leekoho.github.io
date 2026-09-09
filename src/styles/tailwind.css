@@ -26,7 +26,7 @@
 
 @layer base {
   :root {
-    --font-cjk: "PingFang SC", "Noto Sans SC Variable";
+    --font-cjk: "PingFang SC", "Hiragino Sans GB", "Source Han Sans", sans-serif;
     --font-sans: var(--font-geist), var(--font-cjk), sans-serif;
     --font-mono: var(--font-code), var(--font-cjk), ui-monospace, monospace;
     color-scheme: light;

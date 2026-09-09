@@ -9,7 +9,7 @@ const calloutPlugin = defineMdastPlugin({
     const text = paragraph.children[0]
     if (text?.type !== "text") return
 
-    const marker = text.value.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\][ \t]*(?:\r?\n)?/i)
+    const marker = text.value.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)][ \t]*(?:\r?\n)?/i)
     if (!marker) return
 
     const content = text.value.slice(marker[0].length)
