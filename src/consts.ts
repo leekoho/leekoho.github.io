@@ -1,8 +1,8 @@
 export const PROFILE = {
   name: "leekoho",
-  description: "",
-  tags: ["Developer"],
+  tags: ["前端开发"],
   city: "长沙",
+  email: "leekoho95@mail.com",
   links: [
     {
       label: "GitHub",

@@ -1,31 +1,20 @@
 ---
-import { ArrowUpRight } from "@lucide/astro"
+// import { ArrowUpRight } from "@lucide/astro"
 import Layout from "@/layouts/Layout.astro"
 import { PROFILE } from "@/consts.ts"
-import Button from "@/components/Button.astro"
+// import Button from "@/components/Button.astro"
 ---
 
-<Layout title="About · leekoho" description="关于 leekoho，以及日常使用的设备与工具。">
+<Layout title="About · leekoho" description="关于我，以及日常使用的设备与工具。">
   <section aria-labelledby="about-title">
     <header class="page-heading page-rule">
       <h1 id="about-title" class="section-title">About</h1>
-      <p class="section-summary">{PROFILE.description || `我是 ${PROFILE.name}`}</p>
+      <p class="section-summary">关于我，以及日常使用的设备与工具。</p>
     </header>
 
     <div class="section-divider page-rule" aria-hidden="true"></div>
 
-    {
-      PROFILE.description && (
-        <div class="about-intro page-rule">
-          <p>
-            {PROFILE.description || "这个博客用来整理开发中的问题，写清过程，也保留当时的取舍。"}
-          </p>
-          <p>希望这些记录，能在下一次遇到类似问题时派上用场。</p>
-        </div>
-      )
-    }
-
-    <section aria-labelledby="profile-title " class="page-rule">
+    <section aria-labelledby="profile-title " class="">
       <header class="about-section-heading page-rule">
         <h2 class="about-section-title" id="profile-title">基本信息</h2>
       </header>
@@ -45,10 +34,16 @@ import Button from "@/components/Button.astro"
           <dt class="profile-label">现居</dt>
           <dd class="profile-value">{PROFILE.city}</dd>
         </div>
+        <div class="profile-row">
+          <dt class="profile-label">邮箱</dt>
+          <dd class="profile-value">
+            <a href={`mailto:${PROFILE.email}`} class="link">{PROFILE.email}</a>
+          </dd>
+        </div>
       </dl>
     </section>
 
-    <!--<div class="section-divider page-rule" aria-hidden="true"></div>-->
+    <div class="section-divider page-rule" aria-hidden="true"></div>
 
     <!--<section aria-labelledby="links-title">-->
     <!--<header class="about-section-heading page-rule justify-start!">-->
@@ -104,30 +99,30 @@ import Button from "@/components/Button.astro"
     <!--</ul>-->
     <!--</section>-->
 
-    <!--<section aria-labelledby="uses-title">-->
-    <!--  <header class="about-section-heading page-rule">-->
-    <!--    <h2 class="about-section-title" id="uses-title">工作台</h2>-->
-    <!--    <p class="about-section-description">日常使用的设备与软件</p>-->
-    <!--  </header>-->
-    <!--  {-->
-    <!--    PROFILE.uses.map((group, index) => (-->
-    <!--      <section aria-labelledby={`uses-group-${index}`}>-->
-    <!--        <h3 id={`uses-group-${index}`} class="uses-category page-rule">-->
-    <!--          {group.category}-->
-    <!--        </h3>-->
-    <!--        <ul class="uses-list">-->
-    <!--          {group.items.map((item) => (-->
-    <!--            <li class="uses-row">-->
-    <!--              <h4 class="uses-name">{item.name}</h4>-->
-    <!--              {item.description && <p class="uses-description">{item.description}</p>}-->
-    <!--            </li>-->
-    <!--          ))}-->
-    <!--        </ul>-->
-    <!--      </section>-->
-    <!--    ))-->
-    <!--  }-->
-    <!--</section>-->
-    <!--<div class="about-end-space page-rule" aria-hidden="true"></div>-->
+    <section aria-labelledby="uses-title">
+      <header class="about-section-heading page-rule">
+        <h2 class="about-section-title" id="uses-title">工作台</h2>
+        <p class="about-section-description">日常使用的设备与软件</p>
+      </header>
+      {
+        PROFILE.uses.map((group, index) => (
+          <section aria-labelledby={`uses-group-${index}`}>
+            <h3 id={`uses-group-${index}`} class="uses-category page-rule">
+              {group.category}
+            </h3>
+            <ul class="uses-list">
+              {group.items.map((item) => (
+                <li class="uses-row">
+                  <h4 class="uses-name">{item.name}</h4>
+                  {item.description && <p class="uses-description">{item.description}</p>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </section>
+    <div class="about-end-space page-rule" aria-hidden="true"></div>
   </section>
 </Layout>
 
@@ -144,10 +139,10 @@ import Button from "@/components/Button.astro"
     @apply text-sm leading-relaxed font-medium text-foreground;
   }
   .profile-list {
-    @apply m-0 grid grid-cols-2 p-0 sm:grid-cols-3;
+    @apply m-0 grid grid-cols-2 p-0 sm:grid-cols-4;
   }
   .profile-row {
-    @apply flex flex-col gap-2 border-r border-border px-4 py-4 text-sm leading-6 nth-[2n]:border-r-0 sm:px-6 sm:nth-[2n]:border-r sm:nth-[3n]:border-r-0;
+    @apply flex flex-col gap-2 border-r border-b border-border px-4 py-4 text-sm leading-6 nth-[2n]:border-r-0 sm:px-4 sm:nth-[2n]:border-r sm:nth-[4n]:border-r-0;
   }
   .profile-label {
     @apply shrink-0 text-xs text-muted sm:w-28;

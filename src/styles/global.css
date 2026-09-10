@@ -38,7 +38,7 @@
     @apply text-3xl leading-normal font-medium tracking-wide wrap-anywhere sm:text-4xl;
   }
   .section-summary {
-    @apply mt-2 max-w-xl text-sm leading-7 tracking-wide text-muted;
+    @apply mt-2 text-sm leading-7 tracking-wide text-muted;
   }
   .section-divider {
     @apply h-4;
@@ -49,6 +49,10 @@
       var(--ui-pattern) 3px,
       var(--ui-pattern) 4px
     );
+  }
+
+  .link {
+    @apply underline decoration-border-strong underline-offset-4 hover:decoration-current pointer-coarse:inline-flex pointer-coarse:min-h-11 pointer-coarse:items-center;
   }
 }
 
