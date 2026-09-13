@@ -22,9 +22,9 @@ const githubProfile = PROFILE.links.find((link) => link.label === "GitHub")
           </a>
         )
       }
-      <a class="footer-link" href="/feed.xml" aria-label="RSS 订阅" title="RSS 订阅"
-        ><Rss size={16} stroke-width={1.5} aria-hidden="true" /></a
-      >
+      <a class="footer-link" href="/feed.xml" aria-label="RSS 订阅" title="RSS 订阅">
+        <Rss size={16} stroke-width={1.5} aria-hidden="true" />
+      </a>
     </nav>
     <p class="footer-copyright">© {new Date().getFullYear()} {PROFILE.name}</p>
   </div>

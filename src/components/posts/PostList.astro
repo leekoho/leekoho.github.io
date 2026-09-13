@@ -4,10 +4,13 @@ import { FileText, LockKeyhole, ArrowUpRight } from "@lucide/astro"
 import { SITE_DESCRIPTION } from "@/consts"
 
 type Post = CollectionEntry<"posts">
+
+const groups = new Map<number, Post[]>()
+
 const allPosts = (
   await getCollection("posts", ({ data }) => (import.meta.env.PROD ? data.draft !== true : true))
 ).toSorted((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
-const groups = new Map<number, Post[]>()
+
 allPosts.forEach((post) => {
   const year = post.data.pubDate.getUTCFullYear()
   if (!groups.has(year)) groups.set(year, [])
@@ -38,9 +41,9 @@ allPosts.forEach((post) => {
                 <a href={`/posts/${post.id}`} class="post-link">
                   <span class="post-icon" aria-hidden="true">
                     {post.data.password ? (
-                      <LockKeyhole size={20} stroke-width={1.5} />
+                      <LockKeyhole class="size-5 stroke-1" />
                     ) : (
-                      <FileText size={20} stroke-width={1.5} />
+                      <FileText class="size-5 stroke-1" />
                     )}
                   </span>
                   <span class="post-copy">
@@ -48,7 +51,7 @@ allPosts.forEach((post) => {
                     {/* 列表摘要按当前设计隐藏。 */}
                     <span class="post-meta">
                       <time class="post-date" datetime={post.data.pubDate.toISOString()}>
-                        {post.data.pubDate.toISOString().slice(5, 10).replace("-", ".")}
+                        {post.data.pubDate.toISOString().slice(5, 10)}
                       </time>
                       {post.data.tags.length > 0 && (
                         <>
@@ -65,7 +68,7 @@ allPosts.forEach((post) => {
                     </span>
                   </span>
                   <span class="post-arrow" aria-hidden="true">
-                    <ArrowUpRight size={16} stroke-width={1.5} />
+                    <ArrowUpRight class="size-4 stroke-1" />
                   </span>
                 </a>
               </li>

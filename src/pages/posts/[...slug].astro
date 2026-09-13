@@ -26,7 +26,7 @@ const { pubDate, tags = [] } = post.data
 
 const dateTime = pubDate?.toISOString()
 
-const dateLabel = dateTime?.slice(0, 10).replaceAll("-", ".")
+const dateLabel = dateTime?.slice(0, 10)
 ---
 
 <Layout title={`${post.data.title} · leekoho`} description={post.data.description}>
@@ -99,9 +99,7 @@ const dateLabel = dateTime?.slice(0, 10).replaceAll("-", ".")
   .article-description {
     @apply m-0 mt-6 px-4 text-sm leading-7 wrap-anywhere text-muted sm:px-6 sm:text-base sm:leading-8;
   }
-  .article-content {
-    @apply max-w-none min-w-0 px-4 pt-6 pb-6 text-base leading-8 wrap-anywhere sm:px-6 sm:pt-8 sm:pb-8;
-  }
+
   .footer-divider {
     @apply h-8 border-t border-border sm:h-12;
   }
@@ -119,15 +117,6 @@ const dateLabel = dateTime?.slice(0, 10).replaceAll("-", ".")
   }
   .article-meta-link {
     @apply underline decoration-border-strong underline-offset-4 hover:decoration-current pointer-coarse:inline-flex pointer-coarse:min-h-11 pointer-coarse:items-center;
-  }
-  .article-content :global(> :first-child) {
-    @apply mt-0;
-  }
-  .article-content :global(> :last-child) {
-    @apply mb-0;
-  }
-  .article-content :global(img) {
-    @apply rounded-lg border border-border;
   }
   .footer-divider::before {
     content: "";

@@ -54,6 +54,19 @@
   .link {
     @apply underline decoration-border-strong underline-offset-4 hover:decoration-current pointer-coarse:inline-flex pointer-coarse:min-h-11 pointer-coarse:items-center;
   }
+
+  .article-content {
+    @apply max-w-none! min-w-0 px-4 pb-6 text-base leading-8 wrap-anywhere sm:px-6 sm:pb-8;
+  }
+  .article-content > :first-child {
+    @apply mt-0;
+  }
+  .article-content > :last-child {
+    @apply mb-0;
+  }
+  .article-content img {
+    @apply rounded-lg border border-border;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
