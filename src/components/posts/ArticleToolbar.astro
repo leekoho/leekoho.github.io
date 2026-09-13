@@ -75,7 +75,10 @@ const { previous, next } = Astro.props
 </div>
 
 <script>
-  document.querySelectorAll<HTMLElement>("[data-article-tools]").forEach((toolbar) => {
+  const initToolbar = (toolbar: HTMLElement) => {
+    if (toolbar.dataset.ready === "true") return
+    toolbar.dataset.ready = "true"
+
     const article = toolbar.closest("article")
     const content = article?.querySelector<HTMLElement>("[data-article-body]")
     const copyArticle = toolbar.querySelector<HTMLButtonElement>('[data-copy="article"]')
@@ -135,7 +138,15 @@ const { previous, next } = Astro.props
         }
       })
     })
-  })
+  }
+
+  // 客户端导航后 Astro 不会重跑内容相同的脚本，靠 astro:page-load 重新绑定新工具栏。
+  const initArticleToolbars = () => {
+    document.querySelectorAll<HTMLElement>("[data-article-tools]").forEach(initToolbar)
+  }
+
+  initArticleToolbars()
+  document.addEventListener("astro:page-load", initArticleToolbars)
 </script>
 
 <style>

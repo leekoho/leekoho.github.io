@@ -225,7 +225,10 @@ if (password) {
     }
   }
 
-  customElements.define("encrypted-content", EncryptedContent)
+  // 定义在客户端导航后会保留，新解析出的元素会自动 upgrade；这里避免脚本重跑时重复定义报错。
+  if (!customElements.get("encrypted-content")) {
+    customElements.define("encrypted-content", EncryptedContent)
+  }
 </script>
 
 <style>

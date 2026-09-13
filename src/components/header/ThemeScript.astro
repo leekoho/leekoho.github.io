@@ -8,13 +8,14 @@
       preference = normalize(localStorage.getItem(storageKey))
     } catch {}
 
+    const syncRoot = (root, value) => {
+      root.dataset.themePreference = value
+      root.classList.toggle("dark", value === "dark" || (value === "system" && mediaQuery.matches))
+    }
+
     const apply = (value, persist = true) => {
       preference = normalize(value)
-      document.documentElement.dataset.themePreference = preference
-      document.documentElement.classList.toggle(
-        "dark",
-        preference === "dark" || (preference === "system" && mediaQuery.matches),
-      )
+      syncRoot(document.documentElement, preference)
       if (persist) {
         try {
           localStorage.setItem(storageKey, preference)
@@ -27,6 +28,13 @@
     apply(preference, false)
     mediaQuery.addEventListener("change", () => {
       if (preference === "system") apply("system", false)
+    })
+
+    // ClientRouter 会用新页面的 <html> 属性覆盖运行时写上去的 class，而 is:inline
+    // 脚本在客户端导航时不会二次执行；在 swap 前把主题写进新文档，属性会被一并
+    // 搬到活动文档，浏览器尚未绘制新页面，因此不会闪白。
+    document.addEventListener("astro:before-swap", (event) => {
+      syncRoot(event.newDocument.documentElement, preference)
     })
   })()
 </script>

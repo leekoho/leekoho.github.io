@@ -9,7 +9,7 @@ const options = [
 ]
 ---
 
-<details class="theme-switcher" data-theme-switcher>
+<details class="theme-switcher" data-theme-switcher transition:persist="theme-switcher">
   <Button as="summary" variant="outline" size="icon" class="theme-trigger">
     <Sun class="icon-light" size={16} stroke-width={1.5} aria-hidden="true" />
     <Moon class="icon-dark" size={16} stroke-width={1.5} aria-hidden="true" />
@@ -60,6 +60,14 @@ const options = [
       window.addEventListener("theme-change", syncSelection)
       syncSelection()
       switcher.dataset.ready = "true"
+    })
+
+    // 主题开关用 transition:persist 跨导航保留，导航后把展开状态复位，
+    // 与整页加载时的行为保持一致。
+    document.addEventListener("astro:page-load", () => {
+      document.querySelectorAll("[data-theme-switcher][open]").forEach((switcher) => {
+        switcher.open = false
+      })
     })
   })()
 </script>
