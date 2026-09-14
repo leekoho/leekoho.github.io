@@ -1,6 +1,6 @@
 ---
 import Brand from "@/components/Brand.astro"
-import ModeToggle from "./ModeToggle.astro"
+import ThemeSwitcher from "./ThemeSwitcher.astro"
 
 const pathname = Astro.url.pathname.replace(/\/$/, "") || "/"
 const links = [
@@ -24,7 +24,7 @@ const links = [
       ))
     }
   </nav>
-  <div class="header-actions"><ModeToggle /></div>
+  <div class="header-actions"><ThemeSwitcher /></div>
 </header>
 
 <style>

@@ -3,7 +3,7 @@ import test from "node:test"
 
 import { markdownToHtml } from "satteri"
 
-import calloutPlugin from "./remark-callout.ts"
+import calloutPlugin from "./mdast-callout.ts"
 
 const render = (markdown: string) =>
   markdownToHtml(markdown, { mdastPlugins: [calloutPlugin] }).html
