@@ -1,6 +1,5 @@
 ---
 import Layout from "@/layouts/Layout.astro"
-import { PROFILE } from "@/consts.ts"
 import { getEntry, render } from "astro:content"
 
 const entry = await getEntry("about", "index")
@@ -16,37 +15,6 @@ const { Content } = await render(entry)
       <p class="section-summary">关于我。</p>
     </header>
 
-    <!--<div class="section-divider page-rule" aria-hidden="true"></div>-->
-
-    <!--<section aria-labelledby="profile-title">-->
-    <!--  <header class="about-section-heading page-rule">-->
-    <!--    <h2 class="about-section-title" id="profile-title">基本信息</h2>-->
-    <!--  </header>-->
-    <!--  <dl class="profile-list">-->
-    <!--    <div class="profile-row">-->
-    <!--      <dt class="profile-label">名字</dt>-->
-    <!--      <dd class="profile-value">{PROFILE.name}</dd>-->
-    <!--    </div>-->
-    <!--    <div class="profile-row">-->
-    <!--      <dt class="profile-label">身份</dt>-->
-    <!--      <dd class="profile-value">-->
-    <!--        {PROFILE.tags.join(" / ")}-->
-    <!--      </dd>-->
-    <!--    </div>-->
-
-    <!--    <div class="profile-row">-->
-    <!--      <dt class="profile-label">现居</dt>-->
-    <!--      <dd class="profile-value">{PROFILE.city}</dd>-->
-    <!--    </div>-->
-    <!--    <div class="profile-row">-->
-    <!--      <dt class="profile-label">邮箱</dt>-->
-    <!--      <dd class="profile-value">-->
-    <!--        <a href={`mailto:${PROFILE.email}`} class="link">{PROFILE.email}</a>-->
-    <!--      </dd>-->
-    <!--    </div>-->
-    <!--  </dl>-->
-    <!--</section>-->
-
     <div class="section-divider page-rule" aria-hidden="true"></div>
 
     <article class="article-content prose">
@@ -54,74 +22,3 @@ const { Content } = await render(entry)
     </article>
   </section>
 </Layout>
-
-<style>
-  @reference "../../styles/global.css";
-
-  .about-intro {
-    @apply space-y-4 px-4 py-8 text-sm leading-8 text-foreground-soft sm:px-6 sm:text-base;
-  }
-  .about-section-heading {
-    @apply flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 px-4 py-4 sm:px-6;
-  }
-  .about-section-title {
-    @apply text-sm leading-relaxed font-medium text-foreground;
-  }
-  .profile-list {
-    @apply m-0 grid grid-cols-2 p-0 sm:grid-cols-4;
-  }
-  .profile-row {
-    @apply flex flex-col gap-2 border-r border-b border-border px-4 py-4 text-sm leading-6 nth-[2n]:border-r-0 sm:px-4 sm:nth-[2n]:border-r sm:nth-[4n]:border-r-0;
-  }
-  .profile-label {
-    @apply shrink-0 text-xs text-muted sm:w-28;
-  }
-  .profile-value {
-    @apply m-0 min-w-0 flex-1 wrap-anywhere text-foreground-soft;
-  }
-  .about-links {
-    @apply m-0 list-none p-0;
-  }
-  .about-link {
-    @apply flex min-h-14 items-center gap-4 border-b border-border px-4 py-4 text-muted no-underline hover:bg-background-muted focus-visible:-outline-offset-4 sm:px-6;
-  }
-  .about-link-label {
-    @apply w-16 shrink-0 text-sm font-medium text-foreground sm:w-28;
-  }
-  .about-link-address {
-    @apply min-w-0 flex-1 text-xs leading-relaxed wrap-anywhere;
-  }
-  :global(.about-link-icon) {
-    @apply shrink-0;
-  }
-  .about-section-description {
-    @apply text-xs leading-relaxed text-muted;
-  }
-  .uses-category {
-    @apply bg-background-muted px-4 py-2 text-xs leading-6 font-normal text-muted sm:px-6;
-  }
-  .uses-list {
-    @apply m-0 grid list-none grid-cols-3 p-0 sm:grid-cols-4;
-  }
-  .uses-row {
-    @apply flex min-w-0 items-center gap-2 border-r border-b border-border px-3 py-3 nth-[3n]:border-r-0 sm:px-4 sm:nth-[3n]:border-r sm:nth-[4n]:border-r-0;
-  }
-  .uses-icon {
-    @apply flex size-7 shrink-0 items-center justify-center text-muted;
-  }
-  .uses-content {
-    @apply min-w-0 flex-1;
-  }
-  .uses-label {
-    @apply text-xs leading-5 font-medium wrap-anywhere text-foreground;
-  }
-  .uses-name {
-    @apply mt-0.5 text-xs leading-5 wrap-anywhere text-muted;
-  }
-  .uses-description {
-    @apply mt-1 text-sm leading-6 wrap-anywhere text-muted;
-  }
-  .about-end-space {
-    @apply h-8 sm:h-12;
-  }
-</style>
