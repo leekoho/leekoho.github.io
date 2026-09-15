@@ -65,7 +65,7 @@
     @apply mb-0;
   }
   .article-content img {
-    @apply rounded-lg border border-border;
+    @apply rounded-lg;
   }
 }
 
