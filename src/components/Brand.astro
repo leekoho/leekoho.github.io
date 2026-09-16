@@ -1,10 +1,11 @@
 ---
 import Logo from "@/assets/logo.svg"
+import { PROFILE } from "@/consts.ts"
 ---
 
 <a class="brand" href="/" aria-label="leekoho 首页">
   <Logo class="brand-mark" aria-hidden="true" focusable="false" />
-  <span>leekoho</span>
+  <span class="thinking">{PROFILE.name}</span>
 </a>
 
 <style>
