@@ -1,0 +1,162 @@
+<dialog class="article-lightbox" aria-label="图片预览">
+  <img class="article-lightbox__image" alt="" />
+</dialog>
+
+<script>
+  let cleanup = () => {}
+
+  const initArticleImageLightbox = () => {
+    cleanup()
+
+    const dialog = document.querySelector<HTMLDialogElement>(".article-lightbox")
+    const preview = dialog?.querySelector<HTMLImageElement>(".article-lightbox__image")
+    const article = document.querySelector<HTMLElement>("[data-article-body]")
+
+    if (!dialog || !preview || !article) return
+
+    let source: HTMLImageElement | null = null
+    let closing = false
+
+    const rectToKeyframe = (rect: DOMRect) => ({
+      left: `${rect.left}px`,
+      top: `${rect.top}px`,
+      width: `${rect.width}px`,
+      height: `${rect.height}px`,
+    })
+
+    const getTargetRect = (image: HTMLImageElement) => {
+      const ratio = image.naturalWidth / image.naturalHeight
+      const maxWidth = window.innerWidth * 0.92
+      const maxHeight = window.innerHeight * 0.92
+      let width = Math.min(image.naturalWidth, maxWidth)
+      let height = width / ratio
+
+      if (height > maxHeight) {
+        height = maxHeight
+        width = height * ratio
+      }
+
+      return new DOMRect((window.innerWidth - width) / 2, (window.innerHeight - height) / 2, width, height)
+    }
+
+    const setPreviewRect = (rect: DOMRect) => {
+      Object.assign(preview.style, rectToKeyframe(rect))
+    }
+
+    const animatePreview = (from: DOMRect, to: DOMRect, easing: string) => {
+      setPreviewRect(from)
+      return preview.animate([rectToKeyframe(from), rectToKeyframe(to)], {
+        duration: 280,
+        easing,
+        fill: "forwards",
+      }).finished
+    }
+
+    const close = async () => {
+      if (!source || closing) return
+
+      closing = true
+      const sourceRect = source.getBoundingClientRect()
+      const previewRect = preview.getBoundingClientRect()
+
+      try {
+        await animatePreview(previewRect, sourceRect, "cubic-bezier(0.32, 0.72, 0, 1)")
+      } finally {
+        dialog.close()
+        preview.removeAttribute("style")
+        source = null
+        closing = false
+      }
+    }
+
+    const open = async (image: HTMLImageElement) => {
+      if (source || !image.naturalWidth) return
+
+      source = image
+      preview.src = image.currentSrc || image.src
+      preview.alt = image.alt
+      dialog.showModal()
+
+      const sourceRect = image.getBoundingClientRect()
+      const targetRect = getTargetRect(image)
+      await new Promise((resolve) => requestAnimationFrame(resolve))
+
+      if (!source) return
+      await animatePreview(sourceRect, targetRect, "cubic-bezier(0.22, 1, 0.36, 1)")
+    }
+
+    const onArticleClick = (event: MouseEvent) => {
+      const target = event.target
+      if (!(target instanceof HTMLImageElement)) return
+
+      event.preventDefault()
+      void open(target)
+    }
+
+    const onDialogClick = (event: MouseEvent) => {
+      if (event.target === dialog || event.target === preview) void close()
+    }
+
+    const onResize = () => {
+      if (!source || closing) return
+      setPreviewRect(getTargetRect(source))
+    }
+
+    article.addEventListener("click", onArticleClick)
+    dialog.addEventListener("click", onDialogClick)
+
+    dialog.addEventListener("cancel", (event) => {
+      event.preventDefault()
+      void close()
+    })
+
+    window.addEventListener("resize", onResize)
+
+    cleanup = () => {
+      if (dialog.open) dialog.close()
+      article.removeEventListener("click", onArticleClick)
+      dialog.removeEventListener("click", onDialogClick)
+      window.removeEventListener("resize", onResize)
+      preview.removeAttribute("style")
+      preview.removeAttribute("src")
+      source = null
+      closing = false
+    }
+  }
+
+  document.addEventListener("astro:page-load", initArticleImageLightbox)
+  document.addEventListener("astro:before-swap", cleanup)
+  initArticleImageLightbox()
+</script>
+
+<style is:global>
+  .article-lightbox {
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  .article-lightbox::backdrop {
+    background: rgb(0 0 0 / 78%);
+  }
+
+  .article-lightbox__image {
+    position: fixed;
+    display: block;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    object-fit: contain;
+    cursor: zoom-out;
+  }
+
+  [data-article-body] img {
+    cursor: zoom-in;
+  }
+</style>

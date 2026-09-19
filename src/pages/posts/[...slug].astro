@@ -3,6 +3,7 @@ import Layout from "@/layouts/Layout.astro"
 import { getCollection, render } from "astro:content"
 import EncryptedContent from "@/components/EncryptedContent.astro"
 import ArticleToolbar from "@/components/posts/ArticleToolbar.astro"
+import ArticleImageLightbox from "@/components/posts/ArticleImageLightbox.astro"
 import { PROFILE } from "@/consts.ts"
 
 export async function getStaticPaths() {
@@ -53,6 +54,8 @@ const dateLabel = dateTime?.slice(0, 10)
       </EncryptedContent>
     </div>
   </article>
+
+  <ArticleImageLightbox />
 
   <div class="footer-divider page-rule" aria-hidden="true"></div>
 
