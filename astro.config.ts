@@ -10,7 +10,7 @@ export default defineConfig({
     enabled: false,
   },
 
-  site: "https://leekoho.github.io",
+  site: "https://leekoho.com",
 
   integrations: [sitemap()],
 
