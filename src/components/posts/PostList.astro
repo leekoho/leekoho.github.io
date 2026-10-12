@@ -1,5 +1,5 @@
 ---
-import { FileText, LockKeyhole, ArrowUpRight } from "@lucide/astro"
+import { ArrowUpRight } from "@lucide/astro"
 import { Item, ItemContent, ItemMedia, ItemTitle, ItemActions } from "@/components/starwind/item"
 import { Badge } from "@/components/starwind/badge"
 import { SITE_DESCRIPTION } from "@/consts"
@@ -31,35 +31,27 @@ allPosts.forEach((post) => {
   </header>
   <div class="section-divider page-rule" aria-hidden="true"></div>
   <section aria-labelledby="archive-title">
-    <div class="archive-bar page-rule">
+    <div class="archive-bar">
       <h2 class="archive-title" id="archive-title">
         Archive
       </h2>
       <!--<span>按年份归档</span>-->
     </div>
-    {Array.from(groups).map(([year, yearPosts]) => (
+    {Array.from(groups).map(([year, yearPosts], yearIndex) => (
       <section aria-labelledby={`post-year-${year}`}>
         <h3 class="post-year page-rule" id={`post-year-${year}`}>
           {year}
         </h3>
         <ul class="post-list">
-          {yearPosts.map((post) => (
-            <li class="page-rule">
+          {yearPosts.map((post, postIndex) => (
+            <li class={postIndex === yearPosts.length - 1 ? "" : "border-b"}>
               <Item
                 as="a"
                 href={`/posts/${post.id}`}
                 class="post-link flex-nowrap items-start rounded-none border-0"
               >
-                <ItemMedia class="post-icon" aria-hidden="true">
-                  {post.data.password ? (
-                    <LockKeyhole class="size-5 stroke-1" />
-                  ) : (
-                    <FileText class="size-5 stroke-1" />
-                  )}
-                </ItemMedia>
                 <ItemContent class="post-copy gap-0">
                   <ItemTitle class="post-title w-full">{post.data.title}</ItemTitle>
-                  {/* 列表摘要按当前设计隐藏。 */}
                   <div class="post-meta">
                     <time class="post-date" datetime={post.data.pubDate.toISOString()}>
                       {post.data.pubDate.toISOString().slice(5, 10)}
@@ -81,12 +73,6 @@ allPosts.forEach((post) => {
                         </div>
                       </>
                     )}
-                    {post.data.password && <span class="sr-only">密码保护</span>}
-                    {post.data.draft && (
-                      <Badge variant="outline" size="sm" class="rounded-sm px-1 py-0 font-normal">
-                        草稿
-                      </Badge>
-                    )}
                   </div>
                 </ItemContent>
                 <ItemActions class="post-arrow" aria-hidden="true">
@@ -99,7 +85,6 @@ allPosts.forEach((post) => {
       </section>
     ))}
   </section>
-  <div class="archive-end" aria-hidden="true"></div>
 </div>
 
 <style>
@@ -116,6 +101,10 @@ allPosts.forEach((post) => {
   }
   .post-year {
     @apply bg-background-muted px-4 py-2 font-mono text-xs leading-6 tracking-wide text-muted-foreground sm:px-6;
+  }
+  .post-year::before {
+    content: "";
+    @apply pointer-events-none absolute -top-px left-1/2 h-px w-screen -translate-x-1/2 bg-border;
   }
   .post-list {
     @apply m-0 list-none p-0;
@@ -149,8 +138,5 @@ allPosts.forEach((post) => {
   }
   :global(.post-arrow) {
     @apply flex w-4 shrink-0 justify-end pt-1.5 text-muted-foreground;
-  }
-  .archive-end {
-    @apply h-8 sm:h-12;
   }
 </style>

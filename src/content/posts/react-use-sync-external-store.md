@@ -2,7 +2,7 @@
 title: "React 处理外部状态时，什么时候该用 useSyncExternalStore"
 #description: "React 里有些状态本来就不归它管，这时候继续用 useEffect 硬同步，通常不如直接上 useSyncExternalStore。"
 pubDate: "2026-04-11"
-tags: ["React", "Hooks"]
+tags: ["React"]
 ---
 
 写 React 的时候，真正麻烦的往往不是组件内部那点 `useState`，而是那些本来就不归 React 管的东西，比如原生 DOM 状态、浏览器 API，或者你自己挂在外面的 Store。
