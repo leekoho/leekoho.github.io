@@ -1,6 +1,13 @@
 ---
 import { Moon, Sun, Monitor, Check } from "@lucide/astro"
-import Button from "../Button.astro"
+import { Button } from "@/components/starwind/button"
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownContent,
+  DropdownRadioGroup,
+  DropdownRadioItem,
+} from "@/components/starwind/dropdown"
 
 const options = [
   { value: "light", label: "浅色", icon: Sun },
@@ -9,105 +16,89 @@ const options = [
 ]
 ---
 
-<details class="theme-switcher" data-theme-switcher transition:persist="theme-switcher">
-  <Button as="summary" variant="outline" size="icon" class="theme-trigger">
-    <Sun class="icon-light" size={16} stroke-width={1.5} aria-hidden="true" />
-    <Moon class="icon-dark" size={16} stroke-width={1.5} aria-hidden="true" />
-    <Monitor class="icon-system" size={16} stroke-width={1.5} aria-hidden="true" />
-    <span class="sr-only">切换主题</span>
-  </Button>
-  <div class="theme-menu" role="group" aria-label="外观">
-    {
-      options.map((option) => (
-        <Button variant="ghost" class="theme-option" data-theme-option={option.value}>
+<Dropdown data-theme-switcher>
+  <DropdownTrigger asChild>
+    <Button
+      variant="ghost"
+      size="icon"
+      class="text-muted-foreground hover:text-foreground"
+      aria-label="切换主题"
+    >
+      <Sun class="theme-icon theme-icon-light" size={16} stroke-width={1.5} aria-hidden="true" />
+      <Moon class="theme-icon theme-icon-dark" size={16} stroke-width={1.5} aria-hidden="true" />
+      <Monitor
+        class="theme-icon theme-icon-system"
+        size={16}
+        stroke-width={1.5}
+        aria-hidden="true"
+      />
+    </Button>
+  </DropdownTrigger>
+  <DropdownContent align="end" sideOffset={8} disablePortal class="shadow-card" aria-label="外观">
+    <DropdownRadioGroup defaultValue="system" data-theme-options>
+      {options.map((option) => (
+        <DropdownRadioItem
+          value={option.value}
+          closeOnClick
+          showIndicator={false}
+          class="theme-option min-h-9 pr-3 pl-3 text-sm text-muted-foreground aria-checked:bg-accent aria-checked:text-accent-foreground pointer-coarse:min-h-11"
+        >
           <option.icon size={16} stroke-width={1.5} aria-hidden="true" />
-          <span class="theme-label">{option.label}</span>
+          <span class="flex-1 whitespace-nowrap">{option.label}</span>
           <Check class="theme-check" size={14} aria-hidden="true" />
-        </Button>
-      ))
-    }
-  </div>
-</details>
+        </DropdownRadioItem>
+      ))}
+    </DropdownRadioGroup>
+  </DropdownContent>
+</Dropdown>
 
-<script is:inline>
-  ;(() => {
-    document.querySelectorAll("[data-theme-switcher]").forEach((switcher) => {
-      if (switcher.dataset.ready === "true") return
-      const trigger = switcher.querySelector("summary")
-      const syncSelection = () => {
-        const current = window.__themeController?.getPreference() ?? "system"
-        switcher.dataset.theme = current
-        switcher.querySelectorAll("[data-theme-option]").forEach((button) => {
-          button.setAttribute("aria-pressed", String(button.dataset.themeOption === current))
-        })
+<script>
+  import type { MenuValueChangeDetails } from "@starwind-ui/astro/menu"
+
+  type Theme = "light" | "dark" | "system"
+  const themeController = () =>
+    (
+      window as Window & {
+        __themeController?: { getPreference(): Theme; apply(value: string): void }
       }
-      switcher.querySelectorAll("[data-theme-option]").forEach((button) => {
-        button.addEventListener("click", () => {
-          window.__themeController?.apply(button.dataset.themeOption)
-          switcher.open = false
-          trigger.focus()
-        })
-      })
-      document.addEventListener("click", (event) => {
-        if (!switcher.contains(event.target)) switcher.open = false
-      })
-      switcher.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          switcher.open = false
-          trigger.focus()
-        }
-      })
-      window.addEventListener("theme-change", syncSelection)
-      syncSelection()
-      switcher.dataset.ready = "true"
-    })
+    ).__themeController
 
-    // 主题开关用 transition:persist 跨导航保留，导航后把展开状态复位，
-    // 与整页加载时的行为保持一致。
-    document.addEventListener("astro:page-load", () => {
-      document.querySelectorAll("[data-theme-switcher][open]").forEach((switcher) => {
-        switcher.open = false
+  const syncSelection = () => {
+    const current = themeController()?.getPreference() ?? "system"
+    document.querySelectorAll<HTMLElement>("[data-theme-options]").forEach((group) => {
+      group.dataset.value = current
+      group.querySelectorAll<HTMLElement>("[data-sw-menu-radio-item]").forEach((item) => {
+        const checked = item.dataset.value === current
+        item.setAttribute("aria-checked", String(checked))
+        item.toggleAttribute("data-checked", checked)
+        item.toggleAttribute("data-unchecked", !checked)
       })
     })
-  })()
+  }
+
+  document.addEventListener("starwind:value-change", (event) => {
+    if (!(event.target instanceof HTMLElement) || !event.target.matches("[data-theme-options]"))
+      return
+    themeController()?.apply((event as CustomEvent<MenuValueChangeDetails>).detail.value)
+  })
+  window.addEventListener("theme-change", syncSelection)
+  document.addEventListener("astro:page-load", syncSelection)
+  syncSelection()
 </script>
 
-<style>
-  @reference "../../styles/global.css";
-
-  .theme-switcher {
-    @apply relative;
+<style is:global>
+  [data-theme-switcher] .theme-icon {
+    display: none;
   }
-  .theme-trigger {
-    @apply text-muted hover:text-foreground;
+  :root[data-theme-preference="light"] [data-theme-switcher] .theme-icon-light,
+  :root[data-theme-preference="dark"] [data-theme-switcher] .theme-icon-dark,
+  :root[data-theme-preference="system"] [data-theme-switcher] .theme-icon-system {
+    display: block;
   }
-  :global(.icon-light) {
-    @apply hidden;
+  [data-theme-options] .theme-check {
+    opacity: 0;
   }
-  :global(.icon-dark) {
-    @apply hidden;
-  }
-  :global(.icon-system) {
-    @apply hidden;
-  }
-  .theme-menu {
-    @apply absolute top-full right-0 z-30 mt-2 grid min-w-36 gap-1 rounded-md border border-border bg-surface p-1 shadow-card;
-  }
-  .theme-option {
-    @apply w-full justify-start px-3 text-left font-normal text-muted aria-pressed:bg-hover aria-pressed:text-foreground;
-  }
-  .theme-label {
-    @apply flex-1 whitespace-nowrap;
-  }
-  :global(.theme-check) {
-    @apply opacity-0;
-  }
-  .theme-option[aria-pressed="true"] :global(.theme-check) {
-    @apply opacity-100;
-  }
-  .theme-switcher[data-theme="light"] :global(.icon-light),
-  .theme-switcher[data-theme="dark"] :global(.icon-dark),
-  .theme-switcher[data-theme="system"] :global(.icon-system) {
-    @apply block;
+  [data-theme-options] [aria-checked="true"] .theme-check {
+    opacity: 1;
   }
 </style>

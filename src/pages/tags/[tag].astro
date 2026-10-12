@@ -1,0 +1,20 @@
+---
+import PostList from "@/components/posts/PostList.astro"
+import Layout from "@/layouts/Layout.astro"
+import { getPosts, getTags } from "@/lib/posts"
+
+export async function getStaticPaths() {
+  const posts = await getPosts()
+
+  return getTags(posts).map(({ name }) => ({
+    params: { tag: name },
+    props: { tag: name, posts: posts.filter((post) => post.data.tags.includes(name)) },
+  }))
+}
+
+const { tag, posts } = Astro.props
+---
+
+<Layout title={`${tag} · Tags · leekoho`} description={`标签“${tag}”下的文章。`}>
+  <PostList posts={posts} title={`# ${tag}`} description={`${posts.length} 篇文章`} />
+</Layout>

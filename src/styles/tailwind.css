@@ -1,6 +1,5 @@
 @import "tailwindcss";
-@config "../../tailwind.config.ts";
-@plugin "@tailwindcss/typography";
+@import "./starwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -15,11 +14,11 @@
   --color-panel: var(--ui-surface-strong);
   --color-foreground: var(--ui-text);
   --color-foreground-soft: var(--ui-text-secondary);
-  --color-muted: var(--ui-text-muted);
+  --color-muted-foreground: var(--ui-text-muted-foreground);
   --color-subtle: var(--ui-text-faint);
   --color-border: var(--ui-border);
   --color-border-strong: var(--ui-border-strong);
-  --color-accent: var(--ui-brand);
+  --color-accent-foreground: var(--ui-brand);
   --color-accent-strong: var(--ui-brand-deep);
   --color-accent-soft: var(--ui-brand-soft);
 }
@@ -37,7 +36,7 @@
     --ui-surface-strong: #ffffff;
     --ui-text: #202024;
     --ui-text-secondary: #3f3f46;
-    --ui-text-muted: #707077;
+    --ui-text-muted-foreground: #707077;
     --ui-text-faint: #707077;
     --ui-border: #e8e8ec;
     --ui-border-strong: #d5d5dc;
@@ -61,7 +60,7 @@
     --ui-surface-strong: #171719;
     --ui-text: #eeeef0;
     --ui-text-secondary: #d7d7dd;
-    --ui-text-muted: #aaaab2;
+    --ui-text-muted-foreground: #aaaab2;
     --ui-text-faint: #aaaab2;
     --ui-border: #2a2a30;
     --ui-border-strong: #45454e;

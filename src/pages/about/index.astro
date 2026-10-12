@@ -1,4 +1,5 @@
 ---
+import { Prose } from "@/components/starwind/prose"
 import Layout from "@/layouts/Layout.astro"
 import { getEntry, render } from "astro:content"
 
@@ -11,14 +12,18 @@ const { Content } = await render(entry)
 <Layout title="About · leekoho" description="关于我。">
   <section aria-labelledby="about-title">
     <header class="page-heading page-rule">
-      <h1 id="about-title" class="section-title">About</h1>
+      <h1 id="about-title" class="section-title">
+        About
+      </h1>
       <p class="section-summary">关于我。</p>
     </header>
 
     <div class="section-divider page-rule" aria-hidden="true"></div>
 
-    <article class="article-content prose">
-      <Content />
+    <article>
+      <Prose class="article-content">
+        <Content />
+      </Prose>
     </article>
   </section>
 </Layout>

@@ -12,6 +12,7 @@ interface Props {
   description?: string
 }
 const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props
+const canonicalURL = new URL(Astro.url.pathname.replace(/\/?$/, "/"), Astro.site ?? Astro.url)
 ---
 
 <!doctype html>
@@ -20,6 +21,7 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <ThemeScript />
+    <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="alternate" type="application/rss+xml" title={SITE_TITLE} href="/feed.xml" />
@@ -31,7 +33,9 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props
     <ClientRouter />
   </head>
   <body class="site-body">
-    <a class="skip-link" href="#main-content">跳至正文</a>
+    <a class="skip-link" href="#main-content">
+      跳至正文
+    </a>
     <div class="site-shell">
       <Header />
       <main id="main-content" class="site-main" tabindex="-1">

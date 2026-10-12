@@ -6,8 +6,13 @@ const pathname = Astro.url.pathname.replace(/\/$/, "") || "/"
 const links = [
   {
     href: "/posts",
-    label: "Blog",
-    active: pathname === "/" || pathname === "/posts" || pathname.startsWith("/posts/"),
+    label: "Posts",
+    active: pathname === "/posts" || pathname.startsWith("/posts/"),
+  },
+  {
+    href: "/tags/",
+    label: "Tags",
+    active: pathname === "/tags" || pathname.startsWith("/tags/"),
   },
   { href: "/about", label: "About", active: pathname === "/about" },
 ]
@@ -16,15 +21,15 @@ const links = [
 <header class="header page-rule">
   <Brand />
   <nav class="header-nav" aria-label="主导航">
-    {
-      links.map((link) => (
-        <a class="nav-link" href={link.href} aria-current={link.active ? "page" : undefined}>
-          {link.label}
-        </a>
-      ))
-    }
+    {links.map((link) => (
+      <a class="nav-link" href={link.href} aria-current={link.active ? "page" : undefined}>
+        {link.label}
+      </a>
+    ))}
   </nav>
-  <div class="header-actions"><ThemeSwitcher /></div>
+  <div class="header-actions">
+    <ThemeSwitcher />
+  </div>
 </header>
 
 <style>
@@ -37,7 +42,7 @@ const links = [
     @apply ml-auto flex gap-4 self-stretch sm:gap-6;
   }
   .nav-link {
-    @apply relative flex items-center text-sm tracking-wide text-muted no-underline hover:text-foreground aria-[current=page]:text-foreground;
+    @apply relative flex items-center text-sm tracking-wide text-muted-foreground no-underline hover:text-foreground aria-[current=page]:text-foreground;
   }
   .header-actions {
     @apply border-l border-border pl-3 sm:pl-4;

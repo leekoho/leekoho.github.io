@@ -1,26 +1,22 @@
 ---
+import { Badge } from "@/components/starwind/badge"
+import { Prose } from "@/components/starwind/prose"
 import Layout from "@/layouts/Layout.astro"
-import { getCollection, render } from "astro:content"
+import { render } from "astro:content"
 import EncryptedContent from "@/components/EncryptedContent.astro"
-import ArticleToolbar from "@/components/posts/ArticleToolbar.astro"
 import ArticleImageLightbox from "@/components/posts/ArticleImageLightbox.astro"
-import { PROFILE } from "@/consts.ts"
+import { getPosts, getTagHref } from "@/lib/posts"
 
 export async function getStaticPaths() {
-  const posts = (
-    await getCollection("posts", ({ data }) => (import.meta.env.PROD ? data.draft !== true : true))
-  ).toSorted((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  const posts = await getPosts()
 
-  const link = (post: (typeof posts)[number] | undefined) =>
-    post ? { href: `/posts/${post.id}`, title: post.data.title } : undefined
-
-  return posts.map((post, index) => ({
+  return posts.map((post) => ({
     params: { slug: post.id },
-    props: { post, previous: link(posts[index - 1]), next: link(posts[index + 1]) },
+    props: { post },
   }))
 }
 
-const { post, previous, next } = Astro.props
+const { post } = Astro.props
 const { Content } = await render(post)
 
 const { pubDate, tags = [] } = post.data
@@ -32,59 +28,53 @@ const dateLabel = dateTime?.slice(0, 10)
 
 <Layout title={`${post.data.title} · leekoho`} description={post.data.description}>
   <article class="article-shell" aria-labelledby="article-title">
-    <div class="article-space page-rule" aria-hidden="true"></div>
-    <ArticleToolbar previous={previous} next={next} />
-
-    <header>
-      <h1 class="article-title page-rule" id="article-title">
+    <header class="article-heading page-rule">
+      <div class="article-kicker">
+        <a class="article-back" href="/posts">
+          Posts
+        </a>
+        {tags.length > 0 && (
+          <>
+            <span class="article-kicker-divider" aria-hidden="true">
+              /
+            </span>
+            <ul class="article-tags" aria-label="文章标签">
+              {tags.map((tag) => (
+                <li>
+                  <Badge
+                    href={getTagHref(tag)}
+                    tone="neutral"
+                    appearance="text"
+                    size="sm"
+                    class="article-tag font-mono font-normal text-muted-foreground"
+                  >
+                    {tag}
+                  </Badge>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+      <h1 class="article-title" id="article-title">
         {post.data.title}
       </h1>
-      {
-        post.data.description && (
-          <p class="article-description" data-article-description>
-            {post.data.description}
-          </p>
-        )
-      }
+      {post.data.description && <p class="article-description">{post.data.description}</p>}
+      {dateTime && (
+        <p class="article-date">
+          <time datetime={dateTime}>{dateLabel}</time>
+        </p>
+      )}
     </header>
 
-    <div class="article-content prose" data-article-body>
+    <Prose class="article-content article-body" data-article-body>
       <EncryptedContent password={post.data.password}>
         <Content />
       </EncryptedContent>
-    </div>
+    </Prose>
   </article>
 
   <ArticleImageLightbox />
-
-  <div class="footer-divider page-rule" aria-hidden="true"></div>
-
-  <dl class="footer-grid page-rule" aria-label={pubDate ? "文章信息" : "作者信息"}>
-    <div class="footer-cell">
-      <dt class="article-meta-label">作者</dt>
-      <dd class="article-meta-value">
-        <a class="article-meta-link" href="/about" rel="author">{PROFILE.name}</a>
-      </dd>
-    </div>
-    {
-      dateTime && (
-        <div class="footer-cell">
-          <dt class="article-meta-label">日期</dt>
-          <dd class="article-meta-value">
-            <time datetime={dateTime}>{dateLabel}</time>
-          </dd>
-        </div>
-      )
-    }
-    {
-      tags.length > 0 && (
-        <div class="footer-cell">
-          <dt class="article-meta-label">标签</dt>
-          <dd class="article-meta-value">{tags.join(" / ")}</dd>
-        </div>
-      )
-    }
-  </dl>
 </Layout>
 
 <style>
@@ -93,43 +83,37 @@ const dateLabel = dateTime?.slice(0, 10)
   .article-shell {
     @apply w-full min-w-0;
   }
-  .article-space {
-    @apply h-8 sm:h-12;
+  .article-heading {
+    @apply px-4 py-6 sm:px-6 sm:py-8;
+  }
+  .article-kicker {
+    @apply flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-xs leading-5 text-muted-foreground;
+  }
+  .article-back {
+    @apply no-underline hover:text-foreground pointer-coarse:inline-flex pointer-coarse:min-h-11 pointer-coarse:items-center;
+  }
+  .article-kicker-divider {
+    @apply text-subtle;
+  }
+  .article-tags {
+    @apply m-0 flex list-none flex-wrap items-center gap-x-3 gap-y-1 p-0;
+  }
+  :global(.article-tag) {
+    @apply text-xs leading-5 hover:text-foreground pointer-coarse:min-h-11;
   }
   .article-title {
-    @apply m-0 px-4 py-2 text-3xl leading-snug font-medium tracking-tight text-balance wrap-anywhere sm:px-6 sm:text-4xl;
+    @apply mt-4 mb-0 text-3xl leading-snug font-medium tracking-tight text-balance wrap-anywhere sm:text-4xl;
   }
   .article-description {
-    @apply px-4 py-6 text-sm leading-7 wrap-anywhere text-muted sm:px-6 sm:text-base sm:leading-8;
+    @apply mt-4 mb-0 text-sm leading-7 wrap-anywhere text-muted-foreground sm:text-base sm:leading-8;
   }
-
-  .footer-divider {
-    @apply h-8 border-t border-border sm:h-12;
+  .article-date {
+    @apply mt-4 mb-0 font-mono text-xs leading-5 text-muted-foreground;
   }
-  .footer-grid {
-    @apply m-0 grid grid-cols-2 sm:grid-cols-3;
+  :global(.article-body) {
+    @apply pt-6 sm:pt-8;
   }
-  .footer-cell {
-    @apply min-w-0 border-r border-border p-4 last:border-r-0 only:col-span-full max-sm:even:border-r-0 sm:px-6 max-sm:[&:nth-child(3)]:col-span-full max-sm:[&:nth-child(3)]:border-t;
-  }
-  .article-meta-label {
-    @apply mb-2 text-xs leading-5 tracking-wide text-muted;
-  }
-  .article-meta-value {
-    @apply m-0 font-mono text-sm leading-6 wrap-anywhere text-foreground;
-  }
-  .article-meta-link {
-    @apply underline decoration-border-strong underline-offset-4 hover:decoration-current pointer-coarse:inline-flex pointer-coarse:min-h-11 pointer-coarse:items-center;
-  }
-  .footer-divider::before {
-    content: "";
-    @apply pointer-events-none absolute inset-y-0 left-1/2 w-screen -translate-x-1/2;
-    background: repeating-linear-gradient(
-      135deg,
-      transparent 0,
-      transparent 6px,
-      var(--ui-pattern) 6px,
-      var(--ui-pattern) 7px
-    );
+  :global(.article-body > :first-child) {
+    @apply mt-0;
   }
 </style>

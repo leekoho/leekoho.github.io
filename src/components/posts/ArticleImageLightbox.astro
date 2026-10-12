@@ -1,5 +1,12 @@
+---
+import { X } from "@lucide/astro"
+---
+
 <dialog class="article-lightbox" aria-label="图片预览">
   <img class="article-lightbox__image" alt="" />
+  <button type="button" class="article-lightbox__close" aria-label="关闭图片预览">
+    <X size={20} stroke-width={1.5} aria-hidden="true" />
+  </button>
 </dialog>
 
 <script>
@@ -16,6 +23,7 @@
 
     let source: HTMLImageElement | null = null
     let closing = false
+    let animation: Animation | null = null
 
     const rectToKeyframe = (rect: DOMRect) => ({
       left: `${rect.left}px`,
@@ -36,36 +44,64 @@
         width = height * ratio
       }
 
-      return new DOMRect((window.innerWidth - width) / 2, (window.innerHeight - height) / 2, width, height)
+      return new DOMRect(
+        (window.innerWidth - width) / 2,
+        (window.innerHeight - height) / 2,
+        width,
+        height,
+      )
     }
 
     const setPreviewRect = (rect: DOMRect) => {
       Object.assign(preview.style, rectToKeyframe(rect))
     }
 
-    const animatePreview = (from: DOMRect, to: DOMRect, easing: string) => {
-      setPreviewRect(from)
-      return preview.animate([rectToKeyframe(from), rectToKeyframe(to)], {
+    const cancelAnimation = () => {
+      animation?.cancel()
+      animation = null
+    }
+
+    const animatePreview = async (from: DOMRect, to: DOMRect, easing: string) => {
+      cancelAnimation()
+      // Keep the final rectangle in normal styles so resize can update it after the animation.
+      setPreviewRect(to)
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+
+      const current = preview.animate([rectToKeyframe(from), rectToKeyframe(to)], {
         duration: 280,
         easing,
-        fill: "forwards",
-      }).finished
+        fill: "both",
+      })
+      animation = current
+
+      try {
+        await current.finished
+      } catch (error) {
+        if (!(error instanceof DOMException) || error.name !== "AbortError") throw error
+      } finally {
+        if (animation === current) animation = null
+        current.cancel()
+      }
     }
 
     const close = async () => {
-      if (!source || closing) return
+      const image = source
+      if (!image || closing) return
 
       closing = true
-      const sourceRect = source.getBoundingClientRect()
+      const sourceRect = image.getBoundingClientRect()
       const previewRect = preview.getBoundingClientRect()
 
       try {
         await animatePreview(previewRect, sourceRect, "cubic-bezier(0.32, 0.72, 0, 1)")
       } finally {
+        if (source !== image) return
         dialog.close()
         preview.removeAttribute("style")
+        preview.removeAttribute("src")
         source = null
         closing = false
+        image.focus({ preventScroll: true })
       }
     }
 
@@ -77,45 +113,83 @@
       preview.alt = image.alt
       dialog.showModal()
 
-      const sourceRect = image.getBoundingClientRect()
-      const targetRect = getTargetRect(image)
       await new Promise((resolve) => requestAnimationFrame(resolve))
 
-      if (!source) return
-      await animatePreview(sourceRect, targetRect, "cubic-bezier(0.22, 1, 0.36, 1)")
+      if (source !== image || closing) return
+      await animatePreview(
+        image.getBoundingClientRect(),
+        getTargetRect(image),
+        "cubic-bezier(0.22, 1, 0.36, 1)",
+      )
     }
+
+    const prepareImages = () => {
+      article.querySelectorAll<HTMLImageElement>("img").forEach((image) => {
+        if (image.closest("a, button")) return
+        image.tabIndex = 0
+        image.setAttribute("role", "button")
+        image.setAttribute("aria-haspopup", "dialog")
+        image.setAttribute("aria-label", image.alt ? `预览图片：${image.alt}` : "预览图片")
+      })
+    }
+    prepareImages()
+    // Password-protected articles insert their images after being unlocked.
+    const observer = new MutationObserver(prepareImages)
+    observer.observe(article, { childList: true, subtree: true })
 
     const onArticleClick = (event: MouseEvent) => {
       const target = event.target
-      if (!(target instanceof HTMLImageElement)) return
+      if (!(target instanceof HTMLImageElement) || target.getAttribute("role") !== "button") return
+
+      event.preventDefault()
+      void open(target)
+    }
+
+    const onArticleKeydown = (event: KeyboardEvent) => {
+      if (event.key !== "Enter" && event.key !== " ") return
+      const target = event.target
+      if (!(target instanceof HTMLImageElement) || target.getAttribute("role") !== "button") return
 
       event.preventDefault()
       void open(target)
     }
 
     const onDialogClick = (event: MouseEvent) => {
-      if (event.target === dialog || event.target === preview) void close()
+      const target = event.target
+      if (
+        target === dialog ||
+        target === preview ||
+        (target instanceof Element && target.closest(".article-lightbox__close"))
+      ) {
+        void close()
+      }
+    }
+
+    const onDialogCancel = (event: Event) => {
+      event.preventDefault()
+      void close()
     }
 
     const onResize = () => {
       if (!source || closing) return
+      cancelAnimation()
       setPreviewRect(getTargetRect(source))
     }
 
     article.addEventListener("click", onArticleClick)
+    article.addEventListener("keydown", onArticleKeydown)
     dialog.addEventListener("click", onDialogClick)
-
-    dialog.addEventListener("cancel", (event) => {
-      event.preventDefault()
-      void close()
-    })
-
+    dialog.addEventListener("cancel", onDialogCancel)
     window.addEventListener("resize", onResize)
 
     cleanup = () => {
+      cancelAnimation()
+      observer.disconnect()
       if (dialog.open) dialog.close()
       article.removeEventListener("click", onArticleClick)
+      article.removeEventListener("keydown", onArticleKeydown)
       dialog.removeEventListener("click", onDialogClick)
+      dialog.removeEventListener("cancel", onDialogCancel)
       window.removeEventListener("resize", onResize)
       preview.removeAttribute("style")
       preview.removeAttribute("src")
@@ -125,7 +199,7 @@
   }
 
   document.addEventListener("astro:page-load", initArticleImageLightbox)
-  document.addEventListener("astro:before-swap", cleanup)
+  document.addEventListener("astro:before-swap", () => cleanup())
   initArticleImageLightbox()
 </script>
 
@@ -156,7 +230,26 @@
     cursor: zoom-out;
   }
 
-  [data-article-body] img {
+  .article-lightbox__close {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgb(255 255 255 / 30%);
+    border-radius: 50%;
+    color: white;
+    background: rgb(0 0 0 / 50%);
+  }
+
+  .article-lightbox__close:focus-visible {
+    outline-color: white;
+  }
+
+  [data-article-body] img[role="button"] {
     cursor: zoom-in;
   }
 </style>

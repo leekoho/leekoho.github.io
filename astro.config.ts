@@ -12,7 +12,11 @@ export default defineConfig({
 
   site: "https://leekoho.com",
 
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      filter: (page) => new URL(page).pathname !== "/",
+    }),
+  ],
 
   build: {
     inlineStylesheets: "never",
