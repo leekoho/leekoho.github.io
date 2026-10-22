@@ -1,11 +1,10 @@
 ---
-import { Badge } from "@/components/starwind/badge"
-import { Prose } from "@/components/starwind/prose"
+import PostTags from "@/components/posts/PostTags"
+import { articleComponents } from "@/components/posts/mdx-components"
 import Layout from "@/layouts/Layout.astro"
 import { render } from "astro:content"
-import EncryptedContent from "@/components/EncryptedContent.astro"
-import ArticleImageLightbox from "@/components/posts/ArticleImageLightbox.astro"
-import { getPosts, getTagHref } from "@/lib/posts"
+import ArticleImageLightbox from "@/components/posts/ArticleImageLightbox"
+import { getPosts } from "@/lib/posts"
 
 export async function getStaticPaths() {
   const posts = await getPosts()
@@ -38,21 +37,7 @@ const dateLabel = dateTime?.slice(0, 10)
             <span class="article-kicker-divider" aria-hidden="true">
               /
             </span>
-            <ul class="article-tags" aria-label="文章标签">
-              {tags.map((tag) => (
-                <li>
-                  <Badge
-                    href={getTagHref(tag)}
-                    tone="neutral"
-                    appearance="text"
-                    size="sm"
-                    class="article-tag font-mono font-normal text-muted-foreground"
-                  >
-                    {tag}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
+            <PostTags tags={tags} />
           </>
         )}
       </div>
@@ -67,14 +52,12 @@ const dateLabel = dateTime?.slice(0, 10)
       )}
     </header>
 
-    <Prose class="article-content article-body" data-article-body>
-      <EncryptedContent password={post.data.password}>
-        <Content />
-      </EncryptedContent>
-    </Prose>
+    <div class="typeset typeset-docs article-content article-body" data-article-body>
+      <Content components={articleComponents} />
+    </div>
   </article>
 
-  <ArticleImageLightbox />
+  <ArticleImageLightbox client:idle />
 </Layout>
 
 <style>
@@ -95,7 +78,7 @@ const dateLabel = dateTime?.slice(0, 10)
   .article-kicker-divider {
     @apply text-subtle;
   }
-  .article-tags {
+  :global(.article-tags) {
     @apply m-0 flex list-none flex-wrap items-center gap-x-3 gap-y-1 p-0;
   }
   :global(.article-tag) {
@@ -109,11 +92,5 @@ const dateLabel = dateTime?.slice(0, 10)
   }
   .article-date {
     @apply mt-4 mb-0 font-mono text-xs leading-5 text-muted-foreground;
-  }
-  :global(.article-body) {
-    @apply pt-6 sm:pt-8;
-  }
-  :global(.article-body > :first-child) {
-    @apply mt-0;
   }
 </style>

@@ -1,6 +1,14 @@
 @import "./tailwind.css";
-@import "./callout.css";
-@import "./prose.css";
+@import "./typeset.css";
+
+.typeset-docs {
+  --typeset-font-body: var(--font-geist);
+  --typeset-font-heading: var(--font-geist);
+  --typeset-font-mono: var(--font-geist-mono);
+  --typeset-size: 15px;
+  --typeset-leading: 1.75;
+  --typeset-flow: 1.25em;
+}
 
 @layer base {
   a,
@@ -56,16 +64,7 @@
   }
 
   .article-content {
-    @apply max-w-none! min-w-0 px-4 pb-6 text-base leading-8 wrap-anywhere sm:px-6 sm:pb-8;
-  }
-  .article-content > :first-child {
-    @apply mt-0;
-  }
-  .article-content > :last-child {
-    @apply mb-0;
-  }
-  .article-content img {
-    @apply rounded-lg;
+    @apply max-w-none! min-w-0 px-4 pb-6 text-base leading-8 wrap-anywhere sm:px-6 sm:pb-8 pt-6 sm:pt-8;
   }
 
   .thinking {

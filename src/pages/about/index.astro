@@ -1,10 +1,10 @@
 ---
-import { Prose } from "@/components/starwind/prose"
+import { articleComponents } from "@/components/posts/mdx-components"
 import Layout from "@/layouts/Layout.astro"
 import { getEntry, render } from "astro:content"
 
 const entry = await getEntry("about", "index")
-if (!entry) throw new Error("缺少 src/content/about/index.md")
+if (!entry) throw new Error("缺少 src/content/about/index.mdx")
 
 const { Content } = await render(entry)
 ---
@@ -21,9 +21,9 @@ const { Content } = await render(entry)
     <div class="section-divider page-rule" aria-hidden="true"></div>
 
     <article>
-      <Prose class="article-content">
-        <Content />
-      </Prose>
+      <div class="typeset typeset-docs article-content">
+        <Content components={articleComponents} />
+      </div>
     </article>
   </section>
 </Layout>

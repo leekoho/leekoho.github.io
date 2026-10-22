@@ -1,4 +1,11 @@
 ---
-// Replace this redirect when the dedicated homepage is ready.
-return Astro.redirect("/posts", 301)
+import Layout from "@/layouts/Layout.astro"
+import PostList from "@/components/posts/PostList"
+import { getPosts, toPostSummary } from "@/lib/posts"
+
+const posts = (await getPosts()).map(toPostSummary)
 ---
+
+<Layout>
+  <PostList posts={posts} />
+</Layout>

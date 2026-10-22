@@ -1,6 +1,6 @@
 # Posts · leekoho
 
-基于 Astro 的个人博客，包含文章归档、Markdown 阅读、密码文章、关于页、RSS 和深浅主题。
+基于 Astro 的个人博客，包含文章归档、MDX 阅读、关于页、RSS 和深浅主题。
 
 ## 本地开发
 
@@ -24,7 +24,7 @@ npx pnpm@12.4.2 dev
 | ---------------- | -------------------------------- |
 | `pnpm dev`       | 启动开发服务器，包含草稿         |
 | `pnpm check`     | 检查 Astro 和 TypeScript 类型    |
-| `pnpm test`      | 验证 Markdown 提示块渲染         |
+| `pnpm test`      | 验证提示块和代码高亮数据转换     |
 | `pnpm build`     | 构建静态页面到 `dist/`，排除草稿 |
 | `pnpm preview`   | 预览生产构建                     |
 | `pnpm fmt`       | 格式化代码与 Astro 模板          |
@@ -33,20 +33,26 @@ npx pnpm@12.4.2 dev
 ## 内容与样式
 
 - 文章放在 `src/content/posts/`，集合结构定义于 `src/content.config.ts`。
-- 支持 `title`、`description`、`pubDate`、`tags`、`draft` 和可选的 `password` 字段。
+- 支持 `title`、`description`、`pubDate`、`tags`、`draft` 字段。
 - `/tags/` 展示标签及文章数量，`/tags/标签名/` 展示该标签下的文章；文章详情里的标签可直接跳转，中文标签使用 URL 编码。生产构建的标签统计与文章列表均排除草稿。
 - 个人资料与站点文案在 `src/consts.ts`，品牌标识在 `src/assets/logo.svg`。
 - 视觉规范见 [DESIGN.md](./DESIGN.md)，全局样式在 `src/styles/`。
 
 ## 配置约定
 
-Astro 7 使用 Sätteri 处理 Markdown，提示块通过原生 MDAST 插件实现。控件与正文排版使用 Starwind UI 的 Astro 组件，源码位于 `src/components/starwind`，安装记录位于 `starwind.config.json`。Tailwind 4 的主题与插件在 CSS 中配置，`src/styles/starwind.css` 将组件语义变量映射到博客现有的浅色／深色配色，`src/styles/prose.css` 保留中文阅读排版与 Shiki 适配。
+Astro 7 使用 Sätteri 和 `@astrojs/mdx` 处理文章，页面与 UI 使用 React 和 shadcn/ui。Astro 负责静态路由、内容集合、RSS、图片与字体；列表、标签等静态 React 组件只输出 HTML，主题菜单、代码块复制和图片预览才在浏览器中启用交互。
 
-`muted` 与 `accent` 用于背景；弱化文字与强调文字分别使用 `muted-foreground` 和 `accent-foreground`。主题菜单继续由原有主题控制器管理浅色、深色和跟随系统三种偏好。更新 Starwind 组件前请检查差异，保留本地对按钮尺寸、触屏目标和 Prose 样式层的定制。
+- `components.json` 配置 shadcn/ui 的 Radix Nova 风格。使用 `npx shadcn@latest add <组件名>` 添加组件。
+- `src/components/ui/` 保存通过 shadcn/ui 官方 CLI 添加并适配本站的组件源码。
+- `src/components/posts/mdx-components.tsx` 集中映射 `pre`、表格各标签、`aside`、`hr` 和 `kbd`；标题、链接、引用、列表和行内代码遵循 shadcn/ui Typography，通过 `src/styles/prose.css` 保持中文阅读排版。文章中写 `<Kbd>Esc</Kbd>` 即可使用按键组件，无需逐篇导入，也不会加载客户端 JavaScript。
+- 文章使用 `.mdx`，仍可直接写 Markdown。需要写 HTML 时遵循 JSX 语法，例如 `<br />`；无需逐篇导入标准标签的映射组件。自定义 React 组件可通过 MDX 导入，并按需指定 `client:*`。
+- `plugins/hast-code-block.ts` 在构建时提取 Shiki token，交给 shadcn/ui Code Block 渲染，保留明暗主题颜色与原始代码。代码块支持 `title="filename.ts"`、行号与复制按钮，不在浏览器下载高亮语法库。
+- 提示块继续使用 `[!NOTE]`、`[!TIP]`、`[!IMPORTANT]`、`[!WARNING]`、`[!CAUTION]`，由 MDAST 插件识别，并通过 shadcn/ui Alert 搭配主题颜色呈现。它们作为静态说明内容，不作为动态警报播报。
+- `src/styles/tailwind.css` 定义博客明暗配色，`src/styles/ui.css` 映射组件语义变量。`muted` 与 `accent` 用于背景，文字分别使用 `muted-foreground` 和 `accent-foreground`。
+- 顶部主题切换使用 shadcn/ui Dropdown Menu，提供浅色、深色和跟随系统三种偏好，使用已有的 `theme-preference` 存储键，并在 Astro 页面切换前同步主题。
+- 图片预览使用 shadcn/ui Dialog，支持键盘打开、Escape 关闭及关闭后恢复图片焦点。
 
-TypeScript 保持在最新的 6.x：当前 `@astrojs/check` 尚不支持 TypeScript 7。其他直接依赖使用最新稳定版本。
-
-Markdown 提示块继续使用 `[!NOTE]`、`[!TIP]`、`[!IMPORTANT]`、`[!WARNING]`、`[!CAUTION]`。插件生成静态 `<aside>`，保留原来的左侧图标、细线、浅灰底与正文缩进，不显示额外标题。类型名称通过 `aria-label` 提供，文章内容不会作为动态通知播报。
+TypeScript 保持 6.x，以兼容当前 `@astrojs/check`。
 
 文章页顶部将 Posts 返回链接、标签链接、标题、可选简介及发布日期合并为一个标题区；正文紧接标题区，不显示作者名字、复制或上下篇工具栏。标签索引以横向排列、自动换行的标签块展示，每个标签块保留文章数量。
 

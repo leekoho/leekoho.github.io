@@ -1,7 +1,8 @@
 ---
 import { Font } from "astro:assets"
-import Footer from "@/components/Footer.astro"
-import Header from "@/components/header/Header.astro"
+import Footer from "@/components/Footer"
+import Header from "@/components/header/Header"
+import ThemeSwitcher from "@/components/header/ThemeSwitcher"
 import ThemeScript from "@/components/header/ThemeScript.astro"
 import { SITE_TITLE, SITE_DESCRIPTION } from "@/consts"
 import "../styles/global.css"
@@ -37,7 +38,9 @@ const canonicalURL = new URL(Astro.url.pathname.replace(/\/?$/, "/"), Astro.site
       跳至正文
     </a>
     <div class="site-shell">
-      <Header />
+      <Header pathname={Astro.url.pathname.replace(/\/$/, "") || "/"}>
+        <ThemeSwitcher client:load />
+      </Header>
       <main id="main-content" class="site-main page-rule" tabindex="-1">
         <slot />
       </main>

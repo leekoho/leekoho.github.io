@@ -1,5 +1,2 @@
 allowBuilds:
-  workerd: true
-  esbuild: true
-  msw: true
   sharp: true

@@ -1,8 +1,11 @@
 ---
 import Layout from "@/layouts/Layout.astro"
-import PostList from "@/components/posts/PostList.astro"
+import PostList from "@/components/posts/PostList"
+import { getPosts, toPostSummary } from "@/lib/posts"
+
+const posts = (await getPosts()).map(toPostSummary)
 ---
 
 <Layout>
-  <PostList />
+  <PostList posts={posts} />
 </Layout>

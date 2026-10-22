@@ -1,8 +1,7 @@
 ---
-import { Hash } from "@lucide/astro"
-import { Badge } from "@/components/starwind/badge"
+import TagList from "@/components/TagList"
 import Layout from "@/layouts/Layout.astro"
-import { getPosts, getTags, getTagHref } from "@/lib/posts"
+import { getPosts, getTags } from "@/lib/posts"
 
 const tags = getTags(await getPosts())
 ---
@@ -16,53 +15,8 @@ const tags = getTags(await getPosts())
       <p class="section-summary">{tags.length} 个标签</p>
     </header>
     <div class="section-divider page-rule" aria-hidden="true"></div>
-    <ul class="tag-list">
-      {tags.map((tag) => (
-        <li>
-          <Badge
-            href={getTagHref(tag.name)}
-            tone="neutral"
-            appearance="outline"
-            size="md"
-            class="tag-link font-mono font-normal"
-          >
-            <Hash size={14} stroke-width={1.5} class="text-muted-foreground" aria-hidden="true" />
-            <span class="tag-name">{tag.name}</span>
-            <span class="tag-count">
-              {tag.count}
-              <span class="sr-only"> 篇文章</span>
-            </span>
-          </Badge>
-        </li>
-      ))}
-    </ul>
-    {tags.length === 0 && <p class="tags-empty">还没有标签。</p>}
-    <div class="tags-end" aria-hidden="true"></div>
+    <TagList tags={tags} />
+    {tags.length === 0 && <p class="px-4 py-6 text-sm text-muted-foreground sm:px-6">还没有标签。</p>}
+    <div class="h-8 sm:h-12" aria-hidden="true"></div>
   </section>
 </Layout>
-
-<style>
-  @reference "../../styles/global.css";
-
-  .tag-list {
-    @apply m-0 flex list-none flex-wrap gap-3 px-4 py-6 sm:px-6;
-  }
-  .tag-list > li {
-    @apply max-w-full min-w-0;
-  }
-  :global(.tag-link) {
-    @apply min-h-9 max-w-full gap-2 px-3 py-2 text-sm no-underline hover:bg-hover pointer-coarse:min-h-11;
-  }
-  .tag-name {
-    @apply min-w-0 wrap-anywhere whitespace-normal;
-  }
-  .tag-count {
-    @apply shrink-0 font-mono text-xs leading-5 text-muted-foreground;
-  }
-  .tags-empty {
-    @apply px-4 py-6 text-sm text-muted-foreground sm:px-6;
-  }
-  .tags-end {
-    @apply h-8 sm:h-12;
-  }
-</style>

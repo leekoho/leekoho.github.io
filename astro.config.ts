@@ -1,8 +1,11 @@
 import { satteri } from "@astrojs/markdown-satteri"
+import mdx from "@astrojs/mdx"
+import react from "@astrojs/react"
 import sitemap from "@astrojs/sitemap"
 import tailwindcss from "@tailwindcss/vite"
 import { defineConfig, fontProviders } from "astro/config"
 
+import codeBlockPlugin from "./plugins/hast-code-block"
 import calloutPlugin from "./plugins/mdast-callout"
 
 export default defineConfig({
@@ -13,6 +16,8 @@ export default defineConfig({
   site: "https://leekoho.com",
 
   integrations: [
+    react(),
+    mdx(),
     sitemap({
       filter: (page) => new URL(page).pathname !== "/",
     }),
@@ -31,7 +36,10 @@ export default defineConfig({
   },
 
   markdown: {
-    processor: satteri({ mdastPlugins: [calloutPlugin] }),
+    processor: satteri({
+      mdastPlugins: [calloutPlugin],
+      hastPlugins: [codeBlockPlugin],
+    }),
     syntaxHighlight: "shiki",
     shikiConfig: {
       themes: {
@@ -39,6 +47,14 @@ export default defineConfig({
         dark: "github-dark",
       },
       defaultColor: false,
+      transformers: [
+        {
+          pre(node) {
+            const title = this.options.meta?.__raw?.match(/\btitle=["']([^"']+)["']/)?.[1]
+            if (title) node.properties["data-title"] = title
+          },
+        },
+      ],
     },
   },
 
