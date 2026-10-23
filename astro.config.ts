@@ -17,6 +17,8 @@ export default defineConfig({
 
   site: "https://leekoho.com",
 
+  output: "server",
+
   adapter: cloudflare(),
 
   integrations: [
