@@ -33,35 +33,15 @@ const canonicalURL = new URL(Astro.url.pathname.replace(/\/?$/, "/"), Astro.site
     <title>{title}</title>
     <ClientRouter />
   </head>
-  <body class="site-body">
-    <a class="skip-link" href="#main-content">
-      跳至正文
-    </a>
-    <div class="site-shell">
+  <body class="overflow-x-clip">
+    <div class="mx-auto flex min-h-svh w-full max-w-3xl flex-col border-x border-border bg-background">
       <Header pathname={Astro.url.pathname.replace(/\/$/, "") || "/"}>
         <ThemeSwitcher client:load />
       </Header>
-      <main id="main-content" class="site-main page-rule" tabindex="-1">
+      <main id="main-content" class="min-w-0 flex-1 focus:outline-none page-rule" tabindex="-1">
         <slot />
       </main>
       <Footer />
     </div>
   </body>
 </html>
-
-<style>
-  @reference "../styles/global.css";
-
-  .site-body {
-    @apply overflow-x-clip;
-  }
-  .skip-link {
-    @apply fixed top-2 left-2 z-100 -translate-y-24 border border-border bg-background px-4 py-3 focus:translate-y-0;
-  }
-  .site-shell {
-    @apply mx-auto flex min-h-svh w-full max-w-3xl flex-col border-x border-border bg-background;
-  }
-  .site-main {
-    @apply min-w-0 flex-1 focus:outline-none;
-  }
-</style>

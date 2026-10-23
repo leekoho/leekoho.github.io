@@ -1,5 +1,6 @@
 @import "./tailwind.css";
 @import "./typeset.css";
+@import "shadcn/tailwind.css";
 
 .typeset-docs {
   --typeset-font-body: var(--font-geist);
@@ -64,47 +65,7 @@
   }
 
   .article-content {
-    @apply max-w-none! min-w-0 px-4 pb-6 text-base leading-8 wrap-anywhere sm:px-6 sm:pb-8 pt-6 sm:pt-8;
-  }
-
-  .thinking {
-    color: var(--ui-text-muted-foreground);
-
-    background-image: linear-gradient(
-      105deg,
-      var(--ui-text-muted-foreground) 36%,
-      var(--ui-text) 50%,
-      var(--ui-text-muted-foreground) 64%
-    );
-    background-size: 250% 100%;
-    background-position: 100% 0;
-    background-repeat: no-repeat;
-
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-
-    /* Sweep for 1.8s, then pause for 1.8s before repeating. */
-    animation: thinking-shimmer 3.6s linear infinite;
-  }
-
-  @keyframes thinking-shimmer {
-    0% {
-      background-position: 100% 0;
-    }
-
-    50%,
-    100% {
-      background-position: 0 0;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .thinking {
-      animation: none;
-      background: none;
-      -webkit-text-fill-color: currentColor;
-    }
+    @apply max-w-none! min-w-0 px-4 pt-6 pb-6 text-base leading-8 wrap-anywhere sm:px-6 sm:pt-8 sm:pb-8;
   }
 }
 

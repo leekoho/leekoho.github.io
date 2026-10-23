@@ -15,7 +15,6 @@ export default function ArticleImageLightbox() {
       image.tabIndex = 0
       image.setAttribute("role", "button")
       image.setAttribute("aria-haspopup", "dialog")
-      image.setAttribute("aria-label", image.alt ? `预览图片：${image.alt}` : "预览图片")
     }
     const open = (event: MouseEvent | KeyboardEvent) => {
       if (event instanceof KeyboardEvent && !["Enter", " "].includes(event.key)) return

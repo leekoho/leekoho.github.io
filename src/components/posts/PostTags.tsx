@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge"
 
 export default function PostTags({ tags }: { tags: string[] }) {
   return (
-    <ul className="article-tags" aria-label="文章标签">
+    <ul className="article-tags" aria-label="Article Tags">
       {tags.map((tag) => (
         <li key={tag}>
           <Badge

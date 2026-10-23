@@ -40,12 +40,7 @@ export default function ThemeSwitcher() {
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button
-            variant="ghost"
-            size="icon-lg"
-            aria-label="切换主题"
-            className="rounded-md text-muted-foreground pointer-coarse:size-11"
-          >
+          <Button variant="ghost" size="icon-lg" aria-label="Theme Changes">
             <themeOption.icon className="size-4" aria-hidden="true" />
           </Button>
         }
