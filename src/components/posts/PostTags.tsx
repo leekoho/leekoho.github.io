@@ -6,12 +6,10 @@ export default function PostTags({ tags }: { tags: string[] }) {
       {tags.map((tag) => (
         <li key={tag}>
           <Badge
-            asChild
             variant="link"
             className="article-tag h-auto rounded-none border-0 p-0 font-mono font-normal text-muted-foreground"
-          >
-            <a href={`/tags/${encodeURIComponent(tag)}/`}>{tag}</a>
-          </Badge>
+            render={<a href={`/tags/${encodeURIComponent(tag)}/`}>{tag}</a>}
+          />
         </li>
       ))}
     </ul>

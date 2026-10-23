@@ -38,7 +38,6 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
-    "@astrojs/markdown-satteri": "0.4.5",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
     "@tailwindcss/vite": "^4.3.3",
@@ -49,7 +48,6 @@
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.1",
     "prettier-plugin-tailwindcss": "^0.8.1",
-    "satteri": "^0.10.5",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3"
   },

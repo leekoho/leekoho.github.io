@@ -1,0 +1,73 @@
+---
+import {
+  CodeBlock,
+  CodeBlockActions,
+  CodeBlockCopyButton,
+  CodeBlockHeader,
+  CodeBlockTitle,
+} from "@/components/ui/code-block"
+
+const { "data-code": code, "data-title": title, class: shikiClass, ...preProps } = Astro.props
+---
+
+{typeof code === "string" ? (
+  <CodeBlock>
+    {title ? (
+      <CodeBlockHeader>
+        <CodeBlockTitle>{title}</CodeBlockTitle>
+        <CodeBlockActions>
+          <CodeBlockCopyButton value={code} client:visible />
+        </CodeBlockActions>
+      </CodeBlockHeader>
+    ) : (
+      <CodeBlockActions>
+        <CodeBlockCopyButton value={code} client:visible />
+      </CodeBlockActions>
+    )}
+    <pre
+      {...preProps}
+      class:list={[
+        shikiClass,
+        "min-w-0 overflow-auto p-3 text-start font-mono leading-relaxed outline-none",
+      ]}
+      data-slot="code-block-content"
+      dir="ltr"
+      tabindex="0"
+    ><slot /></pre>
+  </CodeBlock>
+) : (
+  <pre {...Astro.props}><slot /></pre>
+)}
+
+<style>
+  @reference "../../styles/global.css";
+
+  //pre {
+  //  counter-reset: line;
+  //}
+  //
+  //pre :global(.line) {
+  //  counter-increment: line;
+  //}
+
+  //pre :global(.line)::before {
+  //  content: counter(line);
+  //  @apply mr-3 inline-block min-w-6 text-right text-muted-foreground select-none;
+  //}
+
+  pre,
+  pre :global(span) {
+    color: var(--shiki-light);
+    font-style: var(--shiki-light-font-style, normal);
+    font-weight: var(--shiki-light-font-weight, normal);
+    text-decoration: var(--shiki-light-text-decoration, none);
+  }
+
+  :global(.dark) pre,
+  :global(.dark) pre :global(span) {
+    color: var(--shiki-dark);
+    font-style: var(--shiki-dark-font-style, normal);
+    font-weight: var(--shiki-dark-font-weight, normal);
+    text-decoration: var(--shiki-dark-text-decoration, none);
+  }
+</style>

@@ -1,8 +1,0 @@
----
-import ArticleCodeBlock, { type ArticleCodeProps } from "./CodeBlock"
-
-const payload = Astro.props["data-code-block"] as string | undefined
-const code = payload ? (JSON.parse(payload) as ArticleCodeProps) : undefined
----
-
-{code ? <ArticleCodeBlock {...code} client:visible /> : <pre {...Astro.props}><slot /></pre>}
