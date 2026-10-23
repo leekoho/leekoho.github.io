@@ -8,12 +8,16 @@ import { defineConfig, fontProviders } from "astro/config"
 import codeBlockPlugin from "./plugins/hast-code-block"
 import calloutPlugin from "./plugins/mdast-callout"
 
+import cloudflare from "@astrojs/cloudflare"
+
 export default defineConfig({
   devToolbar: {
     enabled: false,
   },
 
   site: "https://leekoho.com",
+
+  adapter: cloudflare(),
 
   integrations: [
     react(),
