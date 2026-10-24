@@ -30,19 +30,19 @@ const dateLabel = dateTime?.slice(0, 10)
 <Layout title={`${post.data.title} · leekoho`} description={post.data.description}>
   <article class="article-shell" aria-labelledby="article-title">
     <header class="article-heading page-rule">
-      <div class="article-kicker">
-        <a class="article-back" href="/posts">
-          Posts
-        </a>
-        {tags.length > 0 && (
-          <>
-            <span class="article-kicker-divider" aria-hidden="true">
-              /
-            </span>
-            <PostTags tags={tags} />
-          </>
-        )}
-      </div>
+      <!--<div class="article-kicker">-->
+      <!--  <a class="article-back" href="/posts">-->
+      <!--    Posts-->
+      <!--  </a>-->
+      <!--  {tags.length > 0 && (-->
+      <!--    <>-->
+      <!--      <span class="article-kicker-divider" aria-hidden="true">-->
+      <!--        /-->
+      <!--      </span>-->
+      <!--      <PostTags tags={tags} />-->
+      <!--    </>-->
+      <!--  )}-->
+      <!--</div>-->
       <h1 class="article-title" id="article-title">
         {post.data.title}
       </h1>
@@ -87,7 +87,7 @@ const dateLabel = dateTime?.slice(0, 10)
     @apply text-xs leading-5 hover:text-foreground pointer-coarse:min-h-11;
   }
   .article-title {
-    @apply mt-4 mb-0 text-3xl leading-snug font-medium tracking-tight text-balance wrap-anywhere sm:text-4xl;
+    @apply mb-0 text-3xl leading-snug font-medium tracking-tight text-balance wrap-anywhere sm:text-4xl;
   }
   .article-description {
     @apply mt-4 mb-0 text-sm leading-7 wrap-anywhere text-muted-foreground sm:text-base sm:leading-8;
