@@ -5,32 +5,32 @@ pubDate: "2026-04-11"
 tags: ["React"]
 ---
 
-浏览器已经断网了，React 里的网络指示器却还显示“在线”。这类问题麻烦的地方在于，数据可以在 React 的渲染流程之外发生变化。
+[`useSyncExternalStore`](https://react.dev/reference/react/useSyncExternalStore) 是 React 18 引入的 Hook，用来让组件读取并订阅 React 之外的状态。聪明的你可能会问：什么算“外部状态”？简单说，就是状态由浏览器 API 或第三方 Store 等地方管理，React 不会自动知道它什么时候变化。
 
-`navigator.onLine`、浏览器媒体查询、第三方 Store，都有自己的状态来源。如果组件需要持续读取它们，就得解决两个问题：怎么得知变化，以及渲染时读到的值是否仍然有效。
-
-React 18 引入的 `useSyncExternalStore`，就是用来接入这类外部状态的。
-
-## `useEffect + useState` 的空隙在哪里
-
-先拿 `navigator.onLine` 举个例子。在只做客户端渲染的组件里，很容易写出这样的代码：
+拿 `navigator.onLine` 举例，在线状态由浏览器维护，想在组件里显示在线或离线，我们通常会先想到用 `useEffect + useState` 监听变化：
 
 ```tsx
 import { useEffect, useState } from "react"
 
-const [isOnline, setIsOnline] = useState(navigator.onLine)
+function OnlineStatus() {
+  const [isOnline, setIsOnline] = useState(navigator.onLine)
 
-useEffect(() => {
-  const handle = () => setIsOnline(navigator.onLine)
-  window.addEventListener("online", handle)
-  window.addEventListener("offline", handle)
-  // 组件卸载时，移除这次注册的监听器。
-  return () => {
-    window.removeEventListener("online", handle)
-    window.removeEventListener("offline", handle)
-  }
-}, [])
+  useEffect(() => {
+    const handle = () => setIsOnline(navigator.onLine)
+    window.addEventListener("online", handle)
+    window.addEventListener("offline", handle)
+    // 组件卸载时，移除这次注册的监听器。
+    return () => {
+      window.removeEventListener("online", handle)
+      window.removeEventListener("offline", handle)
+    }
+  }, [])
+
+  return <p>{isOnline ? "在线" : "离线"}</p>
+}
 ```
+
+## 但是 `useEffect + useState` 可能漏掉变化
 
 问题藏在首次读取和建立订阅之间：
 
@@ -38,7 +38,7 @@ useEffect(() => {
 2. 在 Effect 建立监听之前，网络状态变成 `false`，`offline` 事件已经发出。
 3. Effect 随后才注册监听器。组件错过了这次通知，会一直保留旧值，直到下一次状态变化。
 
-可以在注册监听器后再调用一次 `handle()`，补上这个空隙。但如果多个组件读取同一个外部 Store，还要考虑 React 的并发渲染：一次渲染工作可能暂停、继续，期间外部数据却已经更新。自己把这些情况全部接好，就会越来越像在实现一个外部状态适配层。
+可以在注册监听器后立即调用一次 `handle()`，再读一遍当前值，避免漏掉刚才的变化。但如果多个组件读取同一个外部 Store，还要考虑 React 的并发渲染：一次渲染工作可能暂停、继续，期间外部数据却已经更新。自己把这些情况全部接好，就会越来越像在实现一个外部状态适配层。
 
 另外，上面传给 `useState` 的初始值会在组件渲染时读取 `navigator`。把事件监听放进 `useEffect` 并不能保护渲染阶段的访问，SSR 环境依然会报错。
 
@@ -81,82 +81,11 @@ React 也会在建立订阅后检查快照，处理读取和订阅之间的变�
 
 这个 Hook 也没有替你合并所有组件的监听器。多个组件分别订阅网络状态，仍然会各自注册监听器；如果需要共享底层监听，应由外部 Store 或适配层实现。
 
-## SSR 的第三个参数需要前后端约定
+## 使用时需要注意的点
 
-`getServerSnapshot` 会用于服务端渲染，也会用于客户端的首次 hydration。这两个阶段必须得到一致的快照，React 才能把已有 HTML 接起来。
+1. **SSR 的初始快照要一致。** `getServerSnapshot` 用于服务端渲染和客户端首次 hydration，两边必须返回相同的初始值。示例里的 `true` 表示先显示“在线”；hydration 后 React 会读取浏览器的实际值并更新页面，这不代表服务器知道用户的网络状况。服务端已有初始数据的 Store，应把同一份数据传到客户端。纯客户端渲染可以省略第三个参数，SSR 时不能省略。
 
-上面的 `true` 表示页面约定先显示“在线”，并不代表服务器知道访问者的网络状况。hydration 完成后，React 会读取 `getSnapshot()`，再根据浏览器的实际值更新页面。这期间可能出现一次状态切换。
+[//]: # (`navigator.onLine` 返回 `true` 也不代表 API 可访问，网络错误仍需按请求结果处理。[MDN 对 `navigator.onLine` 的说明]&#40;https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine&#41;也提到了这一点。)
 
-如果订阅的是有服务端初始数据的 Store，就应该把同一份初始数据传到客户端，供 `getServerSnapshot` 使用。只在客户端渲染时可以省略第三个参数；需要 SSR 的组件省略它会报错。
+2. **快照要保持稳定。** 网络示例返回布尔值，直接返回就可以。若返回对象，状态没变时要复用旧快照，状态改变时再返回新的不可变快照；每次创建新对象会让 `Object.is` 一直认为数据变了，而原地修改并复用同一个对象则会让 React 漏掉变化。
 
-还有一个容易混淆的地方：`navigator.onLine` 只是浏览器判断的网络连接状态。它返回 `true`，也不能保证你的 API 服务能访问。这个示例适合做离线提示，具体请求是否成功仍要处理请求结果。[MDN 对 `navigator.onLine` 的说明](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine)解释了这项限制。
-
-## 快照没变时，别每次都创建新对象
-
-网络示例返回布尔值，很容易满足快照稳定性的要求。如果只需要这个值，就直接返回它。
-
-如果写成 `return { isOnline: navigator.onLine }`，每次调用就会创建一个新对象，即使网络状态根本没变。
-
-React 使用 `Object.is` 比较快照，不会深度比较对象内容。每次读取都返回新对象，会让 React 持续认为数据发生了变化，并可能报出快照需要缓存的错误。
-
-反过来，如果返回一个始终不变的对象引用，却直接修改它内部的属性，React 也无法通过引用比较识别变化。外部 Store 应该在数据变化时提供新的不可变快照，在数据没变时复用原来的快照。
-
-## 原生 `<dialog>` 也可以作为外部状态来源
-
-再看原生 `<dialog>`。调用 `showModal()` 可以打开它，用户按 <kbd>Esc</kbd> 也能触发默认关闭行为。如果 React 另外维护一份 `isOpen`，却没有处理原生关闭事件，就可能出现弹窗已经关了、React 状态还没更新的情况。
-
-当弹窗的开关由现有原生代码管理，而 React 只需要显示它当前是否打开时，可以订阅元素的 `toggle` 事件，并读取 `dialog.open`：
-
-```tsx
-import { useSyncExternalStore, useRef } from "react"
-
-function Modal() {
-  const dialogRef = useRef<HTMLDialogElement>(null)
-
-  // 订阅元素的开关变化，读取时以 DOM 的实际状态为准。
-  const isOpen = useSyncExternalStore(
-    (callback) => {
-      const el = dialogRef.current
-      if (!el) return () => {}
-
-      // toggle 触发后通知 React，涵盖手动关闭和 Esc 默认关闭。
-      el.addEventListener("toggle", callback)
-      return () => el.removeEventListener("toggle", callback)
-    },
-    // 读取当前开关状态
-    () => dialogRef.current?.open ?? false,
-  )
-
-  return (
-    <>
-      <button onClick={() => dialogRef.current?.showModal()}>打开弹窗</button>
-
-      <dialog ref={dialogRef}>
-        <p>这是一个原生弹窗</p>
-        <p>当前状态：{isOpen ? "开启" : "已关闭"}</p>
-        <button onClick={() => dialogRef.current?.close()}>手动关闭</button>
-      </dialog>
-    </>
-  )
-}
-```
-
-这里用 `ref` 获取元素，开关状态直接来自 `dialog.open`，没有另外存一份布尔值。
-
-这是一个只做客户端渲染、弹窗节点保持不变的简化示例。如果需要 SSR，应补上返回 `false` 的第三个参数。如果弹窗节点会被替换，还要让订阅跟着新节点更新：修改 `ref.current` 本身不会触发 React 重新渲染。
-
-这个例子要求目标浏览器支持 **`<dialog>` 上的 `toggle` 事件**。支持 `<dialog>` 元素本身，并不一定意味着支持它的所有事件，接入旧浏览器前要核对兼容性。[MDN 的 `toggle` 文档](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/toggle_event)也说明了事件可能合并：同一轮快速开关时，React 读取的是通知时的最终状态，不能把它当成每次开关的完整记录。
-
-如果弹窗本来就由 React 控制，使用 `useState`，并在原生 `close` 事件中同步关闭状态，也完全合理。不能因为 DOM 元素有一个 `open` 属性，就认为所有弹窗都该改用 `useSyncExternalStore`。
-
-## 先判断状态归谁管理
-
-我判断这类问题时，会先确认：这份数据是不是已经存在于 React 之外，而且需要持续跟踪它的变化？
-
-- 组件自己的表单输入、展开状态，通常继续用 `useState` 或 `useReducer`。
-- 浏览器 API、原生组件或第三方 Store 提供了可读取的值和变化通知时，可以用 `useSyncExternalStore` 接入。
-- 已经提供 React Hook 的状态库，优先使用它自己的 Hook，避免重复维护适配逻辑。
-
-它的价值在于把外部状态按 React 的订阅约定接进来。代码不一定更短，也不代表所有场景都会更快，但读取快照、订阅变化和处理 SSR 的责任会更清楚。
-
-接入自己的 Store 前，可以对照 [React 官方 `useSyncExternalStore` 文档](https://react.dev/reference/react/useSyncExternalStore)，检查订阅清理、快照稳定性，以及服务端和 hydration 的初始值是否一致。
