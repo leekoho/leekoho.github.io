@@ -4,9 +4,28 @@ pubDate: "2026-09-15"
 tags: ["Agent"]
 ---
 
-Agent 跑一次测试，可能收到一大段成功日志；查一次文件，也可能带回很多重复内容。这些命令输出进入模型上下文后，就会占用输入 token。一次两次还好，连续调用工具时，输出很容易越积越多。
+[RTK（Rust Token Killer）](https://github.com/rtk-ai/rtk)，顾名思义，就是一个用 Rust 写的 Token 杀手。作为 CLI 代理，它执行命令后会先过滤、整理输出，再把结果交给 Agent。例如，通过 `rtk git status` 执行 Git，可以让 Agent 收到更紧凑的状态信息。
 
-[RTK（Rust Token Killer）](https://github.com/rtk-ai/rtk) 是一个 CLI 代理。它执行命令后，会先过滤、整理输出，再把结果交给 Agent。例如，通过 `rtk git status` 执行 Git，可以让 Agent 收到更紧凑的状态信息。
+下面是在同一个仓库中分别运行 `git status` 和 `rtk git status` 的结果:
+
+```ansi
+[0;36mgit status[0m
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	[31mmodified:   src/content/posts/rtk-usage.mdx[m
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+[0;36mrtk git status[0m
+* main...origin/main
+ M src/content/posts/rtk-usage.mdx
+```
+
+RTK 保留了分支和文件状态，省去了 Git 的说明文字。
 
 ## RTK 会怎样处理命令输出
 
@@ -15,15 +34,14 @@ Agent 跑一次测试，可能收到一大段成功日志；查一次文件，�
 接入后的执行过程可以这样理解：
 
 ```text
-Agent 发起命令 → RTK 代理执行 → 实际命令
-Agent 读取结果 ← RTK 过滤整理 ← 原始输出
+Agent 发起命令 → RTK 调用实际命令 → 命令产生原始输出 → RTK 过滤整理 → Agent 收到结果
 ```
 
 因此，安装 RTK 后，还需要让 Agent 实际通过它执行命令。仅仅把二进制文件放进 PATH，并不会让所有命令自动获得压缩效果。
 
-## 安装后，还要为 AI 工具初始化
+## 为 AI 工具初始化
 
-项目提供了[中文安装教程](https://github.com/rtk-ai/rtk/blob/develop/README_zh.md)。完成安装后，按自己使用的 AI 工具选择对应的初始化命令，下面这些不用全部执行：
+项目提供了[中文安装教程](https://github.com/rtk-ai/rtk/blob/develop/README_zh.md)。完成安装后，按自己使用的 AI 工具选择对应的初始化命令：
 
 ```bash
 # 1. 按使用的 AI 工具选择一条初始化命令
@@ -46,8 +64,6 @@ git status  # 支持自动改写的集成会将其改为 rtk git status
 ```
 
 这份命令清单来自上游文档，不同版本支持的集成可能有差异。如果参数不被识别，先用 `rtk init --help` 查看本机版本支持哪些选项。
-
-集成方式也有区别。支持 hook 的工具可以在执行前改写命令；Codex 的 `--codex` 初始化使用 `AGENTS.md` 和 `RTK.md` 提供使用指令，让 Agent 按规则添加 `rtk` 前缀。它不会给普通终端里的所有命令都加上一层代理。
 
 接入后，可以检查 Agent 实际执行的是不是 `rtk git status`，也可以通过 `rtk gain --history` 查看最近记录。原命令依旧没有经过 RTK，就需要检查初始化配置是否被工具加载。
 

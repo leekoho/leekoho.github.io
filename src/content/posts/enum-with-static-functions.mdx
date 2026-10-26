@@ -44,18 +44,6 @@ console.log(Weekday.isBusinessDay(sun)) // false
 
 调用时，枚举值和相关操作都通过 `Weekday` 访问：`Weekday.Monday` 表示星期一，`Weekday.isBusinessDay()` 负责判断。
 
-## 为什么函数能挂到枚举上
-
-这里用到的是 TypeScript 的**声明合并**。普通 `enum` 会生成运行时对象，同名 `namespace` 中导出的函数也会成为这个对象的属性，所以可以通过 `Weekday.isBusinessDay()` 调用。
-
-写的时候注意三点：
-
-- **名称一致、作用域相同**：这里的 `enum Weekday` 和 `namespace Weekday` 声明在同一个文件的同一作用域中。
-- **把扩展放在枚举后面**：先声明枚举，再集中定义它的相关操作，阅读时更容易对应。
-- **函数需要 `export`**：这样才能从 `namespace` 外部访问 `isBusinessDay`。
-
-如果要从模块中导出这个枚举，应同时给 `enum Weekday` 和 `namespace Weekday` 添加 `export`，保持两个合并声明的导出方式一致。
-
 ## 什么时候值得这样组织
 
 如果函数专门处理这个枚举，把它放在枚举名下，调用时比较容易发现，也能看出两者的关系。若函数涉及多个业务对象，或者项目本来就统一使用独立工具函数，继续单独定义函数也很自然。
